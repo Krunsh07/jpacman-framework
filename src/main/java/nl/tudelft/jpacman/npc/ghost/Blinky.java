@@ -7,6 +7,7 @@ import java.util.Random;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.level.Player;
+import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 /**
@@ -50,6 +51,12 @@ public class Blinky extends Ghost {
 	 * The base movement interval.
 	 */
 	private static final int MOVE_INTERVAL = 250;
+	
+	/**
+	 * The base movement when the ghost is accelerated.
+	 */
+	private static final int ACCELERATED_MOVE_INTERVAL = 125;
+
 
 	/**
 	 * Creates a new "Blinky", a.k.a. "Shadow".
@@ -57,15 +64,21 @@ public class Blinky extends Ghost {
 	 * @param spriteMap
 	 *            The sprites for this ghost.
 	 */
-	public Blinky(Map<Direction, Sprite> spriteMap) {
-		super(spriteMap);
+	public Blinky(Map<Direction, Sprite> spriteMap, AnimatedSprite explodeAnimation) {
+		super(spriteMap, explodeAnimation);
 	}
 
 	@Override
 	public long getInterval() {
 		// TODO Blinky should speed up when there are a few pellets left, but he
 		// has no way to find out how many there are.
-		return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		if(!getAcceleration()){
+			return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
+		else{
+			System.out.println("Test");
+			return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
 	}
 
 	/**

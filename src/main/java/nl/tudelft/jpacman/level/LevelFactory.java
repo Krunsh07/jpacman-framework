@@ -10,6 +10,7 @@ import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostColor;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
+import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -30,6 +31,11 @@ public class LevelFactory {
 	 * The default value of a pellet.
 	 */
 	private static final int PELLET_VALUE = 10;
+	
+	/**
+	 * The default time in seconds during which a player or ghost is trapped into a hole.
+	 */
+	private static final int HOLE_TIME = 1;
 
 	/**
 	 * The default value of a super pellet.
@@ -77,7 +83,7 @@ public class LevelFactory {
 	 * @return A new level for the board.
 	 */
 	public Level createLevel(Board board, List<NPC> ghosts,
-			List<Square> startPositions) {
+			List<Square> startPositions, List<Square> fruitPositions) {
 
 		// We'll adopt the simple collision map for now.
 		CollisionMap collisionMap = new PlayerCollisions();
@@ -103,7 +109,7 @@ public class LevelFactory {
 		case CLYDE:
 			return ghostFact.createClyde();
 		default:
-			return new RandomGhost(sprites.getGhostSprite(GhostColor.RED));
+			return new RandomGhost(sprites.getGhostSprite(GhostColor.RED), sprites.getGhostExplodeAnimation());
 		}
 	}
 
@@ -114,6 +120,35 @@ public class LevelFactory {
 	 */
 	public Pellet createPellet() {
 		return new Pellet(PELLET_VALUE, sprites.getPelletSprite());
+	}
+	
+	/**
+	 * Creates a new hole.
+	 * 
+	 * @return The new hole.
+	 */
+	public Hole createHole() {
+		return new Hole(HOLE_TIME, sprites.getHoleSprite());
+	}
+	
+	/**
+	 * Creates a new teleport.
+	 * 
+	 * @return The new teleport.
+	 */
+	public Teleport createTeleport()
+	{
+		return new Teleport(sprites.getTeleportSprite());
+	}
+	
+	/**
+	 * Creates a new bridge.
+	 * 
+	 * @return The new bridge.
+	 */
+	public Bridge createBridge()
+	{
+		return new Bridge(sprites.getBridgeSprites());
 	}
 
 	/**
@@ -141,8 +176,8 @@ public class LevelFactory {
 		 * @param ghostSprite
 		 *            The sprite for the ghost.
 		 */
-		private RandomGhost(Map<Direction, Sprite> ghostSprite) {
-			super(ghostSprite);
+		private RandomGhost(Map<Direction, Sprite> ghostSprite, AnimatedSprite explodeAnimation) {
+			super(ghostSprite, explodeAnimation);
 		}
 
 		@Override

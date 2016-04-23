@@ -9,6 +9,11 @@ import nl.tudelft.jpacman.board.Unit;
  * @author Jeroen Roosen 
  */
 public abstract class NPC extends Unit {
+	
+	/**
+	 * Whether the NPC is speed-up
+	 */
+	private boolean acceleration = false;
 
 	/**
 	 * The time that should be taken between moves.
@@ -25,5 +30,20 @@ public abstract class NPC extends Unit {
 	 *         be devised.
 	 */
 	public abstract Direction nextMove();
-
+	
+	/**
+	 * Set the acceleration state of this NPC.
+	 * @param value true to make the NPC move faster, false otherwise.
+	 */
+	public void setAcceleration(boolean value) {
+		acceleration = value;
+	}
+	
+	/**
+	 * Returns whether the NPC is speed-up
+	 * @return true if the speed of this NPC is accelerated.
+	 */
+	public boolean getAcceleration() {
+		return acceleration;
+	}
 }

@@ -8,6 +8,7 @@ import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.level.Player;
+import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 /**
@@ -55,6 +56,11 @@ public class Inky extends Ghost {
 	 * The base movement interval.
 	 */
 	private static final int MOVE_INTERVAL = 250;
+	
+	/**
+	 * The base movement when the ghost is accelerated.
+	 */
+	private static final int ACCELERATED_MOVE_INTERVAL = 125;
 
 	/**
 	 * Creates a new "Inky", a.k.a. Bashful.
@@ -62,13 +68,18 @@ public class Inky extends Ghost {
 	 * @param spriteMap
 	 *            The sprites for this ghost.
 	 */
-	public Inky(Map<Direction, Sprite> spriteMap) {
-		super(spriteMap);
+	public Inky(Map<Direction, Sprite> spriteMap, AnimatedSprite explodeAnimation) {
+		super(spriteMap, explodeAnimation);
 	}
 
 	@Override
 	public long getInterval() {
-		return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		if(!getAcceleration()){
+			return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
+		else{
+			return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
 	}
 
 	/**

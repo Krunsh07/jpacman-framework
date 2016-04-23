@@ -69,10 +69,12 @@ public class LauncherSmokeTest {
 
         // get points
         game.move(player, Direction.EAST);
+        Thread.sleep(player.getInterval());
         assertEquals(10, player.getScore());
 
         // now moving back does not change the score
         game.move(player, Direction.WEST);
+        Thread.sleep(player.getInterval());
         assertEquals(10, player.getScore());
 
         // try to move as far as we can
@@ -119,11 +121,13 @@ public class LauncherSmokeTest {
      * @param game The game we're playing
      * @param dir The direction to be taken
      * @param numSteps The number of steps to take
+     * @throws InterruptedException 
      */
-    public static void move(Game game, Direction dir, int numSteps) {
+    public static void move(Game game, Direction dir, int numSteps) throws InterruptedException {
         Player player = game.getPlayers().get(0);
         for (int i = 0; i < numSteps; i++) {
             game.move(player, dir);
+            Thread.sleep(player.getInterval());
         }
     }
 }

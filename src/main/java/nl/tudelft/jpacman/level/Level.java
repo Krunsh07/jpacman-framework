@@ -10,6 +10,10 @@ import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.fruit.FruitFactory;
+import nl.tudelft.jpacman.level.Bridge;
+import nl.tudelft.jpacman.npc.Bullet;
+import nl.tudelft.jpacman.npc.DirectionCharacter;
 import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.sprite.PacManSprites;
@@ -62,6 +66,11 @@ public class Level {
 	 * The start current selected starting square.
 	 */
 	private int startSquareIndex;
+	
+	/**
+	 * The Fruit factory for this level.
+	 */
+	private FruitFactory fruitFactory;
 
 	/**
 	 * The players on this level.
@@ -128,6 +137,17 @@ public class Level {
 			level = this;
 		}
 	}
+	
+	/**
+	 * Setup the fruit for this level if the board specified that some square may contain a fruit.
+	 * @param fruitpositions the list of the squares where a fruit may appear
+	 * @param npcs the list of the NPC registered on this level at the time of setting-up the fruits. 
+	 */
+	public void setupFruits(List<Square> fruitpositions, List<NPC> npcs) {
+		if(fruitpositions.size() > 0)
+			fruitFactory = new FruitFactory(new PacManSprites(), fruitpositions, npcs);
+	}
+	
 
 	/**
 	 * Adds an observer that will be notified when the level is won or lost
@@ -167,6 +187,7 @@ public class Level {
 			return;
 		}
 		players.add(p);
+		npcs.put(p, null);
 		Square square = startSquares.get(startSquareIndex);
 		p.occupy(square);
 		startSquareIndex++;
@@ -195,7 +216,7 @@ public class Level {
 		assert unit != null;
 		assert direction != null;
 
-		if (!isInProgress()) {
+		if (!isInProgress() || (unit instanceof DirectionCharacter && !((DirectionCharacter) unit).getMobility())) {
 			return;
 		}
 
@@ -203,8 +224,9 @@ public class Level {
 			unit.setDirection(direction);
 			Square location = unit.getSquare();
 			Square destination = location.getSquareAt(direction);
-
-			if (destination.isAccessibleTo(unit)) {
+			
+			if (destination.isAccessibleTo(unit) && !(Bridge.blockedBybridge(unit, direction))) {
+				unit.setOnBridge(false);
 				List<Unit> occupants = destination.getOccupants();
 				unit.occupy(destination);
 				for (Unit occupant : occupants) {
@@ -327,6 +349,22 @@ public class Level {
 				}
 			}
 		}
+		if (anyPlayerDesserveFruits()) {
+			for (LevelObserver o : observers) {
+					o.fruitEvent();
+			}
+		}
+		if (isAnyPlayerShooting()) {
+			for (LevelObserver o : observers) {
+					o.ShootingEvent();
+			}
+		}
+		List<NPC> deadNPCs = NPCToClean() ;
+		if(deadNPCs.size() > 0) {
+			for (LevelObserver o : observers) {
+				o.NPCCleanEvent(deadNPCs, npcs);
+			}
+		}
 	}
 
 	/**
@@ -343,6 +381,50 @@ public class Level {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns <code>true</code> if at lest one of the player meet the criteria for making a fruit appear.
+	 * 
+	 * @return <code>true</code> if at lest one of the player has 500 or 1500 points.
+	 */
+	public boolean anyPlayerDesserveFruits() {
+		for (Player p : players) {
+			if (fruitFactory != null && (p.getScore() == 500 || p.getScore() == 1500)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns <code>true</code> if at lest one of the player can shoot bullets.
+	 * 
+	 * @return <code>true</code> if at lest one of the player can shoot bullets.
+	 */
+	public boolean isAnyPlayerShooting() {
+		for (Player p : players) {
+			if (p.isShooting()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns <code>true</code> if at least one NPC is dead and need to be cleaned from the board.
+	 * 
+	 * @return <code>true</code> if at least one NPC is dead and need to be cleaned from the board.
+	 */
+	private List<NPC> NPCToClean() {
+		List<NPC> deadNPCs = new ArrayList<>();
+		for (NPC npc : npcs.keySet()) {
+			if (((npc instanceof Bullet) && !((Bullet) npc).isAlive())
+					|| ((npc instanceof Ghost) && ((Ghost) npc).hasExploded())) {
+				deadNPCs.add(npc);
+			}
+		}
+		return deadNPCs;
 	}
 
 	public boolean isAnyPlayerInHunterMode() {
@@ -454,6 +536,14 @@ public class Level {
 			}
 		}
 		return pellets;
+	}
+	
+	/**
+	 * returns the fruit factory for this level.
+	 * @return the fruit factory for this level.
+	 */
+	public FruitFactory getFruitFactory(){
+		return fruitFactory;
 	}
 
 	public Map<NPC, ScheduledExecutorService> getNpcs() {
@@ -587,5 +677,34 @@ public class Level {
 		 * A ghost need to be respawned.
 		 */
 		void respawnGhost();
+		
+		/**
+		 * A Fruit can appear.
+		 */
+		void fruitEvent();
+		
+		/**
+		 * A Player can shoot bullets
+		 */
+		void ShootingEvent();
+		
+		/**
+		 * A NPC is dead and need to be cleared from the board
+		 * @param List<NPC> deadNPC the list of the NPCs that are dead
+		 * @param Map<NPC, ScheduledExecutorService> npcs the npcs that are still in the game.
+		 */
+		void NPCCleanEvent(List<NPC> deadNPCs, Map<NPC, ScheduledExecutorService> npcs);
+	}
+
+	/**
+	 * enable the movment of a bullet
+	 * @param b the bullet that have to be moved.
+	 */
+	public void animateBullet(Bullet b) {
+			ScheduledExecutorService service = Executors
+					.newSingleThreadScheduledExecutor();
+			service.schedule(new NpcMoveTask(service, b),
+					b.getInterval() / 2, TimeUnit.MILLISECONDS);
+			npcs.put(b, service);
 	}
 }

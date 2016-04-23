@@ -1,5 +1,10 @@
 package nl.tudelft.jpacman.board;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import nl.tudelft.jpacman.level.Player;
+import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 /**
@@ -18,12 +23,18 @@ public abstract class Unit {
 	 * The direction this unit is facing.
 	 */
 	private Direction direction;
+	
+	/**
+	 * Whether this unit is on a bridge.
+	 */
+	private boolean onBridge;
 
 	/**
 	 * Creates a unit that is facing east.
 	 */
 	protected Unit() {
 		this.direction = Direction.EAST;
+		this.onBridge = false;
 	}
 	
 	/**
@@ -40,6 +51,22 @@ public abstract class Unit {
 	 */
 	public Direction getDirection() {
 		return this.direction;
+	}
+	
+	/**
+	 * set the new postion of this unit with respect to a bridge
+	 * @param boolean newValue the new position of this unit with respect to a bridge.
+	 */
+	public void setOnBridge(boolean newValue) {
+		onBridge = newValue;
+	}
+	
+	/**
+	 * Returns whether this unit is on a bridge or not.
+	 * @return true if this unit is on a bridge, false otherwise.
+	 */
+	public boolean isOnBridge() {
+		return onBridge;
 	}
 	
 	/**
@@ -102,5 +129,4 @@ public abstract class Unit {
 	 * @return The sprite of this unit.
 	 */
 	public abstract Sprite getSprite();
-
 }

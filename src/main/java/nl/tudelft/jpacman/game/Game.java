@@ -19,7 +19,7 @@ public abstract class Game implements LevelObserver {
 	 * <code>true</code> if the game is in progress.
 	 */
 	private boolean inProgress;
-
+	
 	/**
 	 * Object that locks the start and stop methods.
 	 */
@@ -97,8 +97,8 @@ public abstract class Game implements LevelObserver {
 	 */
 	public void move(Player player, Direction direction) {
 		if (isInProgress()) {
-			// execute player move.
 			getLevel().move(player, direction);
+			//player.setDirection(direction); Code florent
 		}
 	}
 

@@ -38,9 +38,19 @@ public class PacManSprites extends SpriteStore {
 	private static final int PACMAN_DEATH_FRAMES = 11;
 	
 	/**
+	 * The amount of frames in the ghost exploading animation.
+	 */
+	private static final int GHOST_EXPLODE_FRAMES = 5;
+	
+	/**
 	 * The amount of frames in the ghost animation.
 	 */
 	private static final int GHOST_ANIMATION_FRAMES = 2;
+	
+	/**
+	 * The amount of frames in a multi-direction object that has no animation.
+	 */
+	private static final int NO_ANIMATION_FRAMES = 1;
 
 	/**
 	 * The delay between frames.
@@ -53,6 +63,42 @@ public class PacManSprites extends SpriteStore {
 	public Map<Direction, Sprite> getPacmanSprites() {
 		return directionSprite("/sprite/pacman.png", PACMAN_ANIMATION_FRAMES);
 	}
+	
+	/**
+	 * @return A map of animated angry Pac-Man sprites for all directions.
+	 */
+	public Map<Direction, Sprite> getPacmanAngrySprite(){
+		return directionSprite("/sprite/pacman_angry.png", PACMAN_ANIMATION_FRAMES);
+	}
+	
+	/**
+	 * @return A map of animated insisible Pac-Man sprites for all directions.
+	 */
+	public Map<Direction, Sprite> getPacmanInvisibleSprite(){
+		return directionSprite("/sprite/pacman_invisible.png", PACMAN_ANIMATION_FRAMES);
+	}
+	
+	/**
+	 * @return A map of animated paralized Pac-Man sprites for all directions.
+	 */
+	public Map<Direction, Sprite> getPacmanParalizedSprites() {
+		return directionSprite("/sprite/pacman_paralized.png", PACMAN_ANIMATION_FRAMES);
+	}
+	
+	/**
+	 * @return A map of animated paralized ghost sprites for all directions.
+	 */
+	public Map<Direction, Sprite> getParalizedGhostSprite() {
+		return directionSprite("/sprite/ghost_paralized.png", GHOST_ANIMATION_FRAMES);
+	}
+
+	/**
+	 * @return A map of animated angry ghost sprites for all directions.
+	 */
+	public Map<Direction, Sprite> getAngryGhostSprite() {
+		return directionSprite("/sprite/ghost_angry.png", GHOST_ANIMATION_FRAMES);
+	}
+
 
 	/**
 	 * @return The animation of a dying Pac-Man.
@@ -62,6 +108,20 @@ public class PacManSprites extends SpriteStore {
 
 		Sprite baseImage = loadSprite(resource);
 		AnimatedSprite animation = createAnimatedSprite(baseImage, PACMAN_DEATH_FRAMES,
+				ANIMATION_DELAY, false);
+		animation.setAnimating(false);
+
+		return animation;
+	}
+	
+	/**
+	 * @return The animation of an exploding Ghost.
+	 */
+	public AnimatedSprite getGhostExplodeAnimation() {
+		String resource = "/sprite/ghost_explode.png";
+		
+		Sprite baseImage = loadSprite(resource);
+		AnimatedSprite animation = createAnimatedSprite(baseImage, GHOST_EXPLODE_FRAMES,
 				ANIMATION_DELAY, false);
 		animation.setAnimating(false);
 
@@ -123,10 +183,80 @@ public class PacManSprites extends SpriteStore {
 	}
 
 	/**
-	 * @return The sprite for the pellet.
+	 * @return The sprite for the pellet
 	 */
 	public Sprite getPelletSprite() {
 		return loadSprite("/sprite/pellet.png");
+	}
+	
+	/**
+	 * @return The sprite for the trap.
+	 */
+	public Sprite getHoleSprite() {
+		return loadSprite("/sprite/trap.png");
+	}
+	
+	/**
+	 * @return The sprite for the pomgranate.
+	 */
+	public Sprite getPomgranateSprite() {
+		return loadSprite("/sprite/pomgranate.png");
+	}
+	
+	/**
+	 * @return The sprite for the bell pepper.
+	 */
+	public Sprite getBellPepperSprite() {
+		return loadSprite("/sprite/bell_pepper.png");
+	}
+	
+	/**
+	 * @return The sprite for the tomato.
+	 */
+	public Sprite getTomatoSprite() {
+		return loadSprite("/sprite/tomato.png");
+	}
+	
+	/**
+	 * @return The sprite for the kidney bean.
+	 */
+	public Sprite getKidneyBeanSprite() {
+		return loadSprite("/sprite/kidney_bean.png");
+	}
+	
+	/**
+	 * @return The sprite for the potato.
+	 */
+	public Sprite getPotatoSprite() {
+		return loadSprite("/sprite/potato.png");
+	}
+	
+	/**
+	 * @return The sprite for the fish.
+	 */
+	public Sprite getFishSprite() {
+		return loadSprite("/sprite/fish.png");
+	}
+	
+	/**
+	 * @return The sprite for the bullet.
+	 */
+	public Sprite getBulletSprite() {
+		return loadSprite("/sprite/bullet.png");
+	}
+	
+	/**
+	 * @return The sprite for the teleport.
+	 */
+	public Sprite getTeleportSprite() {
+		return loadSprite("/sprite/teleport.png");
+	}
+	
+	/**
+	 * @return The sprite for the bridge.
+	 */
+	public Map<Direction, Sprite> getBridgeSprites() {
+		return directionSprite("/sprite/bridge.png", NO_ANIMATION_FRAMES);
 	}
 
 	/**
