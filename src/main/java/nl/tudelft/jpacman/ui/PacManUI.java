@@ -7,9 +7,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
+import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.game.Game;
 import nl.tudelft.jpacman.ui.ScorePanel.ScoreFormatter;
 
@@ -82,7 +82,7 @@ public class PacManUI extends JFrame {
 		if (sf != null) {
 			scorePanel.setScoreFormatter(sf);
 		}
-		
+
 		boardPanel = new BoardPanel(game);
 		
 		Container contentPanel = getContentPane();

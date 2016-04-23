@@ -51,6 +51,8 @@ public class Level {
 	 */
 	private boolean inProgress;
 
+	public boolean infiniteMode;
+
 	/**
 	 * The squares from which players can start this game.
 	 */
@@ -88,6 +90,7 @@ public class Level {
 
 	public static int ghostAte = 0;
 
+	public static int superPelletLeft;
 
 	private static Level level = null;
 
@@ -275,12 +278,13 @@ public class Level {
 			l.start();
 		}
 		this.npcs.putAll(l.getNpcs());
+		this.stop();
 		//l.getNpcs().putAll(this.getNpcs());
 		this.start();
 		for (NPC npc : npcs.keySet())
 		{
 			Ghost g = (Ghost) (npc);
-			g.setSpeed(g.getSpeed() + 0.1);
+			g.setSpeed(g.getSpeed() + 0.01);
 		}
 
 	}
@@ -294,6 +298,8 @@ public class Level {
 	public boolean isInProgress() {
 		return inProgress;
 	}
+
+	private boolean isInfiniteMode() { return infiniteMode; }
 
 	/**
 	 * Updates the observers about the state of this level.
@@ -309,14 +315,16 @@ public class Level {
 				o.startHunterMode();
 			}
 		}
-		if (ghostLeft != 4) {
-			for (LevelObserver o : observers) {
-				o.respawnGhost();
+		if(!infiniteMode) {
+			if (ghostLeft != 4) {
+				for (LevelObserver o : observers) {
+					o.respawnGhost();
+				}
 			}
-		}
-		if (remainingPellets() == 0) {
-			for (LevelObserver o : observers) {
-				o.levelWon();
+			if (remainingPellets() == 0) {
+				for (LevelObserver o : observers) {
+					o.levelWon();
+				}
 			}
 		}
 	}
@@ -353,6 +361,7 @@ public class Level {
 	 */
 	public void startHunterMode() {
 		Board b = getBoard();
+		superPelletLeft--;
 		for (int x = 0; x < b.getWidth(); x++) {
 			for (int y = 0; y < b.getHeight(); y++) {
 				for (Unit u : b.squareAt(x, y).getOccupants()) {
@@ -361,7 +370,7 @@ public class Level {
 						timerWarning.cancel();
 						timerHunterMode = new Timer();
 						timerWarning = new Timer();
-						if (remainingSuperPellets() >= 2) {
+						if (superPelletLeft >= 2) {
 							timerHunterMode.schedule(new TimerHunterTask(), 7000);
 							timerWarning.schedule(new TimerWarningTask(), 5000, 250);
 						} else {
@@ -445,26 +454,6 @@ public class Level {
 			}
 		}
 		return pellets;
-	}
-
-	/**
-	 * Counts the super pellets remaining on the board.
-	 *
-	 * @return The amount of super pellets remaining on the board.
-	 */
-	public int remainingSuperPellets() {
-		Board b = getBoard();
-		int superPellets = 0;
-		for (int x = 0; x < b.getWidth(); x++) {
-			for (int y = 0; y < b.getHeight(); y++) {
-				for (Unit u : b.squareAt(x, y).getOccupants()) {
-					if (u instanceof Pellet && ((Pellet) u).getValue() == 50) {
-						superPellets++;
-					}
-				}
-			}
-		}
-		return superPellets;
 	}
 
 	public Map<NPC, ScheduledExecutorService> getNpcs() {

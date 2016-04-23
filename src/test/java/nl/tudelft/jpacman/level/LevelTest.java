@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
 
 /**
  * Tests various aspects of level.
- * 
+ *
  * @author Jeroen Roosen 
  */
 public class LevelTest {
@@ -52,7 +52,7 @@ public class LevelTest {
 	 * The board for this level.
 	 */
 	private final Board board = mock(Board.class);
-	
+
 	/**
 	 * The collision map.
 	 */

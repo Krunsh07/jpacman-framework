@@ -2,6 +2,10 @@ package nl.tudelft.jpacman.board;
 
 import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.level.Level;
+import nl.tudelft.jpacman.level.Player;
+import nl.tudelft.jpacman.npc.ghost.Ghost;
+
+import java.util.Random;
 
 /**
  * A top-down view of a matrix of {@link Square}s.
@@ -95,11 +99,13 @@ public class Board {
 	/**
 	 * Option de création du nouveau Level
 	 * @return Le nouveau level
-     */
+	 */
 	private Level setOptions()
 	{
 		Launcher launcher = Launcher.getLauncher();
-		launcher.setBoardToUse("/boardExtendedAdd.txt");
+		Random random = new Random();
+		int nombre = random.nextInt(3);
+		launcher.setBoardToUse("/boardExtendedAdd" + (nombre+1) + ".txt");
 		Level lev = launcher.makeLevel();
 		Level game = Level.getLevel();
 		game.addGhost(lev);
@@ -109,7 +115,7 @@ public class Board {
 	/**
 	 * Agrandi le board du jeu
 	 * @param direction La direction dans laquelle le board doit s'agrandir.
-     */
+	 */
 	public void extend(Direction direction)
 	{
 		switch(direction) {
@@ -150,8 +156,8 @@ public class Board {
 	 * @param newBoard Le nouveau board
 	 * @param startX L'abscisse de depart
 	 * @param startY L'ordonnee de depart
-     * @return Le nouveau board
-     */
+	 * @return Le nouveau board
+	 */
 	private Square[][] boardCopy(Square[][] newBoard, int startX, int startY)
 	{
 		for (int i = 0; i < this.getWidth(); i++)
@@ -164,7 +170,7 @@ public class Board {
 	/**
 	 * Mets a jours les positions des éléments du board afficher
 	 * @param grid La grille de square
-     */
+	 */
 	public void setPositions(Square[][] grid)
 	{
 		for(int i = 0; i < grid.length; i++)
@@ -183,8 +189,8 @@ public class Board {
 	 * @param startY Ordonnee de debut
 	 * @param lengthX Longueur sur x
 	 * @param lengthY Longueur sur y
-     * @return La nouvelle grille de square
-     */
+	 * @return La nouvelle grille de square
+	 */
 	private Square[][] setSquare(Square[][] grid, int startX, int startY, int lengthX, int lengthY)
 	{
 		for(int i = 0; i < lengthX / this.widthOfOneMap; i++)
@@ -202,9 +208,9 @@ public class Board {
 	 * @param grid La grille de square
 	 * @param startX Abscisse de debut
 	 * @param startY Ordonnee de debut
-     * @param posX Abscisse du square dans grid a remplacer
-     * @param posY Ordonnee du square dans grid a remplacer
-     */
+	 * @param posX Abscisse du square dans grid a remplacer
+	 * @param posY Ordonnee du square dans grid a remplacer
+	 */
 	private void putSquare(Square[][] grid, int startX, int startY, int posX, int posY)
 	{
 		Level l = this.setOptions();
@@ -222,8 +228,8 @@ public class Board {
 	 * @param startX L'abscisse de debut
 	 * @param startY L'ordonnee de début
 	 * @param lenghtX La longueur sur x
-     * @param lenghtY La longueur sur y
-     */
+	 * @param lenghtY La longueur sur y
+	 */
 	private void setLink(Square[][] grid, int startX, int startY, int lenghtX, int lenghtY)
 	{
 		Square sq1, sq2;
@@ -251,24 +257,19 @@ public class Board {
 	 *
 	 * @return The square on the middle of the Board (never null).
 	 */
-	public Square getMiddleOfTheMap()
-	{
+	public Square getMiddleOfTheMap() {
 		Square result = null;
-		if(((getHeight()/2)%2 != 0) && ((getWidth()/2)%2 != 0))
-		{
-			result = board[(getWidth()/2)][(getHeight()/2)];
+		if (((getHeight() / 2) % 2 != 0) && ((getWidth() / 2) % 2 != 0)) {
+			result = board[(getWidth() / 2)][(getHeight() / 2)];
 		}
-		if(((getHeight()/2)%2 == 0) && ((getWidth()/2)%2 != 0))
-		{
-			result = board[(getWidth()/2)][(getHeight()/2)-1];
+		if (((getHeight() / 2) % 2 == 0) && ((getWidth() / 2) % 2 != 0)) {
+			result = board[(getWidth() / 2)][(getHeight() / 2) - 1];
 		}
-		if(((getHeight()/2)%2 != 0) && ((getWidth()/2)%2 == 0))
-		{
-			result = board[(getWidth()/2)-1][(getHeight()/2)];
+		if (((getHeight() / 2) % 2 != 0) && ((getWidth() / 2) % 2 == 0)) {
+			result = board[(getWidth() / 2) - 1][(getHeight() / 2)];
 		}
-		if(((getHeight()/2)%2 == 0) && ((getWidth()/2)%2 == 0))
-		{
-			result = board[(getWidth()/2)-1][(getHeight()/2)-1];
+		if (((getHeight() / 2) % 2 == 0) && ((getWidth() / 2) % 2 == 0)) {
+			result = board[(getWidth() / 2) - 1][(getHeight() / 2) - 1];
 		}
 		assert result != null : "Follows from invariant.";
 		return result;
@@ -277,7 +278,7 @@ public class Board {
 	/**
 	 * Retourne le board actuel
 	 * @return Le board du jeu
-     */
+	 */
 	public Square[][] getBoard() {
 		return board;
 	}
@@ -285,7 +286,7 @@ public class Board {
 	/**
 	 * Permet de remplacer le board actuel
 	 * @param board le nouveau board.
-     */
+	 */
 	public void setBoard(Square[][] board) {
 		this.board = board;
 	}
