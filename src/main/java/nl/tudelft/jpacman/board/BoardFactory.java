@@ -1,5 +1,6 @@
 package nl.tudelft.jpacman.board;
 
+import nl.tudelft.jpacman.fruit.Fruit;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -99,6 +100,9 @@ public class BoardFactory {
 
 		@Override
 		public boolean isAccessibleTo(Unit unit) {
+			if(unit instanceof Fruit){
+				return true;
+			}
 			return false;
 		}
 

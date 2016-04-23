@@ -30,7 +30,7 @@ public class GhostFactory {
 	 * @return A new Blinky.
 	 */
 	public Ghost createBlinky() {
-		return new Blinky(sprites.getGhostSprite(GhostColor.RED));
+		return new Blinky(sprites.getGhostSprite(GhostColor.RED), sprites.getGhostExplodeAnimation());
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class GhostFactory {
 	 * @return A new Pinky.
 	 */
 	public Ghost createPinky() {
-		return new Pinky(sprites.getGhostSprite(GhostColor.PINK));
+		return new Pinky(sprites.getGhostSprite(GhostColor.PINK), sprites.getGhostExplodeAnimation());
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class GhostFactory {
 	 * @return A new Inky.
 	 */
 	public Ghost createInky() {
-		return new Inky(sprites.getGhostSprite(GhostColor.CYAN));
+		return new Inky(sprites.getGhostSprite(GhostColor.CYAN), sprites.getGhostExplodeAnimation());
 	}
 
 	/**
@@ -59,5 +59,7 @@ public class GhostFactory {
 	 * @see Clyde
 	 * @return A new Clyde.
 	 */
-	public Ghost createClyde() {return new Clyde(sprites.getGhostSprite(GhostColor.ORANGE)); }
+	public Ghost createClyde() {
+		return new Clyde(sprites.getGhostSprite(GhostColor.ORANGE), sprites.getGhostExplodeAnimation());
+	}
 }

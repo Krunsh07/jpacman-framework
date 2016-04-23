@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
+import nl.tudelft.jpacman.npc.DirectionCharacter;
 import nl.tudelft.jpacman.npc.NPC;
+import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -16,12 +20,27 @@ import nl.tudelft.jpacman.sprite.Sprite;
  * 
  * @author Jeroen Roosen 
  */
-public abstract class Ghost extends NPC {
+public abstract class Ghost extends NPC implements DirectionCharacter {
 	
 	/**
 	 * The sprite map, one sprite for each direction.
 	 */
 	private Map<Direction, Sprite> sprites;
+	
+	/**
+	 * The animation to play when this ghost explodes.
+	 */
+	private final AnimatedSprite explodeSprite;
+	
+	/**
+	 * Whether this ghost has exploded or not.
+	 */
+	private boolean exploded;
+	
+	/**
+	 * Whether this unit can be moved or not.
+	 */
+	private boolean mobile = true;
 
 	private static final PacManSprites SPRITE_STORE = new PacManSprites();
 
@@ -57,16 +76,37 @@ public abstract class Ghost extends NPC {
 	/**
 	 * Creates a new ghost.
 	 * 
-	 * @param spriteMap
-	 *            The sprites for every direction.
+	 * @param spriteMap The sprites for every direction.
+	 * @param explodeAnimation the animation to play when this ghost explodes.
 	 */
-	protected Ghost(Map<Direction, Sprite> spriteMap) {
+	protected Ghost(Map<Direction, Sprite> spriteMap, AnimatedSprite explodeAnimation) {
+		this.explodeSprite = explodeAnimation;
+		this.exploded = false;
 		this.sprites = spriteMap;
 	}
 
 	@Override
 	public Sprite getSprite() {
-		return sprites.get(getDirection());
+		if (!exploded) {
+			return sprites.get(getDirection());
+		}
+		return explodeSprite;
+	}
+	
+	/**
+	 * Returns the sprites with respect to the Direction of this Ghost.
+	 * @returns the sprites with respect to the Direction of this Ghost.
+	 */
+	public Map<Direction, Sprite> getSprites() {
+		return sprites;
+	}
+	
+	/**
+	 * Change the sprites for all directions of this unit
+	 * @param sprites the sprites for all directions
+	 */
+	public void setSprites(Map<Direction, Sprite> sprites) {
+		this.sprites = sprites;
 	}
 
 	public void setSprite(Map<Direction, Sprite> sprite) {
@@ -212,5 +252,59 @@ public abstract class Ghost extends NPC {
      */
 	public void setSpeed(double speed) {
 		this.speed = speed;
+	}
+	
+	public void temporaryAcceleration(int time)
+	{
+		Map<Direction, Sprite> oldSprites = sprites;
+		setAcceleration(true);
+		setSprites(new PacManSprites().getAngryGhostSprite());
+		TimerTask timerTask = new TimerTask() {
+		    public void run() {
+		    	setAcceleration(false);
+		        setSprites(oldSprites);
+		    }
+		};
+		Timer timer = new Timer();
+		timer.schedule(timerTask, time * 1000);
+	}
+
+	/**
+	 * Returns true if this ghost exploded.
+	 * @return true if this ghost exploded
+	 */
+	public boolean hasExploded() {
+		return exploded;
+	}
+	
+	/**
+	 * Changer the explosion state of a ghost.
+	 * @param value the new state
+	 */
+	public void setExplode(boolean value) {
+		if (!value) {
+			explodeSprite.setAnimating(false);
+		}
+		if (value) {
+			setMobility(false);
+			explodeSprite.restart();
+		}
+		this.exploded = value;
+	}
+	
+	/**
+	 * Sets if this unit can be moved or not.
+	 * @param newValue the new mobility state of this unit.
+	 */
+	public void setMobility(boolean newValue) {
+		this.mobile = newValue;
+	}
+	
+	/**
+	 * Returns the mobility state of this unit.
+	 * @return The current mobility state of this unit.
+	 */
+	public boolean getMobility() {
+		return this.mobile;
 	}
 }
