@@ -113,6 +113,7 @@ public class MapParser {
 				Square superPelletSquare = boardCreator.createGround();
 				grid[x][y] = superPelletSquare;
 				levelCreator.createSuperPellet().occupy(superPelletSquare);
+				Level.superPelletLeft++;
 				break;
 			default:
 				throw new PacmanConfigurationException("Invalid character at "

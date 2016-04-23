@@ -76,6 +76,7 @@ public abstract class Game implements LevelObserver {
 		return inProgress;
 	}
 
+
 	/**
 	 * @return An immutable list of the participants of this game.
 	 */
