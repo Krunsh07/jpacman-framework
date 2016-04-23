@@ -3,6 +3,7 @@ package nl.tudelft.jpacman.level;
 import java.util.Map;
 
 import nl.tudelft.jpacman.board.Direction;
+import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.npc.DirectionCharacter;
 import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.sprite.AnimatedSprite;

@@ -305,8 +305,10 @@ public class Level {
 		this.start();
 		for (NPC npc : npcs.keySet())
 		{
-			Ghost g = (Ghost) (npc);
-			g.setSpeed(g.getSpeed() + 0.01);
+			if(!(npc instanceof Player)) {
+				Ghost g = (Ghost) (npc);
+				g.setSpeed(g.getSpeed() + 0.01);
+			}
 		}
 
 	}
@@ -690,8 +692,8 @@ public class Level {
 		
 		/**
 		 * A NPC is dead and need to be cleared from the board
-		 * @param List<NPC> deadNPC the list of the NPCs that are dead
-		 * @param Map<NPC, ScheduledExecutorService> npcs the npcs that are still in the game.
+		 * @param deadNPCs the list of the NPCs that are dead
+		 * @param npcs the npcs that are still in the game.
 		 */
 		void NPCCleanEvent(List<NPC> deadNPCs, Map<NPC, ScheduledExecutorService> npcs);
 	}
