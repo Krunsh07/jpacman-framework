@@ -32,6 +32,15 @@ public abstract class Unit {
 	/**
 	 * Creates a unit that is facing east.
 	 */
+
+	private static final int ACCELERATED_MOVE_INTERVAL = 125;
+
+	/**
+	 * Whether the NPC is speed-up
+	 */
+	protected boolean acceleration = false;
+
+
 	protected Unit() {
 		this.direction = Direction.EAST;
 		this.onBridge = false;
@@ -129,4 +138,20 @@ public abstract class Unit {
 	 * @return The sprite of this unit.
 	 */
 	public abstract Sprite getSprite();
+
+	/**
+	 * Set the acceleration state of this NPC.
+	 * @param value true to make the NPC move faster, false otherwise.
+	 */
+	public void setAcceleration(boolean value) {
+		acceleration = value;
+	}
+
+	/**
+	 * Returns whether the NPC is speed-up
+	 * @return true if the speed of this NPC is accelerated.
+	 */
+	public boolean getAcceleration() {
+		return acceleration;
+	}
 }

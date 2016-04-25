@@ -187,7 +187,6 @@ public class Level {
 			return;
 		}
 		players.add(p);
-		npcs.put(p, null);
 		Square square = startSquares.get(startSquareIndex);
 		p.occupy(square);
 		startSquareIndex++;
@@ -305,10 +304,8 @@ public class Level {
 		this.start();
 		for (NPC npc : npcs.keySet())
 		{
-			if(!(npc instanceof Player)) {
 				Ghost g = (Ghost) (npc);
 				g.setSpeed(g.getSpeed() + 0.01);
-			}
 		}
 
 	}

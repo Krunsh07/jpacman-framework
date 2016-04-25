@@ -14,7 +14,7 @@ import nl.tudelft.jpacman.sprite.Sprite;
  * 
  * @author Jeroen Roosen 
  */
-public class Player extends NPC implements DirectionCharacter {
+public class Player extends Unit implements DirectionCharacter{
 	
 	/**
 	 * The base movement interval.
@@ -169,7 +169,6 @@ public class Player extends NPC implements DirectionCharacter {
 		this.invincible = value;
 	}
 
-	@Override
 	public long getInterval() {
 		if(!getAcceleration()){
 			return MOVE_INTERVAL;
@@ -179,10 +178,10 @@ public class Player extends NPC implements DirectionCharacter {
 		}
 	}
 
-	@Override
+	/*@Override
 	public Direction nextMove() {
 		return getDirection();
-	}
+	}*/
 
 	public boolean isShooting() {
 		return shooting;
