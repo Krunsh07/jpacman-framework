@@ -168,18 +168,4 @@ public class LevelTest {
 		la.setBoardToUse("/boardExtendedAdd.txt");
 		assertEquals(la.getBoardToUse(), "/boardExtendedAdd.txt");
 	}
-
-	@Test
-	@SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
-	public void testAddGhost() {
-		Launcher la = new Launcher();
-		la.setBoardToUse("/boardExtendedAdd.txt");
-		Level l1 = la.makeLevel();
-		Level l2 = la.makeLevel();
-		System.out.println(l1.getNpcs().size());
-		assertTrue(l1.getNpcs().size() == 1);
-		assertTrue(l2.getNpcs().size() == 1);
-		l1.addGhost(l2);
-		assertTrue(l1.getNpcs().size() == 2);
-	}
 }

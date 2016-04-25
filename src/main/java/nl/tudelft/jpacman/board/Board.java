@@ -108,7 +108,6 @@ public class Board {
 		launcher.setBoardToUse("/boardExtendedAdd" + (nombre+1) + ".txt");
 		Level lev = launcher.makeLevel();
 		Level game = Level.getLevel();
-		game.addGhost(lev);
 		return lev;
 	}
 

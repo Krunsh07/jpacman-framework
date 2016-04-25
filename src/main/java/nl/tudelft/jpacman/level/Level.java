@@ -15,7 +15,10 @@ import nl.tudelft.jpacman.level.Bridge;
 import nl.tudelft.jpacman.npc.Bullet;
 import nl.tudelft.jpacman.npc.DirectionCharacter;
 import nl.tudelft.jpacman.npc.NPC;
+import nl.tudelft.jpacman.npc.ghost.Blinky;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
+import nl.tudelft.jpacman.npc.ghost.GhostColor;
+import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 
 /**
@@ -31,8 +34,6 @@ public class Level {
 	 */
 	private final Board board;
 
-	private boolean hunterMode;
-
 	/**
 	 * The lock that ensures moves are executed sequential.
 	 */
@@ -43,6 +44,8 @@ public class Level {
 	 * other.
 	 */
 	private final Object startStopLock = new Object();
+
+	private final Object addGhostLock = new Object();
 
 	/**
 	 * The NPCs of this level and, if they are running, their schedules.
@@ -95,6 +98,8 @@ public class Level {
 
 	private Timer timerWarning = new Timer();
 
+	private Timer addGhostTask = new Timer();
+
 	public static int ghostLeft;
 
 	public static int ghostAte = 0;
@@ -134,6 +139,7 @@ public class Level {
 		this.collisions = collisionMap;
 		this.observers = new ArrayList<>();
 		if(level == null) {
+			addGhostTask.schedule(new TimerAddGhostTask(), 10000);
 			level = this;
 		}
 	}
@@ -290,24 +296,53 @@ public class Level {
 
 	/**
 	 * Permet d'ajouter des ghosts dans le jeu
-	 * @param l Le Level qui contient les ghost a ajouter
      */
-	public void addGhost(Level l)
+	public void addGhostTask()
 	{
-		if(this.isInProgress())
-		{
-			l.start();
+		System.out.println("ghost en vie début : " + this.npcs.size());
+		ScheduledExecutorService service = Executors
+				.newSingleThreadScheduledExecutor();
+		GhostFactory ghostFact = new  GhostFactory(SPRITE_STORE);
+		Random random = new Random();
+		int nombre = random.nextInt(6);
+		int ghostIndex = random.nextInt(4);
+		addGhostTask.cancel();
+		addGhostTask = new Timer();
+		addGhostTask.schedule(new TimerAddGhostTask(), ((nombre+4)+this.npcs.size())*1000);
+		switch (ghostIndex) {
+			case 0:
+				npcs.put(ghostFact.createBlinky(), service);
+				break;
+			case 1:
+				npcs.put(ghostFact.createInky(), service);
+				break;
+			case 2:
+				npcs.put(ghostFact.createPinky(), service);
+				break;
+			case 3:
+				npcs.put(ghostFact.createClyde(), service);
+				break;
+			default:
+				npcs.put(ghostFact.createBlinky(), service);
+				break;
 		}
-		this.npcs.putAll(l.getNpcs());
-		this.stop();
-		//l.getNpcs().putAll(this.getNpcs());
-		this.start();
-		for (NPC npc : npcs.keySet())
-		{
-				Ghost g = (Ghost) (npc);
-				g.setSpeed(g.getSpeed() + 0.01);
+		Square squareGhost = null;
+		while(squareGhost == null){
+			Square posPlayer = players.get(0).getSquare();
+			int X = posPlayer.getCoordX();
+			int Y = posPlayer.getCoordY();
+			int i = (X-15) + random.nextInt(4);
+			int j = (Y-11) + random.nextInt(22);
+			squareGhost = board.squareAt(i, j);
+			((Unit) npcs.get(npcs.size()-1)).occupy(squareGhost);
 		}
-
+		stopNPCs();
+		startNPCs();
+		for (NPC npc : npcs.keySet()) {
+			Ghost g = (Ghost) (npc);
+			g.setSpeed(g.getSpeed() + 0.1);
+		}
+		System.out.println("ghost en vie fin : " + this.npcs.size());
 	}
 
 	/**
@@ -647,6 +682,19 @@ public class Level {
 		@Override
 		public void run() { warningMode(); }
 	}
+
+
+	/**
+	 * A task that handle the end of Hunter Mode.
+	 *
+	 * @author Yarol Timur
+	 */
+	private final class TimerAddGhostTask extends TimerTask {
+
+		@Override
+		public void run() { addGhostTask(); }
+	}
+
 
 	/**
 	 * An observer that will be notified when the level is won or lost.
