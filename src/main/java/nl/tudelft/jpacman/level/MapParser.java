@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.PacmanConfigurationException;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.BoardFactory;
@@ -52,11 +53,11 @@ public class MapParser {
 
 	/**
 	 * Parses the text representation of the board into an actual level.
-	 * 
+	 *
 	 * The text representation is divided into three part :
-	 * 
+	 *
 	 * the first part describe the level and is obligatory
-	 * 
+	 *
 	 * <ul>
 	 * <li>Supported characters:
 	 * <li>' ' (space) an empty square.
@@ -69,13 +70,13 @@ public class MapParser {
 	 * <li>'B' (capital B) a bridge.
 	 * <li>'F' (capital F) a square where a fruit can appear.
 	 * </ul>
-	 * 
+	 *
 	 * The second section must be specified when the the map contains teleports
 	 * and begin by a line full of '-' (minus) characters, each line of this
 	 * section contain the x coordinate and y coordinate separated by only
 	 * one space of the places pointed by teleports following the
 	 * order left to right and up to down.
-	 * 
+	 *
 	 * The third section must be specified when the map contains bridges,
 	 * even if there are no teleports, this section must follow the second section, so if
 	 * there are no teleports the third section have to follow an empty second
@@ -85,20 +86,20 @@ public class MapParser {
 	 * characters separated by only one spaces representing the orientation of
 	 * the bridge followed by what's under that bridge following the
 	 * order left to right and up to down.
-	 * 
+	 *
 	 * <ul>
 	 * <li>Supported characters:
 	 * <li>'H' (capital H) The orientation of this bridge is horizontal
 	 * <li>'V' (capital V) The orientation of this bridge is vertical
 	 * </ul>
-	 * 
+	 *
 	 * <ul>
 	 * <li>Supported characters:
 	 * <li>'P' (capital P) There is a pellet under that bridge.
 	 * <li>'F' (capital F) A fruit can appear under that bridge.
 	 * <li>'N' (capital N) There is nothing under that bridge.
 	 * </ul>
-	 * 
+	 *
 	 * @param map
 	 *            The text representation of the board, with map[x][y]
 	 *            representing the square at position x,y.
@@ -115,7 +116,7 @@ public class MapParser {
 		List<Teleport> teleportList = new ArrayList<>();
 		List<Bridge> bridgeList = new ArrayList<>();
 		List<Square> fruitPositions = new ArrayList<>();
-		
+
 		makeGrid(map, width, height, grid, ghosts, startPositions, teleportList, bridgeList, fruitPositions);
 		Board board = boardCreator.createBoard(grid);
 		setTeleports(teleportList, teleportrefs, board);
@@ -124,6 +125,79 @@ public class MapParser {
 		if(fruitPositions.size() > 0){
 			l.setupFruits(fruitPositions, ghosts);
 		}
+		return l;
+	}
+
+	/**
+	 * Parses the text representation of the board into an actual level.
+	 *
+	 * The text representation is divided into three part :
+	 *
+	 * the first part describe the level and is obligatory
+	 *
+	 * <ul>
+	 * <li>Supported characters:
+	 * <li>' ' (space) an empty square.
+	 * <li>'#' (bracket) a wall.
+	 * <li>'.' (period) a square with a pellet.
+	 * <li>'P' (capital P) a starting square for players.
+	 * <li>'G' (capital G) a square with a ghost.
+	 * <li>'T' (capital T) a teleport.
+	 * <li>'H' (capital H) a hole.
+	 * <li>'B' (capital B) a bridge.
+	 * <li>'F' (capital F) a square where a fruit can appear.
+	 * </ul>
+	 *
+	 * The second section must be specified when the the map contains teleports
+	 * and begin by a line full of '-' (minus) characters, each line of this
+	 * section contain the x coordinate and y coordinate separated by only
+	 * one space of the places pointed by teleports following the
+	 * order left to right and up to down.
+	 *
+	 * The third section must be specified when the map contains bridges,
+	 * even if there are no teleports, this section must follow the second section, so if
+	 * there are no teleports the third section have to follow an empty second
+	 * section that just consists of the line full of (minus) characters.
+	 * like the second sections, this one also begin by a line full of
+	 * '-' (minus) characters. Each lines of this sections consists of two
+	 * characters separated by only one spaces representing the orientation of
+	 * the bridge followed by what's under that bridge following the
+	 * order left to right and up to down.
+	 *
+	 * <ul>
+	 * <li>Supported characters:
+	 * <li>'H' (capital H) The orientation of this bridge is horizontal
+	 * <li>'V' (capital V) The orientation of this bridge is vertical
+	 * </ul>
+	 *
+	 * <ul>
+	 * <li>Supported characters:
+	 * <li>'P' (capital P) There is a pellet under that bridge.
+	 * <li>'F' (capital F) A fruit can appear under that bridge.
+	 * <li>'N' (capital N) There is nothing under that bridge.
+	 * </ul>
+	 *
+	 * @param map
+	 *            The text representation of the board, with map[x][y]
+	 *            representing the square at position x,y.
+	 * @return The level as represented by this text.
+	 */
+	public Level parseMap(char[][] map){
+		int width = map.length;
+		int height = map[0].length;
+
+		Square[][] grid = new Square[width][height];
+
+		List<NPC> ghosts = new ArrayList<>();
+		List<Square> startPositions = new ArrayList<>();
+		List<Square> fruitPositions = new ArrayList<>();
+
+		makeGrid(map, width, height, grid, ghosts, startPositions, null, null, fruitPositions);
+		Board board = boardCreator.createBoard(grid);
+		Level l = levelCreator.createLevel(board, ghosts, startPositions, fruitPositions);
+		/*if(fruitPositions.size() > 0){
+			l.setupFruits(fruitPositions, ghosts);
+		}*/
 		return l;
 	}
 	
@@ -276,13 +350,17 @@ public class MapParser {
 				map[x][y] = text.get(y).charAt(x);
 			}
 		}
-		
-		firstSectionEnd++;
-		int secondSectionEnd = findSectionWidth(text, height, firstSectionEnd);
-		List<int[]> teleportRefs = parseTeleport(text, firstSectionEnd, secondSectionEnd);
-		secondSectionEnd++;
-		List<char[]> bridgeRefs = parseBridge(text, secondSectionEnd, height);
-		return parseMap(map, teleportRefs, bridgeRefs);
+
+		Launcher launcher = Launcher.getLauncher();
+		if(launcher.getBoardToUse() == "/boardFruit.txt") {
+			firstSectionEnd++;
+			int secondSectionEnd = findSectionWidth(text, height, firstSectionEnd);
+			List<int[]> teleportRefs = parseTeleport(text, firstSectionEnd, secondSectionEnd);
+			secondSectionEnd++;
+			List<char[]> bridgeRefs = parseBridge(text, secondSectionEnd, height);
+			return parseMap(map, teleportRefs, bridgeRefs);
+		}
+		return parseMap(map);
 	}
 	
 	private int findSectionWidth(List<String> text, int height, int start){

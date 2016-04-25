@@ -197,7 +197,11 @@ public abstract class Ghost extends NPC implements DirectionCharacter {
 			}
 		}
 		if (directions.isEmpty()) {
-			return null;
+			for (Direction d : Direction.values()) {
+				if (square.getSquareAt(d) == getLastSquare()) {
+					directions.add(d);
+				}
+			}
 		}
 		int i = new Random().nextInt(directions.size());
 		this.lastSquare = getSquare();
