@@ -65,7 +65,7 @@ public class Launcher {
 	 */
 	public Game makeGame() {
 		GameFactory gf = getGameFactory();
-		String[] board = {"Jeu normal", "Map infinie"};
+		String[] board = {"Jeu normal", "Map infinie", "Jeu avec fruits"};
 		JOptionPane jop = new JOptionPane();
 		String nom = (String)jop.showInputDialog(null,
 				"Veuillez choisir un mode de jeu !",
@@ -77,6 +77,9 @@ public class Launcher {
 
 		if(nom == board[1]) {
 			boardToUse = "/boardExtendedBase.txt";
+		}
+		else if(nom == board[2]){
+			boardToUse = "/boardFruit.txt";
 		}
 		else{
 			boardToUse = "/board.txt";

@@ -84,7 +84,7 @@ class BoardPanel extends JPanel {
 	public void paint(Graphics g) {
 		assert g != null;
 		Launcher launcher = Launcher.getLauncher();
-		if(launcher.getBoardToUse() == "/board.txt") {
+		if(launcher.getBoardToUse() == "/board.txt" || launcher.getBoardToUse() == "/boardFruit.txt") {
 			render(game.getLevel().getBoard(), g, getSize());
 		}
 		else {
