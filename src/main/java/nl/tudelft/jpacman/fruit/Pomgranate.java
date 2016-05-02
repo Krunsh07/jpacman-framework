@@ -1,8 +1,14 @@
 package nl.tudelft.jpacman.fruit;
 
 import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import nl.tudelft.jpacman.board.PassThroughWall;
+import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.level.Player;
+import nl.tudelft.jpacman.level.PlayerCollisions;
 import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.Navigation;
@@ -14,9 +20,9 @@ import nl.tudelft.jpacman.sprite.Sprite;
 public class Pomgranate extends Fruit {
 	
 	/**
-	 *  The list of NPCs active in this game at the moment when this fruit was created.
+	 *  The level where this fruit was created.
 	 */
-	private List<NPC> npcs;
+	private Level level;
 	
 	/**
 	 * Create a Pomgranate object
@@ -25,19 +31,27 @@ public class Pomgranate extends Fruit {
 	 * @param int effectDuration the time for which the power of this fruit is active.
 	 * @param npcs The list of NPCs active in this game.
 	 */
-	protected Pomgranate(Sprite sprite, int lifetime, int effectDuration, List<NPC> npcs) {
+	protected Pomgranate(Sprite sprite, int lifetime, int effectDuration, Level l) {
 		super(sprite, lifetime, effectDuration);
-		this.npcs = npcs;
+		level = l;
 	}
 
 	@Override
 	public void fruitEffect(Player p) {
-		Ghost g;
-		for(NPC npc: npcs){
-			if(npc instanceof Ghost){
-				g = (Ghost) npc;
-				if(npc.getSquare() != null && Navigation.shortestPath(p.getSquare(), g.getSquare(), this).size() <= 4){
-					g.setExplode(true);
+		Set<Ghost> ghosts = level.getGhosts().keySet();
+		for(Ghost ghost: ghosts){
+			if(ghost.getSquare() != null && Navigation.shortestPath(p.getSquare(), ghost.getSquare(), new PassThroughWall()).size() <= 4){
+				if(!(ghost.hasExploded())) {
+					ghost.setExplode(true);
+					TimerTask timerTask = new TimerTask() {
+					    public void run() {
+					    	ghost.leaveSquare();
+					    	Level.getLevel().respawnParticularGhost(ghost);
+					    }
+					};
+					int deadGhostAnimationTime = 5 * 200;
+					Timer timer = new Timer();
+					timer.schedule(timerTask, deadGhostAnimationTime);
 				}
 			}
 		}

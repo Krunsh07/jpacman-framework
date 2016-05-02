@@ -6,6 +6,7 @@ import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.npc.DirectionCharacter;
 import nl.tudelft.jpacman.npc.NPC;
+import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -14,8 +15,9 @@ import nl.tudelft.jpacman.sprite.Sprite;
  * 
  * @author Jeroen Roosen 
  */
-public class Player extends Unit implements DirectionCharacter{
-	
+
+public class Player extends MovableCharacter {
+
 	/**
 	 * The base movement interval.
 	 */
@@ -30,11 +32,6 @@ public class Player extends Unit implements DirectionCharacter{
 	 * The amount of points accumulated by this player.
 	 */
 	private int score;
-
-	/**
-	 * The animations for every direction.
-	 */
-	private Map<Direction, Sprite> sprites;
 
 	/**
 	 * The animation that is to be played when Pac-Man dies.
@@ -55,11 +52,6 @@ public class Player extends Unit implements DirectionCharacter{
 	 * <code>true</code> iff this player is firing bullets.
 	 */
 	private boolean shooting;
-	
-	/**
-	 * Whether this unit can be moved or not.
-	 */
-	private boolean mobile;
 
 	/**
 	 * <code>true</code> iff this player is under the Hunter Mode.
@@ -75,11 +67,11 @@ public class Player extends Unit implements DirectionCharacter{
 	 *            The sprite to be shown when this player dies.
 	 */
 	Player(Map<Direction, Sprite> spriteMap, AnimatedSprite deathAnimation) {
-		this.mobile = true;
+		setMovable(true);
 		this.score = 0;
 		this.alive = true;
 		this.shooting = false;
-		this.sprites = spriteMap;
+		setSprites(spriteMap);
 		this.deathSprite = deathAnimation;
 		deathSprite.setAnimating(false);
 	}
@@ -137,13 +129,9 @@ public class Player extends Unit implements DirectionCharacter{
 	@Override
 	public Sprite getSprite() {
 		if (isAlive()) {
-			return sprites.get(getDirection());
+			return getSprites().get(getDirection());
 		}
 		return deathSprite;
-	}
-	
-	public Map<Direction, Sprite> getSprites() {
-		return sprites;
 	}
 
 	/**
@@ -155,10 +143,6 @@ public class Player extends Unit implements DirectionCharacter{
 	 */
 	public void addPoints(int points) {
 		score += points;
-	}
-	
-	public void setSprites(Map<Direction, Sprite> sprites) {
-		this.sprites = sprites;
 	}
 
 	public boolean isInvincible() {
@@ -178,11 +162,6 @@ public class Player extends Unit implements DirectionCharacter{
 		}
 	}
 
-	/*@Override
-	public Direction nextMove() {
-		return getDirection();
-	}*/
-
 	public boolean isShooting() {
 		return shooting;
 	}
@@ -190,20 +169,16 @@ public class Player extends Unit implements DirectionCharacter{
 	public void setShooting(boolean shooting) {
 		this.shooting = shooting;
 	}
-
-	@Override
-	public void setMobility(boolean newValue) {
-		mobile = newValue;
-	}
-
-	@Override
-	public boolean getMobility() {
-		return mobile;
-	}
 	
 	public void setDirection(Direction direction) {
-		if(getMobility()) {
+		Square square = getSquare();
+		if(isMovable() && square.getSquareAt(direction).isAccessibleTo(this)) {
 			super.setDirection(direction);
 		}
+	}
+
+	@Override
+	public Direction nextMove() {
+		return getDirection();
 	}
 }

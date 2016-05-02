@@ -66,8 +66,7 @@ public class Launcher {
 	public Game makeGame() {
 		GameFactory gf = getGameFactory();
 		String[] board = {"Jeu normal", "Map infinie", "Jeu avec fruits"};
-		JOptionPane jop = new JOptionPane();
-		String nom = (String)jop.showInputDialog(null,
+		String nom = (String) JOptionPane.showInputDialog(null,
 				"Veuillez choisir un mode de jeu !",
 				"PACMAN GAME !",
 				JOptionPane.QUESTION_MESSAGE,

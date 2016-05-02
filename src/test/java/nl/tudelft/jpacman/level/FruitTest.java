@@ -49,7 +49,7 @@ public class FruitTest {
 		Board b = parser.parseMap(Lists.newArrayList(" ")).getBoard();
 		Square fruitSquare = b.squareAt(0, 0);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Fruit f = new FruitFactory(pms, null, null).getBellPepper();
+		Fruit f = new FruitFactory(pms, null).getBellPepper();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(fruitSquare);
 		p.occupy(fruitSquare);
@@ -88,7 +88,7 @@ public class FruitTest {
 		List<NPC> gl = new ArrayList<NPC>();
 		gl.add(explodedGhost);
 		gl.add(safeGhost);
-		Fruit f = new FruitFactory(pms, null, gl).getPomgranate();
+		Fruit f = new FruitFactory(pms, null).getPomgranate();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(fruitSquare);
 		explodedGhost.occupy(explodedSquare);
@@ -113,20 +113,20 @@ public class FruitTest {
 		Board b = parser.parseMap(Lists.newArrayList(" ")).getBoard();
 		Square fruitSquare = b.squareAt(0, 0);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Fruit f = new FruitFactory(pms, null, null).getFish();
+		Fruit f = new FruitFactory(pms, null).getFish();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(fruitSquare);
 		p.occupy(fruitSquare);
 		Unit fruit = fruitSquare.getOccupants().get(0);
-		assertTrue(p.getMobility());
+		assertTrue(p.isMovable());
 		cm.collide(p, fruit);
-		assertFalse(p.getMobility());
+		assertFalse(p.isMovable());
 		assertEquals(fruitSquare.getOccupants().size(), 1);
         assertTrue(fruitSquare.getOccupants().get(0) instanceof Player);
 		// Sleeping in tests is generally a bad idea.
         // Here we do it just to let the fruit effect disappear.
         Thread.sleep(FISH_DURATION_TEST * 1000 + 1);
-        assertTrue(p.getMobility());
+        assertTrue(p.isMovable());
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class FruitTest {
 		Board b = parser.parseMap(Lists.newArrayList(" ")).getBoard();
 		Square fruitSquare = b.squareAt(0, 0);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Fruit f = new FruitFactory(pms, null, null).getKidneyBean();
+		Fruit f = new FruitFactory(pms, null).getKidneyBean();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(fruitSquare);
 		p.occupy(fruitSquare);
@@ -173,7 +173,7 @@ public class FruitTest {
 		Ghost g = gf.createBlinky();
 		List<NPC> gl = new ArrayList<NPC>();
 		gl.add(g);
-		Fruit f = new FruitFactory(pms, null, gl).getPotato();
+		Fruit f = new FruitFactory(pms, null).getPotato();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(square);
 		p.occupy(square);
@@ -206,7 +206,7 @@ public class FruitTest {
 		Ghost g = gf.createBlinky();
 		List<NPC> gl = new ArrayList<NPC>();
 		gl.add(g);
-		Fruit f = new FruitFactory(pms, null, gl).getTomato();
+		Fruit f = new FruitFactory(pms, null).getTomato();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(square);
 		p.occupy(square);

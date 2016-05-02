@@ -10,21 +10,23 @@ import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.fruit.Fruit;
 import nl.tudelft.jpacman.fruit.FruitFactory;
+import nl.tudelft.jpacman.level.MovableCharacter;
 import nl.tudelft.jpacman.level.Bridge;
 import nl.tudelft.jpacman.npc.Bullet;
-import nl.tudelft.jpacman.npc.DirectionCharacter;
 import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Blinky;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostColor;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
+import nl.tudelft.jpacman.npc.ghost.Navigation;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 
 /**
  * A level of Pac-Man. A level consists of the board with the players and the
  * AIs on it.
- * 
+ *
  * @author Jeroen Roosen 
  */
 public class Level {
@@ -45,12 +47,16 @@ public class Level {
 	 */
 	private final Object startStopLock = new Object();
 
-	private final Object addGhostLock = new Object();
 
 	/**
 	 * The NPCs of this level and, if they are running, their schedules.
 	 */
-	private final Map<NPC, ScheduledExecutorService> npcs;
+	private final Map<Ghost, ScheduledExecutorService> ghosts;
+
+	/**
+	 * The NPCs of this level and, if they are running, their schedules.
+	 */
+	private final Map<Bullet, ScheduledExecutorService> bullets;
 
 	/**
 	 * <code>true</code> iff this level is currently in progress, i.e. players
@@ -69,7 +75,7 @@ public class Level {
 	 * The start current selected starting square.
 	 */
 	private int startSquareIndex;
-	
+
 	/**
 	 * The Fruit factory for this level.
 	 */
@@ -78,7 +84,8 @@ public class Level {
 	/**
 	 * The players on this level.
 	 */
-	private final List<Player> players;
+	private final Map<Player, ScheduledExecutorService> players;
+
 
 	/**
 	 * The table of possible collisions between units.
@@ -100,17 +107,17 @@ public class Level {
 
 	private Timer addGhostTask = new Timer();
 
-	public static int ghostLeft;
+	private Timer addFruitTask = new Timer();
 
-	public static int ghostAte = 0;
+	private Timer speedUpTask = new Timer();
 
-	public static int superPelletLeft;
+	private static int c = 1;
 
 	private static Level level = null;
 
 	/**
 	 * Creates a new level for the board.
-	 * 
+	 *
 	 * @param b
 	 *            The board for the level.
 	 * @param ghosts
@@ -121,39 +128,30 @@ public class Level {
 	 *            The collection of collisions that should be handled.
 	 */
 	public Level(Board b, List<NPC> ghosts, List<Square> startPositions,
-			CollisionMap collisionMap) {
+				 CollisionMap collisionMap) {
 		assert b != null;
 		assert ghosts != null;
 		assert startPositions != null;
 
+		this.fruitFactory = new FruitFactory(SPRITE_STORE, this);
 		this.board = b;
 		this.inProgress = false;
-		this.npcs = new HashMap<>();
+		this.ghosts = new HashMap<>();
 		for (NPC g : ghosts) {
-			npcs.put(g, null);
-			ghostLeft++;
+			Ghost ghost = (Ghost) g;
+			this.ghosts.put(ghost, null);
+			Ghost.ghostLeft++;
 		}
+		this.bullets = new HashMap<>();
 		this.startSquares = startPositions;
 		this.startSquareIndex = 0;
-		this.players = new ArrayList<>();
+		this.players = new HashMap<>();
 		this.collisions = collisionMap;
 		this.observers = new ArrayList<>();
 		if(level == null) {
-			addGhostTask.schedule(new TimerAddGhostTask(), 10000);
 			level = this;
 		}
 	}
-	
-	/**
-	 * Setup the fruit for this level if the board specified that some square may contain a fruit.
-	 * @param fruitpositions the list of the squares where a fruit may appear
-	 * @param npcs the list of the NPC registered on this level at the time of setting-up the fruits. 
-	 */
-	public void setupFruits(List<Square> fruitpositions, List<NPC> npcs) {
-		if(fruitpositions.size() > 0)
-			fruitFactory = new FruitFactory(new PacManSprites(), fruitpositions, npcs);
-	}
-	
 
 	/**
 	 * Adds an observer that will be notified when the level is won or lost
@@ -181,7 +179,7 @@ public class Level {
 	 * Registers a player on this level, assigning him to a starting position. A
 	 * player can only be registered once, registering a player again will have
 	 * no effect.
-	 * 
+	 *
 	 * @param p
 	 *            The player to register.
 	 */
@@ -189,10 +187,10 @@ public class Level {
 		assert p != null;
 		assert !startSquares.isEmpty();
 
-		if (players.contains(p)) {
+		if (players.containsKey(p)) {
 			return;
 		}
-		players.add(p);
+		players.put(p, null);
 		Square square = startSquares.get(startSquareIndex);
 		p.occupy(square);
 		startSquareIndex++;
@@ -201,7 +199,7 @@ public class Level {
 
 	/**
 	 * Returns the board of this level.
-	 * 
+	 *
 	 * @return The board of this level.
 	 */
 	public Board getBoard() {
@@ -211,7 +209,7 @@ public class Level {
 	/**
 	 * Moves the unit into the given direction if possible and handles all
 	 * collisions.
-	 * 
+	 *
 	 * @param unit
 	 *            The unit to move.
 	 * @param direction
@@ -221,7 +219,7 @@ public class Level {
 		assert unit != null;
 		assert direction != null;
 
-		if (!isInProgress() || (unit instanceof DirectionCharacter && !((DirectionCharacter) unit).getMobility())) {
+		if (!isInProgress() || (unit instanceof MovableCharacter && !((MovableCharacter) unit).isMovable())) {
 			return;
 		}
 
@@ -229,7 +227,7 @@ public class Level {
 			unit.setDirection(direction);
 			Square location = unit.getSquare();
 			Square destination = location.getSquareAt(direction);
-			
+
 			if (destination.isAccessibleTo(unit) && !(Bridge.blockedBybridge(unit, direction))) {
 				unit.setOnBridge(false);
 				List<Unit> occupants = destination.getOccupants();
@@ -251,10 +249,17 @@ public class Level {
 			if (isInProgress()) {
 				return;
 			}
-			startNPCs();
+			startCharacters();
 			inProgress = true;
 			updateObservers();
 		}
+		Random random = new Random();
+		int nbr = random.nextInt(11);
+		if(infiniteMode) {
+			addGhostTask.schedule(new TimerAddGhostTask(), (nbr+10)*1000);
+			speedUpTask.schedule(new TimerSpeedUpTask(), 10000, 10000);
+		}
+		addFruitTask.schedule(new TimerAddFruitTask(), (nbr+10)*1000); // fuittask
 	}
 
 	/**
@@ -266,21 +271,42 @@ public class Level {
 			if (!isInProgress()) {
 				return;
 			}
-			stopNPCs();
+			stopCharacters();
+			addGhostTask.cancel();
+			addFruitTask.cancel(); // fruittask
+			speedUpTask.cancel();
 			inProgress = false;
 		}
 	}
 
 	/**
-	 * Starts all NPC movement scheduling.
+	 * Starts all Character movement scheduling.
 	 */
-	private void startNPCs() {
-		for (final NPC npc : npcs.keySet()) {
+	private void startCharacters() {
+		MovableCharacter mc;
+		for (final Ghost ghost : ghosts.keySet()) {
+			mc = ghost;
 			ScheduledExecutorService service = Executors
 					.newSingleThreadScheduledExecutor();
-			service.schedule(new NpcMoveTask(service, npc),
-					npc.getInterval() / 2, TimeUnit.MILLISECONDS);
-			npcs.put(npc, service);
+			service.schedule(new CharacterMoveTask(service, mc),
+					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
+			ghosts.put(ghost, service);
+		}
+		for (final Player player : players.keySet()) {
+			mc = player;
+			ScheduledExecutorService service = Executors
+					.newSingleThreadScheduledExecutor();
+			service.schedule(new CharacterMoveTask(service, mc),
+					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
+			players.put(player, service);
+		}
+		for (final Bullet bullet : bullets.keySet()) {
+			mc = bullet;
+			ScheduledExecutorService service = Executors
+					.newSingleThreadScheduledExecutor();
+			service.schedule(new CharacterMoveTask(service, mc),
+					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
+			bullets.put(bullet, service);
 		}
 	}
 
@@ -288,91 +314,157 @@ public class Level {
 	 * Stops all NPC movement scheduling and interrupts any movements being
 	 * executed.
 	 */
-	private void stopNPCs() {
-		for (Entry<NPC, ScheduledExecutorService> e : npcs.entrySet()) {
+	private void stopCharacters() {
+		for (Entry<Ghost, ScheduledExecutorService> e : ghosts.entrySet()) {
+			e.getValue().shutdownNow();
+		}
+		for (Entry<Player, ScheduledExecutorService> e : players.entrySet()) {
+			e.getValue().shutdownNow();
+		}
+		for (Entry<Bullet, ScheduledExecutorService> e : bullets.entrySet()) {
 			e.getValue().shutdownNow();
 		}
 	}
 
 	/**
 	 * Permet d'ajouter des ghosts dans le jeu
-     */
+	 */
 	public void addGhostTask()
 	{
-		System.out.println("ghost en vie début : " + this.npcs.size());
-		ScheduledExecutorService service = Executors
-				.newSingleThreadScheduledExecutor();
-		GhostFactory ghostFact = new  GhostFactory(SPRITE_STORE);
-		Random random = new Random();
-		int nombre = random.nextInt(6);
-		int ghostIndex = random.nextInt(4);
-		addGhostTask.cancel();
-		addGhostTask = new Timer();
-		addGhostTask.schedule(new TimerAddGhostTask(), ((nombre+4)+this.npcs.size())*1000);
-		switch (ghostIndex) {
-			case 0:
-				npcs.put(ghostFact.createBlinky(), service);
-				break;
-			case 1:
-				npcs.put(ghostFact.createInky(), service);
-				break;
-			case 2:
-				npcs.put(ghostFact.createPinky(), service);
-				break;
-			case 3:
-				npcs.put(ghostFact.createClyde(), service);
-				break;
-			default:
-				npcs.put(ghostFact.createBlinky(), service);
-				break;
+		if(this.ghosts.size() < 10) {
+			System.out.println("ghost en vie début : " + this.ghosts.size());
+			ScheduledExecutorService service = Executors
+					.newSingleThreadScheduledExecutor();
+			GhostFactory ghostFact = new GhostFactory(SPRITE_STORE);
+			Random random = new Random();
+			int nombre = random.nextInt(6);
+			int ghostIndex = random.nextInt(4);
+			addGhostTask.cancel();
+			addGhostTask = new Timer();
+			addGhostTask.schedule(new TimerAddGhostTask(), ((nombre + 4) + this.ghosts.size()) * 1000);
+			Ghost g;
+			switch (ghostIndex) {
+				case 0:
+					g = ghostFact.createBlinky();
+					break;
+				case 1:
+					g = ghostFact.createInky();
+					break;
+				case 2:
+					g = ghostFact.createPinky();
+					break;
+				case 3:
+					g = ghostFact.createClyde();
+					break;
+				default:
+					g = ghostFact.createBlinky();
+					break;
+			}
+			ghosts.put(g, service);
+			Square squareGhost = null;
+			while (squareGhost == null) {
+				Square posPlayer = players.keySet().iterator().next().getSquare();
+				int X = posPlayer.getCoordX();
+				int Y = posPlayer.getCoordY();
+				int i, j;
+				if(X-10 < 0){
+					i =  random.nextInt(board.getWidthOfOneMap()-1);
+				}
+				else{
+					i = (X-10) + random.nextInt(board.getWidthOfOneMap()-1);
+				}
+				if(Y-14 < 0){
+					j = random.nextInt(4);
+				}
+				else{
+					j = (Y-14) + random.nextInt(4);
+				}
+				squareGhost = board.squareAt(i, j);
+				if (squareGhost.isAccessibleTo(g)) {
+					g.occupy(squareGhost);
+				}
+				else{
+					squareGhost = null;
+				}
+			}
+			stopCharacters();
+			startCharacters();
+			System.out.println("ghost en vie fin : " + this.ghosts.size());
 		}
-		Square squareGhost = null;
-		while(squareGhost == null){
-			Square posPlayer = players.get(0).getSquare();
+	}
+
+
+	private void speedUpTask(){
+		Ghost g;
+		for (MovableCharacter npc : ghosts.keySet()) {
+			g = (Ghost) (npc);
+			g.setSpeed(g.getSpeed() + 0.05);
+		}
+	}
+
+	/**
+	 * Permet d'ajouter des fruits dans le jeu
+	 */
+	public void addFruitTask()
+	{
+		Random random = new Random();
+		int nbr = random.nextInt(6);
+		addFruitTask.cancel();
+		addFruitTask = new Timer();
+		addFruitTask.schedule(new TimerAddFruitTask(), (nbr+10)*1000);
+		Fruit fruit = fruitFactory.getRandomFruit();
+		Square squareFruit = null;
+		while(squareFruit == null) {
+			Player p = players.keySet().iterator().next();
+			Square posPlayer = p.getSquare();
 			int X = posPlayer.getCoordX();
 			int Y = posPlayer.getCoordY();
-			int i = (X-15) + random.nextInt(4);
-			int j = (Y-11) + random.nextInt(22);
-			squareGhost = board.squareAt(i, j);
-			((Unit) npcs.get(npcs.size()-1)).occupy(squareGhost);
+			int i, j;
+			if(X-10 < 0){
+				i =  random.nextInt(board.getWidthOfOneMap()-2);
+			}
+			else{
+				i = (X-10) + random.nextInt(board.getWidthOfOneMap()-2);
+			}
+			if(Y-14 < 0){
+				j = random.nextInt(4);
+			}
+			else{
+				j = (Y-14) + random.nextInt(4);
+			}
+			squareFruit = board.squareAt(i, j);
+			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {
+				fruit.occupy(squareFruit);
+				TimerTask timerTask = new TimerTask() {
+					public void run() {
+						fruit.leaveSquare();
+					}
+				};
+				Timer timer = new Timer();
+				timer.schedule(timerTask, fruit.getLifetime() * 1000);
+			}
+			else {
+				squareFruit = null;
+			}
 		}
-		stopNPCs();
-		startNPCs();
-		for (NPC npc : npcs.keySet()) {
-			Ghost g = (Ghost) (npc);
-			g.setSpeed(g.getSpeed() + 0.1);
-		}
-		System.out.println("ghost en vie fin : " + this.npcs.size());
 	}
 
 	/**
 	 * Returns whether this level is in progress, i.e. whether moves can be made
 	 * on the board.
-	 * 
+	 *
 	 * @return <code>true</code> iff this level is in progress.
 	 */
 	public boolean isInProgress() {
 		return inProgress;
 	}
 
-	private boolean isInfiniteMode() { return infiniteMode; }
-
 	/**
 	 * Updates the observers about the state of this level.
 	 */
 	private void updateObservers() {
-		if (!isAnyPlayerAlive()) {
-			for (LevelObserver o : observers) {
-				o.levelLost();
-			}
-		}
-		if (isAnyPlayerInHunterMode()) {
-			for (LevelObserver o : observers) {
-				o.startHunterMode();
-			}
-		}
 		if(!infiniteMode) {
-			if (ghostLeft != 4) {
+			if (Ghost.ghostLeft != 4) {
 				for (LevelObserver o : observers) {
 					o.respawnGhost();
 				}
@@ -383,20 +475,25 @@ public class Level {
 				}
 			}
 		}
-		if (anyPlayerDesserveFruits()) {
+		if (!isAnyPlayerAlive()) {
 			for (LevelObserver o : observers) {
-					o.fruitEvent();
+				o.levelLost();
+			}
+		}
+		if (isAnyPlayerInHunterMode()) {
+			for (LevelObserver o : observers) {
+				o.startHunterMode();
 			}
 		}
 		if (isAnyPlayerShooting()) {
 			for (LevelObserver o : observers) {
-					o.ShootingEvent();
+				o.ShootingEvent();
 			}
 		}
-		List<NPC> deadNPCs = NPCToClean() ;
-		if(deadNPCs.size() > 0) {
+		List<Bullet> deadBullets = BulletToClean() ;
+		if(deadBullets.size() > 0) {
 			for (LevelObserver o : observers) {
-				o.NPCCleanEvent(deadNPCs, npcs);
+				o.bulletCleanEvent(deadBullets, bullets);
 			}
 		}
 	}
@@ -404,65 +501,50 @@ public class Level {
 	/**
 	 * Returns <code>true</code> iff at least one of the players in this level
 	 * is alive.
-	 * 
+	 *
 	 * @return <code>true</code> if at least one of the registered players is
 	 *         alive.
 	 */
 	public boolean isAnyPlayerAlive() {
-		for (Player p : players) {
+		for (Player p : players.keySet()) {
 			if (p.isAlive()) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	/**
-	 * Returns <code>true</code> if at lest one of the player meet the criteria for making a fruit appear.
-	 * 
-	 * @return <code>true</code> if at lest one of the player has 500 or 1500 points.
-	 */
-	public boolean anyPlayerDesserveFruits() {
-		for (Player p : players) {
-			if (fruitFactory != null && (p.getScore() == 500 || p.getScore() == 1500)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
+
 	/**
 	 * Returns <code>true</code> if at lest one of the player can shoot bullets.
-	 * 
+	 *
 	 * @return <code>true</code> if at lest one of the player can shoot bullets.
 	 */
 	public boolean isAnyPlayerShooting() {
-		for (Player p : players) {
+		for (Player p : players.keySet()) {
 			if (p.isShooting()) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns <code>true</code> if at least one NPC is dead and need to be cleaned from the board.
-	 * 
+	 *
 	 * @return <code>true</code> if at least one NPC is dead and need to be cleaned from the board.
 	 */
-	private List<NPC> NPCToClean() {
-		List<NPC> deadNPCs = new ArrayList<>();
-		for (NPC npc : npcs.keySet()) {
-			if (((npc instanceof Bullet) && !((Bullet) npc).isAlive())
-					|| ((npc instanceof Ghost) && ((Ghost) npc).hasExploded())) {
-				deadNPCs.add(npc);
+	private List<Bullet> BulletToClean() {
+		List<Bullet> deadBullets = new ArrayList<>();
+		for (Bullet bullet : bullets.keySet()) {
+			if (!bullet.isAlive()) {
+				deadBullets.add(bullet);
 			}
 		}
-		return deadNPCs;
+		return deadBullets;
 	}
 
 	public boolean isAnyPlayerInHunterMode() {
-		for (Player p : players) {
+		for (Player p : players.keySet()) {
 			if (p.getHunterMode()) {
 				return true;
 			}
@@ -477,7 +559,7 @@ public class Level {
 	 */
 	public void startHunterMode() {
 		Board b = getBoard();
-		superPelletLeft--;
+		Pellet.superPelletLeft--;
 		for (int x = 0; x < b.getWidth(); x++) {
 			for (int y = 0; y < b.getHeight(); y++) {
 				for (Unit u : b.squareAt(x, y).getOccupants()) {
@@ -486,7 +568,7 @@ public class Level {
 						timerWarning.cancel();
 						timerHunterMode = new Timer();
 						timerWarning = new Timer();
-						if (superPelletLeft >= 2) {
+						if (Pellet.superPelletLeft >= 2) {
 							timerHunterMode.schedule(new TimerHunterTask(), 7000);
 							timerWarning.schedule(new TimerWarningTask(), 5000, 250);
 						} else {
@@ -498,9 +580,9 @@ public class Level {
 				}
 			}
 		}
-		for (Player p : players) {
+		for (Player p : players.keySet()) {
 			p.setHunterMode(false);
-			ghostAte = 0;
+			Ghost.ghostAte = 0;
 		}
 	}
 
@@ -546,15 +628,22 @@ public class Level {
 	 */
 	public void respawnGhost()
 	{
-		ghostLeft++;
-		Ghost ateGhost = PlayerCollisions.ateGhost;
+		Ghost.ghostLeft++;
+		Ghost ateGhost = PlayerCollisions.ateGhost.get(PlayerCollisions.ateGhost.size()-1);
+		PlayerCollisions.ateGhost.remove(PlayerCollisions.ateGhost.size()-1);
 		timerRespawn = new Timer();
 		timerRespawn.schedule(new TimerRespawnTask(ateGhost), 5000);
 	}
 
+	public void respawnParticularGhost(Ghost ghost)
+	{
+		timerRespawn = new Timer();
+		timerRespawn.schedule(new TimerRespawnTask(ghost), 5000);
+	}
+
 	/**
 	 * Counts the pellets remaining on the board.
-	 * 
+	 *
 	 * @return The amount of pellets remaining on the board.
 	 */
 	public int remainingPellets() {
@@ -571,7 +660,7 @@ public class Level {
 		}
 		return pellets;
 	}
-	
+
 	/**
 	 * returns the fruit factory for this level.
 	 * @return the fruit factory for this level.
@@ -580,8 +669,8 @@ public class Level {
 		return fruitFactory;
 	}
 
-	public Map<NPC, ScheduledExecutorService> getNpcs() {
-		return npcs;
+	public Map<Ghost, ScheduledExecutorService> getGhosts() {
+		return ghosts;
 	}
 
 	public static Level getLevel() {
@@ -590,10 +679,10 @@ public class Level {
 
 	/**
 	 * A task that moves an NPC and reschedules itself after it finished.
-	 * 
-	 * @author Jeroen Roosen 
+	 *
+	 * @author Jeroen Roosen
 	 */
-	private final class NpcMoveTask implements Runnable {
+	private final class CharacterMoveTask implements Runnable {
 
 		/**
 		 * The service executing the task.
@@ -603,33 +692,36 @@ public class Level {
 		/**
 		 * The NPC to move.
 		 */
-		private final NPC npc;
+		private final MovableCharacter character;
 
 		/**
 		 * Creates a new task.
-		 * 
+		 *
 		 * @param s
 		 *            The service that executes the task.
-		 * @param n
+		 * @param c
 		 *            The NPC to move.
 		 */
-		private NpcMoveTask(ScheduledExecutorService s, NPC n) {
+		private CharacterMoveTask(ScheduledExecutorService s, MovableCharacter c) {
 			this.service = s;
-			this.npc = n;
+			this.character = c;
 		}
 
 		@Override
 		public void run() {
-			Direction nextMove = npc.nextMove();
+			Direction nextMove = character.nextMove();
 			long interval;
 			if (nextMove != null) {
-				move(npc, nextMove);
+				move(character, nextMove);
 			}
-			if(((Ghost) npc).getFearedMode()) {
-				interval = ((Ghost) npc).getFearedInterval();
+
+			//Ce code est dégeux et devrait être déplacé dans la méthode getInterval de chaque fantômes.
+			if(character instanceof Ghost && ((Ghost) character).getFearedMode()) {
+				interval = ((Ghost) character).getFearedInterval();
 			}
+
 			else {
-				interval = npc.getInterval();
+				interval = character.getInterval();
 			}
 			service.schedule(this, interval, TimeUnit.MILLISECONDS);
 		}
@@ -664,10 +756,11 @@ public class Level {
 		@Override
 		public void run() {
 			Board b = getBoard();
+			ghost.setExplode(false);
 			ghost.occupy(b.getMiddleOfTheMap());
 			ghost.stopFearedMode();
-			stopNPCs();
-			startNPCs();
+			stopCharacters();
+			startCharacters();
 			this.cancel();
 		}
 	}
@@ -693,6 +786,18 @@ public class Level {
 
 		@Override
 		public void run() { addGhostTask(); }
+	}
+
+	private final class TimerAddFruitTask extends TimerTask {
+
+		@Override
+		public void run() { addFruitTask(); }
+	}
+
+	private final class TimerSpeedUpTask extends TimerTask {
+
+		@Override
+		public void run() { speedUpTask(); }
 	}
 
 
@@ -724,23 +829,18 @@ public class Level {
 		 * A ghost need to be respawned.
 		 */
 		void respawnGhost();
-		
-		/**
-		 * A Fruit can appear.
-		 */
-		void fruitEvent();
-		
+
 		/**
 		 * A Player can shoot bullets
 		 */
 		void ShootingEvent();
-		
+
 		/**
 		 * A NPC is dead and need to be cleared from the board
-		 * @param deadNPCs the list of the NPCs that are dead
-		 * @param npcs the npcs that are still in the game.
+		 * @param deadBullets the list of the NPCs that are dead
+		 * @param bullet the npcs that are still in the game.
 		 */
-		void NPCCleanEvent(List<NPC> deadNPCs, Map<NPC, ScheduledExecutorService> npcs);
+		void bulletCleanEvent(List<Bullet> deadBullets, Map<Bullet, ScheduledExecutorService> bullet);
 	}
 
 	/**
@@ -748,10 +848,11 @@ public class Level {
 	 * @param b the bullet that have to be moved.
 	 */
 	public void animateBullet(Bullet b) {
-			ScheduledExecutorService service = Executors
-					.newSingleThreadScheduledExecutor();
-			service.schedule(new NpcMoveTask(service, b),
-					b.getInterval() / 2, TimeUnit.MILLISECONDS);
-			npcs.put(b, service);
+		MovableCharacter mc = (MovableCharacter) b;
+		ScheduledExecutorService service = Executors
+				.newSingleThreadScheduledExecutor();
+		service.schedule(new CharacterMoveTask(service, mc),
+				mc.getInterval() / 2, TimeUnit.MILLISECONDS);
+		bullets.put(b, service);
 	}
 }
