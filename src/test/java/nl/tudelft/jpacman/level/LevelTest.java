@@ -165,7 +165,7 @@ public class LevelTest {
 	public void testSetBoardToUse() {
 		Launcher la = new Launcher();
 		assertEquals(la.getBoardToUse(), "/boardExtendedBase.txt");
-		la.setBoardToUse("/boardExtendedAdd.txt");
-		assertEquals(la.getBoardToUse(), "/boardExtendedAdd.txt");
+		la.setBoardToUse("/boardExtendedAdd1.txt");
+		assertEquals(la.getBoardToUse(), "/boardExtendedAdd1.txt");
 	}
 }

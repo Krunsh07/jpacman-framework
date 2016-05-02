@@ -6,8 +6,6 @@ import java.util.TimerTask;
 
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Unit;
-import nl.tudelft.jpacman.npc.DirectionCharacter;
-import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
@@ -58,17 +56,17 @@ public class Hole extends Unit {
 	 * getTrapTime.
 	 * @param dc the character which will be trapped in this hole
 	 */
-	public void effect(DirectionCharacter dc) {
-		Map<Direction, Sprite> oldSprites = dc.getSprites();
-	    dc.setMobility(false);
-		if(dc instanceof Player)
-			((Player) dc).setSprites(new PacManSprites().getPacmanParalizedSprites());
-		else if(dc instanceof Ghost)
-			((Ghost) dc).setSprites(new PacManSprites().getParalizedGhostSprite());
+	public void effect(MovableCharacter mc) {
+		Map<Direction, Sprite> oldSprites = mc.getSprites();
+	    mc.setMovable(false);
+		if(mc instanceof Player)
+			((Player) mc).setSprites(new PacManSprites().getPacmanParalizedSprites());
+		else if(mc instanceof Ghost)
+			((Ghost) mc).setSprites(new PacManSprites().getParalizedGhostSprite());
 		TimerTask timerTask = new TimerTask() {
 			public void run() {
-			    dc.setMobility(true);
-			    dc.setSprites(oldSprites);
+			    mc.setMovable(true);
+			    mc.setSprites(oldSprites);
 			}
 	    };
 		Timer timer = new Timer();

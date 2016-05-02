@@ -24,11 +24,11 @@ public class Fish extends Fruit {
 
 	@Override
 	public void fruitEffect(Player p) {
-		p.setMobility(false);
+		p.setMovable(false);
 		p.setSprites(new PacManSprites().getPacmanParalizedSprites());
 		TimerTask timerTask = new TimerTask() {
 		    public void run() {
-		        p.setMobility(true);
+		        p.setMovable(true);
 		        p.setSprites(new PacManSprites().getPacmanSprites());
 		    }
 		};

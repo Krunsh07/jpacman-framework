@@ -20,6 +20,7 @@ public class Pellet extends Unit {
 	 */
 	private final int value;
 
+	public static int superPelletLeft;
 	
 	/**
 	 * Creates a new pellet.

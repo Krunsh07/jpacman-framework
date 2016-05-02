@@ -2,8 +2,6 @@ package nl.tudelft.jpacman.board;
 
 import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.level.Level;
-import nl.tudelft.jpacman.level.Player;
-import nl.tudelft.jpacman.npc.ghost.Ghost;
 
 import java.util.Random;
 
@@ -31,8 +29,8 @@ public class Board {
 	Board(Square[][] grid) {
 		assert grid != null;
 		this.board = grid;
-		this.widthOfOneMap = grid.length;
-		this.heightOfOneMap = grid[0].length;
+		this.setWidthOfOneMap(grid.length);
+		this.setHeightOfOneMap(grid[0].length);
 		assert invariant() : "Initial grid cannot contain null squares";
 		this.setPositions(grid);
 	}
@@ -192,9 +190,9 @@ public class Board {
 	 */
 	private Square[][] setSquare(Square[][] grid, int startX, int startY, int lengthX, int lengthY)
 	{
-		for(int i = 0; i < lengthX / this.widthOfOneMap; i++)
+		for(int i = 0; i < lengthX / this.getWidthOfOneMap(); i++)
 		{
-			for(int j = 0; j < lengthY / this.heightOfOneMap; j++)
+			for(int j = 0; j < lengthY / this.getHeightOfOneMap(); j++)
 			{
 				this.putSquare(grid, startX, startY, i, j);
 			}
@@ -216,8 +214,8 @@ public class Board {
 		Square[][] newGrid = l.getBoard().getBoard();
 		for(int i = 0; i < newGrid.length; i++)
 		{
-			System.arraycopy(newGrid[i], 0, grid[startX + (posX * this.widthOfOneMap) + i],
-					startY + (posY * this.heightOfOneMap), newGrid[i].length);
+			System.arraycopy(newGrid[i], 0, grid[startX + (posX * this.getWidthOfOneMap()) + i],
+					startY + (posY * this.getHeightOfOneMap()), newGrid[i].length);
 		}
 	}
 
@@ -288,5 +286,21 @@ public class Board {
 	 */
 	public void setBoard(Square[][] board) {
 		this.board = board;
+	}
+
+	public int getWidthOfOneMap() {
+		return widthOfOneMap;
+	}
+
+	public void setWidthOfOneMap(int widthOfOneMap) {
+		this.widthOfOneMap = widthOfOneMap;
+	}
+
+	public int getHeightOfOneMap() {
+		return heightOfOneMap;
+	}
+
+	public void setHeightOfOneMap(int heightOfOneMap) {
+		this.heightOfOneMap = heightOfOneMap;
 	}
 }

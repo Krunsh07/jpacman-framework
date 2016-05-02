@@ -41,6 +41,7 @@ public class Bullet extends NPC{
 	 * @param p the player that fired this bullet.
 	 */
 	public Bullet(Sprite sprite, Player p) {
+		setMovable(true);
 		this.setAlive(true);
 		this.sprite = sprite;
 		shootingDirection = p.getDirection();

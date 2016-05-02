@@ -1,8 +1,7 @@
 package nl.tudelft.jpacman.fruit;
 
 import nl.tudelft.jpacman.sprite.PacManSprites;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.level.Player;
+import nl.tudelft.jpacman.level.Level;
 import nl.tudelft.jpacman.npc.NPC;
 
 import java.util.ArrayList;
@@ -17,61 +16,39 @@ public class FruitFactory {
 	/**
 	 * The life time of any fruit returned by this factory
 	 */
-	private final int LIFE_TIME = 10;
+	private static final int LIFE_TIME = 10;
 	
 	/**
-	 * The duration of the power of a pomgranate returned by this factory.
+	 * The duration of the power of a fruit that has a positive effect for the player.
 	 */
-	private final int POMEGRANATE_DURATION = 4;
+	private static final int GOOD_EFFECT_DURATION = 4;
 	
 	/**
-	 * The duration of the power of a bell pepper returned by this factory.
+	 * The number of different fruits supported by this game.
 	 */
-	private final int BELL_PEPPER_DURATION = 4;
+	private static final int FRUITS = 6;
 	
 	/**
-	 * The duration of the power of a tomato returned by this factory.
+	 * The duration of the power of a fruit that has a negative effect for the player.
 	 */
-	private final int TOMATO_DURATION = 4;
+	private static final int BAD_EFFECT_DURATION = 2;
 	
 	/**
-	 * The duration of the power of a kidney bean returned by this factory.
+	 * List of supported fruits.
 	 */
-	private final int KIDNEY_BEAN_DURATION = 4;
+	private static enum Fruits {FISH, POTATO, TOMATO, POMGRANATE, BELLPEPPER, KIDNEYBEAN};
 	
 	/**
-	 * The duration of the power of a potato returned by this factory.
+	 * The level where this factory will produce fruits.
 	 */
-	private final int POTATO_DURATION = 2;
-	
-	/**
-	 * The duration of the power of a fish returned by this factory.
-	 */
-	private final int FISH_DURATION = 2;
+	private Level level;
 
 	/**
 	 * The sprite store used for the sprites of the fruits returned by this factory.
 	 */
 	private final PacManSprites sprites;
 	
-	/**
-	 * A list of Fruits used for picking a fruit randomly.
-	 */
-	private List<Fruit> fruits = new ArrayList<>();
-	
-	/**
-	 * Squares on the boards where fruits should appear, this list is used to pick one square randomly.
-	 */
-	private List<Square> fruitPositions;
-	
-	private Random rand = new Random();
-	
-	private Fruit fish;
-	private Fruit potato;
-	private Fruit tomato;
-	private Fruit pomgranate;
-	private Fruit bellPepper;
-	private Fruit kidneyBean;
+	private Random rand;
 	
 	/**
 	 * Create a FruitFactory object
@@ -80,29 +57,39 @@ public class FruitFactory {
 	 * @param List<Square> fruitPos the list of the squares on the boards where fruits should appear.
 	 * @param List<NPC> npcs the list of the actives NPCs in the game.
 	 */
-	public FruitFactory(PacManSprites spriteStore, List<Square> fruitPos, List<NPC> npcs) {
-		this.sprites = spriteStore;
-		fruitPositions = fruitPos;
-		fish = new Fish(sprites.getFishSprite(), LIFE_TIME, FISH_DURATION);
-		fruits.add(fish);
-		potato = new Potato(sprites.getPotatoSprite(), LIFE_TIME, POTATO_DURATION, npcs);
-		fruits.add(potato);
-		tomato = new Tomato(sprites.getTomatoSprite(), LIFE_TIME, TOMATO_DURATION);
-		fruits.add(tomato);
-		pomgranate = new Pomgranate(sprites.getPomgranateSprite(), LIFE_TIME, POMEGRANATE_DURATION, npcs);
-		fruits.add(pomgranate);
-		bellPepper = new BellPepper(sprites.getBellPepperSprite(), LIFE_TIME, BELL_PEPPER_DURATION);
-		fruits.add(bellPepper);
-		kidneyBean = new KidneyBean(sprites.getKidneyBeanSprite(), LIFE_TIME, KIDNEY_BEAN_DURATION);
-		fruits.add(kidneyBean);
+	public FruitFactory(PacManSprites spriteStore, Level l) {
+		sprites = spriteStore;
+		level = l;
+		rand = new Random();
 	}
 
 	/**
 	 * Return a Fruit picked randomly.
 	 * @return a Fruit object picked randomly
+	 * @throws FruitNotSupportedException 
 	 */
 	public Fruit getRandomFruit() {
-		return fruits.get(rand.nextInt(fruits.size()));
+		int fruit = rand.nextInt(FRUITS);
+		Fruits f = Fruits.values()[fruit];
+		return getPomgranate();
+		/*
+		switch(f) {
+		    case FISH:
+		    	return getFish();
+		    case POTATO:
+		    	return getPotato();
+		    case POMGRANATE:
+		    	return getPomgranate();
+		    case BELLPEPPER:
+		    	return getBellPepper();
+		    case KIDNEYBEAN:
+		    	return getKidneyBean();
+		    case TOMATO:
+		    	return getTomato();
+		    default:
+		    	System.err.println("Fruit non supporté");
+		    	return null;
+		}*/
 	}
 	
 	/**
@@ -110,23 +97,15 @@ public class FruitFactory {
 	 * @return a BellPepper object
 	 */
 	public Fruit getBellPepper() {
-		return bellPepper;
+		return new BellPepper(sprites.getBellPepperSprite(), LIFE_TIME, GOOD_EFFECT_DURATION);
 	}
 	
 	/**
-	 * Returns a BellPepper object
-	 * @return a BellPepper object
+	 * Returns a Pomgranate object
+	 * @return a Pomgranate object
 	 */
 	public Fruit getPomgranate() {
-		return pomgranate;
-	}
-	
-	/**
-	 * Returns a BellPepper object
-	 * @return a BellPepper object
-	 */
-    public Square getRandomFruitPosition() {
-    	return fruitPositions.get(rand.nextInt(fruitPositions.size()));
+		return new Pomgranate(sprites.getPomgranateSprite(), LIFE_TIME, GOOD_EFFECT_DURATION, level);
 	}
 
     /**
@@ -134,7 +113,7 @@ public class FruitFactory {
 	 * @return a Fish object
 	 */
 	public Fruit getFish() {
-		return fish;
+		return new Fish(sprites.getFishSprite(), LIFE_TIME, BAD_EFFECT_DURATION);
 	}
 
 	/**
@@ -142,7 +121,7 @@ public class FruitFactory {
 	 * @return a KidneyBean object
 	 */
 	public Fruit getKidneyBean() {
-		return kidneyBean;
+		return new KidneyBean(sprites.getKidneyBeanSprite(), LIFE_TIME, GOOD_EFFECT_DURATION);
 	}
 
 	/**
@@ -150,7 +129,7 @@ public class FruitFactory {
 	 * @return a Potato object
 	 */
 	public Fruit getPotato() {
-		return potato;
+		return new Potato(sprites.getPotatoSprite(), level, LIFE_TIME, BAD_EFFECT_DURATION);
 	}
 
 	/**
@@ -158,6 +137,6 @@ public class FruitFactory {
 	 * @return a Tomato object
 	 */
 	public Fruit getTomato() {
-		return tomato;
+		return new Tomato(sprites.getTomatoSprite(), LIFE_TIME, GOOD_EFFECT_DURATION);
 	}
 }
