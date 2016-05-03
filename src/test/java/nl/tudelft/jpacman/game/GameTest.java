@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.board.*;
 import nl.tudelft.jpacman.level.*;
 import nl.tudelft.jpacman.npc.NPC;
@@ -66,11 +67,13 @@ public class GameTest {
      */
     @Test
     public void testHunterMode() {
+        Launcher launcher = new Launcher();
+        launcher.setBoardToUse("/board.txt");
         Board b = parser
                 .parseMap(Lists.newArrayList("######", "# ..o#", "######"))
                 .getBoard();
         Square s1 = b.squareAt(1, 1);
-        Square s2 = b.squareAt(1, 4);
+        Square s2 = b.squareAt(4, 1);
     }
 
 

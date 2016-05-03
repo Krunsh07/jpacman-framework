@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.tudelft.jpacman.Launcher;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -29,13 +31,25 @@ import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 
 public class FruitTest {
-	
-	public static final int BELL_PEPPER_DURATION_TEST = 4;
-	public static final int FISH_DURATION_TEST = 2;
-	public static final int KIDNEY_BEAN_DURATION_TEST = 4;
-	public static final int POTATO_DURATION_TEST = 2;
-	public static final int TOMATO_DURATION_TEST = 4;
-	
+
+	/**
+	 * The duration of the power of a fruit that has a positive effect for the player.
+	 */
+	private static final int GOOD_EFFECT_DURATION = 4;
+
+	/**
+	 * The duration of the power of a fruit that has a negative effect for the player.
+	 */
+	private static final int BAD_EFFECT_DURATION = 2;
+
+	private Launcher launcher;
+
+	@Before
+	public void setUp() {
+		launcher = new Launcher();
+		launcher.setBoardToUse("/boardFruit.txt");
+	}
+
 	/**
 	 * Test that a bell pepper accelerate pacman during 4 seconds
 	 * and disapear fromn the square
@@ -61,7 +75,7 @@ public class FruitTest {
         assertTrue(fruitSquare.getOccupants().get(0) instanceof Player);
 		// Sleeping in tests is generally a bad idea.
         // Here we do it just to let the fruit effect disappear.
-        Thread.sleep(BELL_PEPPER_DURATION_TEST * 1000 + 1);
+        Thread.sleep(GOOD_EFFECT_DURATION * 1000 + 1000);
         assertFalse(p.getAcceleration());
 	}
 	
@@ -87,8 +101,11 @@ public class FruitTest {
 		Ghost safeGhost = gf.createClyde();
 		List<NPC> gl = new ArrayList<NPC>();
 		gl.add(explodedGhost);
-		gl.add(safeGhost);
-		Fruit f = new FruitFactory(pms, null).getPomgranate();
+        Square square = b.squareAt(1, 1);
+        List<Square>  sp = new ArrayList<>();
+        sp.add(square);
+        Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp, null);
+		Fruit f = new FruitFactory(pms, l).getPomgranate();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(fruitSquare);
 		explodedGhost.occupy(explodedSquare);
@@ -125,7 +142,7 @@ public class FruitTest {
         assertTrue(fruitSquare.getOccupants().get(0) instanceof Player);
 		// Sleeping in tests is generally a bad idea.
         // Here we do it just to let the fruit effect disappear.
-        Thread.sleep(FISH_DURATION_TEST * 1000 + 1);
+        Thread.sleep(BAD_EFFECT_DURATION * 1000 + 1000);
         assertTrue(p.isMovable());
 	}
 	
@@ -153,7 +170,7 @@ public class FruitTest {
         assertTrue(p.isShooting());
 		// Sleeping in tests is generally a bad idea.
         // Here we do it just to let the fruit effect disappear.
-        Thread.sleep(KIDNEY_BEAN_DURATION_TEST * 1000 + 1);
+        Thread.sleep(GOOD_EFFECT_DURATION * 1000 + 1000);
         assertFalse(p.isShooting());
 	}
 	
@@ -168,12 +185,15 @@ public class FruitTest {
 		GhostFactory gf = new GhostFactory(pms);
 		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("###", "# #", "###")).getBoard();
-		Square square = b.squareAt(1, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Ghost g = gf.createBlinky();
 		List<NPC> gl = new ArrayList<NPC>();
+		Ghost g = gf.createBlinky();
 		gl.add(g);
-		Fruit f = new FruitFactory(pms, null).getPotato();
+        Square square = b.squareAt(1, 1);
+        List<Square>  sp = new ArrayList<>();
+        sp.add(square);
+		Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp, null);
+		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		Fruit f = new FruitFactory(pms, l).getPotato();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(square);
 		p.occupy(square);
@@ -186,7 +206,7 @@ public class FruitTest {
         assertTrue(g.getAcceleration());
 		// Sleeping in tests is generally a bad idea.
         // Here we do it just to let the fruit effect disappear.
-        Thread.sleep(POTATO_DURATION_TEST * 1000 + 1);
+        Thread.sleep(BAD_EFFECT_DURATION * 1000 + 1000);
         assertFalse(g.getAcceleration());
 	}
 	
@@ -221,7 +241,7 @@ public class FruitTest {
         assertTrue(p.isInvincible());
 		// Sleeping in tests is generally a bad idea.
         // Here we do it just to let the fruit effect disappear.
-        Thread.sleep(TOMATO_DURATION_TEST * 1000 + 1);
+        Thread.sleep(GOOD_EFFECT_DURATION * 1000 + 1000);
         assertFalse(p.isInvincible());
         assertTrue(p.isAlive());
 	}

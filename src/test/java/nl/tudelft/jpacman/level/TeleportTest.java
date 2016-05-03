@@ -3,6 +3,8 @@ package nl.tudelft.jpacman.level;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import nl.tudelft.jpacman.Launcher;
+import org.junit.Before;
 import org.junit.rules.ExpectedException;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +35,15 @@ import com.google.common.collect.Lists;
 
 
 public class TeleportTest {
-	
+
+	private Launcher launcher;
+
+	@Before
+	public void setUp() {
+		launcher = new Launcher();
+		launcher.setBoardToUse("/boardFruit.txt");
+	}
+
 	@Rule
     public ExpectedException thrown = ExpectedException.none();
 	
@@ -325,9 +335,9 @@ public class TeleportTest {
 		PacManSprites pms = new PacManSprites();
 		MapParser parser = new MapParser(new LevelFactory(pms,
 				new GhostFactory(pms)), new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("######","# T B#",
-				"######", "------", "4 1   ", "------", "V N   ")).getBoard();
-		Square teleportSquare = b.squareAt(2, 1);
+		Board b = parser.parseMap(Lists.newArrayList("#######", "#     #" ,"# T B #","#     #",
+				"#######", "-------", "4 2    ", "-------", "V N    ")).getBoard();
+		Square teleportSquare = b.squareAt(2, 2);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		CollisionMap cm = new PlayerCollisions();
 		Unit teleport = teleportSquare.getOccupants().get(0);

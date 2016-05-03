@@ -30,6 +30,7 @@ public class PlayerCollisions implements CollisionMap {
 
 	@Override
 	public void collide(Unit mover, Unit collidedOn) {
+		System.out.println(mover.isOnBridge()+ " vs. "+collidedOn.isOnBridge());
 		if(mover.isOnBridge() == collidedOn.isOnBridge()){
 			if (mover instanceof Player) {
 				playerColliding((Player) mover, collidedOn);

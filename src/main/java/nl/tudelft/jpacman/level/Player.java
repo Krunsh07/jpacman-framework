@@ -172,6 +172,7 @@ public class Player extends MovableCharacter {
 	
 	public void setDirection(Direction direction) {
 		Square square = getSquare();
+		System.out.println(square);
 		if(isMovable() && square.getSquareAt(direction).isAccessibleTo(this)) {
 			super.setDirection(direction);
 		}

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Direction;
@@ -25,6 +26,7 @@ import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 import nl.tudelft.jpacman.sprite.SpriteStore;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -32,7 +34,15 @@ import com.google.common.collect.Lists;
 public class HoleTest {
 	
 	public static final int HOLE_TIME_TEST = 2;
-	
+
+	private Launcher launcher;
+
+	@Before
+	public void setUp() {
+		launcher = new Launcher();
+		launcher.setBoardToUse("/boardFruit.txt");
+	}
+
 	/**
 	 * Verifies that a Hole object is initialized correctly. 
 	 * 

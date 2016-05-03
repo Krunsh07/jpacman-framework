@@ -57,6 +57,7 @@ public class Bridge extends Unit{
 	 */
 	public void effect(Unit unit) {
 		Direction uDir = unit.getDirection();
+		System.out.println("paralel " +parralelTo(uDir));
 		if(parralelTo(uDir)){
 			unit.setOnBridge(true);
 		}

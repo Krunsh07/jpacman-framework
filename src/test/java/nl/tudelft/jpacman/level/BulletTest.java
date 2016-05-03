@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.tudelft.jpacman.Launcher;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -33,6 +35,14 @@ import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 public class BulletTest {
+
+	private Launcher launcher;
+
+	@Before
+	public void setUp() {
+		launcher = new Launcher();
+		launcher.setBoardToUse("/boardFruit.txt");
+	}
 
 	/**
 	 * Test that a bullet is initialized correctly
@@ -70,12 +80,14 @@ public class BulletTest {
 		PacManSprites pms = new PacManSprites();
 		GhostFactory gf = new GhostFactory(pms);
 		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("####", "#  #", "####")).getBoard();
-		Square square = b.squareAt(1, 1);
+		Board b = parser.parseMap(Lists.newArrayList("#####", "#   #","#   #" ,"#####")).getBoard();
+		Square notNextToWall = b.squareAt(2, 2);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		p.occupy(notNextToWall);
 		p.setDirection(Direction.EAST);
+		p.occupy(notNextToWall);
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
-	    bullet.occupy(square);
+	    bullet.occupy(notNextToWall);
 	    assertNotNull(bullet.nextMove());
 	    bullet.setAlive(false);
 	    assertNull(bullet.nextMove());
@@ -89,12 +101,14 @@ public class BulletTest {
 		PacManSprites pms = new PacManSprites();
 		GhostFactory gf = new GhostFactory(pms);
 		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("###", "# #", "###")).getBoard();
-		Square square = b.squareAt(1, 1);
+		Board b = parser.parseMap(Lists.newArrayList("#####", "#   #", "#   #", "#   #", "#####")).getBoard();
+		Square notNextToWall = b.squareAt(2, 2);
+        Square nextToWall = b.squareAt(2, 1);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+        p.occupy(notNextToWall);
 		p.setDirection(Direction.NORTH);
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
-	    bullet.occupy(square);
+	    bullet.occupy(nextToWall);
 	    assertNull(bullet.nextMove());
 	    assertFalse(bullet.isAlive());
 	}
@@ -107,9 +121,10 @@ public class BulletTest {
 		PacManSprites pms = new PacManSprites();
 		GhostFactory gf = new GhostFactory(pms);
 		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("####", "#B #", "####", "----", "----", "V N ")).getBoard();
-		Square square = b.squareAt(1, 1);
+		Board b = parser.parseMap(Lists.newArrayList("####", "#  #", "#B #", "####", "----", "----", "V N ")).getBoard();
+		Square square = b.squareAt(1, 2);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		p.occupy(square);
 		p.setDirection(Direction.NORTH);
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
 	    bullet.occupy(square);

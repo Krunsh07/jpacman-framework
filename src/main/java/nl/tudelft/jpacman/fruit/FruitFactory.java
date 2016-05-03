@@ -53,9 +53,8 @@ public class FruitFactory {
 	/**
 	 * Create a FruitFactory object
 	 * 
-	 * @param PacManSprites spriteStore The sprite store used for the sprites of the fruits returned by this factory.
-	 * @param List<Square> fruitPos the list of the squares on the boards where fruits should appear.
-	 * @param List<NPC> npcs the list of the actives NPCs in the game.
+	 * @param spriteStore spriteStore The sprite store used for the sprites of the fruits returned by this factory.
+	 * @param l The game level.
 	 */
 	public FruitFactory(PacManSprites spriteStore, Level l) {
 		sprites = spriteStore;
@@ -66,13 +65,12 @@ public class FruitFactory {
 	/**
 	 * Return a Fruit picked randomly.
 	 * @return a Fruit object picked randomly
-	 * @throws FruitNotSupportedException 
 	 */
 	public Fruit getRandomFruit() {
 		int fruit = rand.nextInt(FRUITS);
 		Fruits f = Fruits.values()[fruit];
-		return getPomgranate();
-		/*
+		//return getPomgranate();
+
 		switch(f) {
 		    case FISH:
 		    	return getFish();
@@ -89,7 +87,7 @@ public class FruitFactory {
 		    default:
 		    	System.err.println("Fruit non supporté");
 		    	return null;
-		}*/
+		}
 	}
 	
 	/**

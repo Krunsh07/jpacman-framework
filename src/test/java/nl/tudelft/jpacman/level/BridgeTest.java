@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import nl.tudelft.jpacman.Launcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -28,9 +30,17 @@ import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 public class BridgeTest {
+
+	private Launcher launcher;
 	
 	@Rule
     public ExpectedException thrown = ExpectedException.none();
+
+	@Before
+	public void setUp() {
+		launcher = new Launcher();
+		launcher.setBoardToUse("/boardFruit.txt");
+	}
 	
 	/**
 	 * Verifies that a Bridge object is initialized correctly. 
@@ -215,18 +225,18 @@ public class BridgeTest {
 		PacManSprites pms = new PacManSprites();
 		MapParser parser = new MapParser(new LevelFactory(pms,
 				new GhostFactory(pms)), new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("######","# B  #",
-				"######", "------", "------", "H N   ")).getBoard();
-		Square BridgeSquare = b.squareAt(2, 1);
+		Board b = parser.parseMap(Lists.newArrayList("######", "#    #","# B  #",
+                "#    #", "######", "------", "------", "H N   ")).getBoard();
+		Square bridgeSquare = b.squareAt(2, 2);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		CollisionMap cm = new PlayerCollisions();
-		Unit bridge = BridgeSquare.getOccupants().get(0);
+		Unit bridge = bridgeSquare.getOccupants().get(0);
 		Direction[] dirs = {Direction.WEST, Direction.EAST, Direction.NORTH,
 				Direction.SOUTH};
 		for(int i = 0; i < dirs.length; i++) {
+            p.occupy(bridgeSquare);
 			p.setDirection(dirs[i]);
 			assertFalse(p.isOnBridge());
-			p.occupy(BridgeSquare);
 			cm.collide(p, bridge);
 			if(i <= 1)
 				assertTrue(p.isOnBridge());
@@ -248,23 +258,23 @@ public class BridgeTest {
 		PacManSprites pms = new PacManSprites();
 		MapParser parser = new MapParser(new LevelFactory(pms,
 				new GhostFactory(pms)), new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("######","# B  #",
-				"######", "------", "------", "V N   ")).getBoard();
-		Square BridgeSquare = b.squareAt(2, 1);
+        Board b = parser.parseMap(Lists.newArrayList("######", "#    #","# B  #",
+                "#    #", "######", "------", "------", "H N   ")).getBoard();
+        Square bridgeSquare = b.squareAt(2, 2);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		CollisionMap cm = new PlayerCollisions();
-		Unit bridge = BridgeSquare.getOccupants().get(0);
+		Unit bridge = bridgeSquare.getOccupants().get(0);
 		Direction[] dirs = {Direction.WEST, Direction.EAST, Direction.NORTH,
 				Direction.SOUTH};
 		for(int i = 0; i < dirs.length; i++) {
+            p.occupy(bridgeSquare);
 			p.setDirection(dirs[i]);
 			assertFalse(p.isOnBridge());
-			p.occupy(BridgeSquare);
 			cm.collide(p, bridge);
 			if(i > 1)
+                assertFalse(p.isOnBridge());
+            else
 				assertTrue(p.isOnBridge());
-			else
-				assertFalse(p.isOnBridge());
 			p.leaveSquare();
 			p.setOnBridge(false);
 		}
@@ -282,23 +292,30 @@ public class BridgeTest {
 		GhostFactory gf = new GhostFactory(pms);
 		MapParser parser = new MapParser(new LevelFactory(pms, gf),
 				new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("######","# B  #",
+		Board b = parser.parseMap(Lists.newArrayList("######","#    #","# B  #",
 				"######", "------", "------", "V N   ")).getBoard();
-		Square BridgeSquare = b.squareAt(2, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		Square bridgeSquare = b.squareAt(2, 2);
+		Unit p = (Unit) new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Ghost g = gf.createBlinky();
 		CollisionMap cm = new PlayerCollisions();
-		Unit bridge = BridgeSquare.getOccupants().get(0);
+		Unit bridge = bridgeSquare.getOccupants().get(0);
+		p.occupy(bridgeSquare);
 		p.setDirection(Direction.EAST);
 		cm.collide(p, bridge);
+		assertFalse(p.isOnBridge());
+		g.occupy(bridgeSquare);
 		g.setDirection(Direction.SOUTH);
 		cm.collide(g, bridge);
+		assertTrue(g.isOnBridge());
 		cm.collide(p, g);
-		assertTrue(p.isAlive());
+		assertTrue(((Player) p).isAlive());
+		p.leaveSquare();
+		p.occupy(bridgeSquare);
 		p.setDirection(Direction.NORTH);
+		System.out.println("collision avec pont ici."+p.getDirection()+" "+bridge.getDirection());
 		cm.collide(p, bridge);
 		cm.collide(p, g);
-		assertFalse(p.isAlive());
+		assertFalse(((Player) p).isAlive());
 	}
 	
 	/**
@@ -312,13 +329,13 @@ public class BridgeTest {
 		PacManSprites pms = new PacManSprites();
 		MapParser parser = new MapParser(new LevelFactory(pms,
 				new GhostFactory(pms)), new BoardFactory(pms));
-		Board b = parser.parseMap(Lists.newArrayList("######","# B  #",
-				"######", "------", "------", "H P   ")).getBoard();
-		Square BridgeSquare = b.squareAt(2, 1);
+		Board b = parser.parseMap(Lists.newArrayList("######", "#    #","# B  #",
+                "#    #", "######", "------", "------", "H P   ")).getBoard();
+		Square BridgeSquare = b.squareAt(2, 2);
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		CollisionMap cm = new PlayerCollisions();
+        p.occupy(BridgeSquare);
 		p.setDirection(Direction.EAST);
-		p.occupy(BridgeSquare);
 		List<Unit> occupants = BridgeSquare.getOccupants();
 		for(Unit occupant : occupants) {
 			cm.collide(p, occupant);

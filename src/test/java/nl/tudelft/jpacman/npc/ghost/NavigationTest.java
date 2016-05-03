@@ -9,6 +9,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.util.List;
 
+import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Direction;
@@ -39,6 +40,8 @@ public class NavigationTest {
 	 */
 	private MapParser parser;
 
+	private Launcher launcher;
+
 	private CollisionInteractionMap cim;
 
 	/**
@@ -46,6 +49,8 @@ public class NavigationTest {
 	 */
 	@Before
 	public void setUp() {
+		launcher = new Launcher();
+		launcher.setBoardToUse("/board.txt");
 		PacManSprites sprites = new PacManSprites();
 		parser = new MapParser(new LevelFactory(sprites, new GhostFactory(
 				sprites)), new BoardFactory(sprites));

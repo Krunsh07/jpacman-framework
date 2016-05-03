@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
@@ -111,6 +112,8 @@ public class Level {
 
 	private Timer speedUpTask = new Timer();
 
+	private boolean norm;
+
 	private static int c = 1;
 
 	private static Level level = null;
@@ -148,6 +151,14 @@ public class Level {
 		this.players = new HashMap<>();
 		this.collisions = collisionMap;
 		this.observers = new ArrayList<>();
+		Launcher la = Launcher.getLauncher();
+		if(la.getBoardToUse() == "/Board.txt" || la.getBoardToUse() == "BoardFruit.txt"){
+			this.norm = true;
+		}
+		else
+		{
+			this.norm = false;
+		}
 		if(level == null) {
 			level = this;
 		}
@@ -417,8 +428,15 @@ public class Level {
 		while(squareFruit == null) {
 			Player p = players.keySet().iterator().next();
 			Square posPlayer = p.getSquare();
-			int X = posPlayer.getCoordX();
-			int Y = posPlayer.getCoordY();
+			int X, Y;
+			if(this.norm){
+				X = posPlayer.getCoordX();
+				Y = posPlayer.getCoordY();
+			}
+			else{
+				X = 0;
+				Y = 0;
+			}
 			int i, j;
 			if(X-10 < 0){
 				i =  random.nextInt(board.getWidthOfOneMap()-2);
@@ -427,10 +445,10 @@ public class Level {
 				i = (X-10) + random.nextInt(board.getWidthOfOneMap()-2);
 			}
 			if(Y-14 < 0){
-				j = random.nextInt(4);
+				j = random.nextInt(board.getHeightOfOneMap()-2);
 			}
 			else{
-				j = (Y-14) + random.nextInt(4);
+				j = (Y-14) + random.nextInt(board.getHeightOfOneMap()-2);
 			}
 			squareFruit = board.squareAt(i, j);
 			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {

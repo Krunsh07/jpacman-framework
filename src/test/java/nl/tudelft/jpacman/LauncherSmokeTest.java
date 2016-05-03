@@ -69,12 +69,12 @@ public class LauncherSmokeTest {
 
         // get points
         game.move(player, Direction.EAST);
-        Thread.sleep(player.getInterval());
+        //Thread.sleep(player.getInterval());
         assertEquals(10, player.getScore());
 
         // now moving back does not change the score
         game.move(player, Direction.WEST);
-        Thread.sleep(player.getInterval());
+        //Thread.sleep(player.getInterval());
         assertEquals(10, player.getScore());
 
         // try to move as far as we can
@@ -83,7 +83,7 @@ public class LauncherSmokeTest {
 
         // move towards the monsters
         move(game, Direction.NORTH, 6);
-        assertEquals(120, player.getScore());
+        assertEquals(140, player.getScore());
 
         // reach the top of the map
         move(game, Direction.NORTH, 8);
@@ -127,7 +127,7 @@ public class LauncherSmokeTest {
         Player player = game.getPlayers().get(0);
         for (int i = 0; i < numSteps; i++) {
             game.move(player, dir);
-            Thread.sleep(player.getInterval());
+            Thread.sleep(100);
         }
     }
 }
