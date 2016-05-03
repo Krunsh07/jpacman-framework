@@ -41,6 +41,8 @@ public class LevelTest {
 	 */
 	private NPC ghost = null;
 
+	private Launcher la;
+
 	/**
 	 * Starting position 1.
 	 */
@@ -67,6 +69,8 @@ public class LevelTest {
 	 */
 	@Before
 	public void setUp() {
+		Launcher la = new Launcher();
+		//la.setBoardToUse("/board.txt");
 		ghost = new Clyde(SPRITE_STORE.getGhostSprite(GhostColor.ORANGE), SPRITE_STORE.getGhostExplodeAnimation());;
 		final long defaultInterval = 100L;
 		level = new Level(board, Lists.newArrayList(ghost), Lists.newArrayList(
