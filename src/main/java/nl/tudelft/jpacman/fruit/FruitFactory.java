@@ -39,7 +39,7 @@ public class FruitFactory {
 	/**
 	 * The level where this factory will produce fruits.
 	 */
-	private final Level level;
+	private Level level;
 
 	/**
 	 * The sprite store used for the sprites of the fruits returned by this factory.

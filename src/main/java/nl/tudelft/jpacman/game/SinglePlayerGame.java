@@ -101,14 +101,14 @@ public class SinglePlayerGame extends Game {
      */
 	public void ghostCleanEvent(List<Ghost> deadNPCs, Map<Ghost, ScheduledExecutorService> npcs) {
 		Timer timer;
-		for(final MovableCharacter npc : deadNPCs) {
+		for(MovableCharacter npc : deadNPCs) {
 			TimerTask timerTask = new TimerTask() {
 			    public void run() {
 			    	npc.leaveSquare();
 			    	npcs.remove(npc);
 			    }
 			};
-			final int deadGhostAnimationTime = 5 * 200;
+			int deadGhostAnimationTime = 5 * 200;
 			timer = new Timer();
 			timer.schedule(timerTask, deadGhostAnimationTime);
 		}

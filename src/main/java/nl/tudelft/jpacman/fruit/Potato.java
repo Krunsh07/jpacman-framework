@@ -35,8 +35,8 @@ public class Potato extends Fruit{
      */
 	@Override
 	public void fruitEffect(Player p) {
-		final Set<Ghost> ghosts = level.getGhosts().keySet();
-		for(final Ghost ghost: ghosts){
+		Set<Ghost> ghosts = level.getGhosts().keySet();
+		for(Ghost ghost: ghosts){
 			if(!ghost.getFearedMode()){
 				ghost.temporaryAcceleration(getEffectDuration());
 			}

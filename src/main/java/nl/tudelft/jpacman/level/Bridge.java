@@ -16,7 +16,7 @@ public class Bridge extends Unit{
 	/**
 	 * The sprites of this bridge
 	 */
-	private final Map<Direction, Sprite> sprites;
+	private Map<Direction, Sprite> sprites;
 
 	/**
 	 * create a bridge Object
@@ -40,7 +40,7 @@ public class Bridge extends Unit{
 	 * and false if they are perpendicular.
 	 */
 	public boolean parralelTo(Direction dir){
-		final Direction bDir = getDirection();
+		Direction bDir = getDirection();
 		if(((dir == Direction.NORTH || dir == Direction.SOUTH) && bDir == Direction.NORTH)
 		   || ((dir == Direction.EAST || dir == Direction.WEST) && bDir == Direction.EAST)){
 				return true;
@@ -59,7 +59,7 @@ public class Bridge extends Unit{
 	 * @param unit that have to be set as on a bridge
 	 */
 	public void effect(Unit unit) {
-		final Direction uDir = unit.getDirection();
+		Direction uDir = unit.getDirection();
 		if(parralelTo(uDir)){
 			unit.setOnBridge(true);
 		}
@@ -85,9 +85,9 @@ public class Bridge extends Unit{
 	 * because there a bridge that block it.
 	 */
 	public static boolean blockedBybridge(Unit unit, Direction direction){
-		final Unit u = unit.getSquare().getOccupants().get(0);
+		Unit u = unit.getSquare().getOccupants().get(0);
 		if(u instanceof Bridge){
-			final Bridge b = (Bridge) u;
+			Bridge b = (Bridge) u;
 			if((!(b.parralelTo(direction)) && unit.isOnBridge())
 			  || (b.parralelTo(direction) && !(unit.isOnBridge()))){
 				return true;

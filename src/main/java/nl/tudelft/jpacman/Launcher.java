@@ -78,7 +78,7 @@ public class Launcher {
 	public Game makeGame() {
 		final GameFactory gf = getGameFactory();
 		final String[] board = {"Jeu normal", "Map infinie", "Jeu avec fruits"};
-		final String nom = (String) JOptionPane.showInputDialog(null,
+		String nom = (String) JOptionPane.showInputDialog(null,
 				"Veuillez choisir un mode de jeu !",
 				"PACMAN GAME !",
 				JOptionPane.QUESTION_MESSAGE,
@@ -91,6 +91,7 @@ public class Launcher {
 			boardToUse = "/boardExtendedBase.txt";
 			level = makeLevel();
 			level.infiniteMode = true;
+			return gf.createSinglePlayerGame(level);
 		}
 		else if(nom.equals(board[2])){
 			boardToUse = "/boardFruit.txt";

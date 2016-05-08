@@ -40,10 +40,10 @@ public class Pomgranate extends Fruit {
      */
 	@Override
 	public void fruitEffect(Player p) {
-		final Set<Ghost> ghosts = level.getGhosts().keySet();
+		Set<Ghost> ghosts = level.getGhosts().keySet();
 		Timer timer;
 		TimerTask timerTask;
-		final PassThroughWall ptw = new PassThroughWall();
+		PassThroughWall ptw = new PassThroughWall();
 		for(Ghost ghost: ghosts){
 			if(ghost.getSquare() != null &&
 					Navigation.shortestPath(p.getSquare(),

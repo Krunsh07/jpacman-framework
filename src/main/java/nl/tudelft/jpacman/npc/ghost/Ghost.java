@@ -247,7 +247,7 @@ public abstract class Ghost extends NPC {
      */
 	public void temporaryAcceleration(int time)
 	{
-		final Map<Direction, Sprite> oldSprites = getSprites();
+		Map<Direction, Sprite> oldSprites = getSprites();
 		setAcceleration(true);
 		setSprites(new PacManSprites().getAngryGhostSprite());
 		TimerTask timerTask = new TimerTask() {

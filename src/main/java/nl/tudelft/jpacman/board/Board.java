@@ -29,7 +29,7 @@ public class Board {
 	/**
 	 * To generate random number
 	 */
-	private static Random random = new Random();
+	private Random random = new Random();
 
 	/**
 	 * Creates a new board.
@@ -254,7 +254,7 @@ public class Board {
 		for (int i = startX; i < startX + lenghtX; i++) {
 			for (int j = startY; j < startY + lenghtY; j++) {
 				sq1 = grid[i][j];
-				for (final Direction direction : Direction.values()) {
+				for (Direction direction : Direction.values()) {
 					x = (grid.length + i + direction.getDeltaX()) % grid.length;
 					y = (grid[0].length + j + direction.getDeltaY()) % grid[0].length;
 					sq2 = grid[x][y];

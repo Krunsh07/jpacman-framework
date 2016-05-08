@@ -30,7 +30,7 @@ public class Level {
 	/**
 	 * The board of this level.
 	 */
-	private final Board board;
+	private Board board;
 
 	/**
 	 * The lock that ensures moves are executed sequential.
@@ -83,7 +83,7 @@ public class Level {
 	/**
 	 * The Fruit factory for this level.
 	 */
-	private final FruitFactory fruitFactory;
+	private FruitFactory fruitFactory;
 
 	/**
 	 * The table of possible collisions between units.
@@ -143,7 +143,7 @@ public class Level {
 	/**
 	 * To generate random number
 	 */
-	private final Random random;
+	private Random random;
 
 	/**
 	 * Creates a new level for the board.
@@ -208,7 +208,7 @@ public class Level {
 			return;
 		}
 		players.put(p, null);
-		final Square square = startSquares.get(startSquareIndex);
+		Square square = startSquares.get(startSquareIndex);
 		p.occupy(square);
 		startSquareIndex++;
 		startSquareIndex %= startSquares.size();
@@ -239,14 +239,14 @@ public class Level {
 
 		synchronized (moveLock) {
 			unit.setDirection(direction);
-			final Square location = unit.getSquare();
-			final Square destination = location.getSquareAt(direction);
+			Square location = unit.getSquare();
+			Square destination = location.getSquareAt(direction);
 
 			if (destination.isAccessibleTo(unit) && !(Bridge.blockedBybridge(unit, direction))) {
 				unit.setOnBridge(false);
 				final List<Unit> occupants = destination.getOccupants();
 				unit.occupy(destination);
-				for (final Unit occupant : occupants) {
+				for (Unit occupant : occupants) {
 					collisions.collide(unit, occupant);
 				}
 			}
@@ -267,7 +267,7 @@ public class Level {
 			inProgress = true;
 			updateObservers();
 		}
-		final int nbr = random.nextInt(11);
+		int nbr = random.nextInt(11);
 		timerRespawn = new Timer();
 		timerWarning = new Timer();
 		timerHunterMode = new Timer();
@@ -304,7 +304,7 @@ public class Level {
 	public void startCharacters() {
 		MovableCharacter mc;
 		ScheduledExecutorService service;
-		for (final Ghost ghost : ghosts.keySet()) {
+		for (Ghost ghost : ghosts.keySet()) {
 			mc = ghost;
 			service = Executors
 					.newSingleThreadScheduledExecutor();
@@ -312,7 +312,7 @@ public class Level {
 					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
 			ghosts.put(ghost, service);
 		}
-		for (final Player player : players.keySet()) {
+		for (Player player : players.keySet()) {
 			mc = player;
 			service = Executors
 					.newSingleThreadScheduledExecutor();
@@ -320,7 +320,7 @@ public class Level {
 					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
 			players.put(player, service);
 		}
-		for (final Bullet bullet : bullets.keySet()) {
+		for (Bullet bullet : bullets.keySet()) {
 			mc = bullet;
 			service = Executors
 					.newSingleThreadScheduledExecutor();
@@ -335,13 +335,13 @@ public class Level {
 	 * executed.
 	 */
 	public void stopCharacters() {
-		for (final Entry<Ghost, ScheduledExecutorService> e : ghosts.entrySet()) {
+		for (Entry<Ghost, ScheduledExecutorService> e : ghosts.entrySet()) {
 			e.getValue().shutdownNow();
 		}
-		for (final Entry<Player, ScheduledExecutorService> e : players.entrySet()) {
+		for (Entry<Player, ScheduledExecutorService> e : players.entrySet()) {
 			e.getValue().shutdownNow();
 		}
-		for (final Entry<Bullet, ScheduledExecutorService> e : bullets.entrySet()) {
+		for (Entry<Bullet, ScheduledExecutorService> e : bullets.entrySet()) {
 			e.getValue().shutdownNow();
 		}
 	}
@@ -352,15 +352,15 @@ public class Level {
 	public void addGhostTask()
 	{
 		if(this.ghosts.size() < 10) {
-			final ScheduledExecutorService service = Executors
+			ScheduledExecutorService service = Executors
 					.newSingleThreadScheduledExecutor();
 			final GhostFactory ghostFact = new GhostFactory(SPRITE_STORE);
-			final int nbr = random.nextInt(6);
-			final int ghostIndex = random.nextInt(4);
+			int nbr = random.nextInt(6);
+			int ghostIndex = random.nextInt(4);
 			addGhostTask.cancel();
 			addGhostTask = new Timer();
 			addGhostTask.schedule(tks.createAddGhostTask(), ((nbr + 4) + this.ghosts.size()) * 1000);
-			final Ghost g = Ghost.addGhost(ghostFact, ghostIndex);
+			Ghost g = Ghost.addGhost(ghostFact, ghostIndex);
 			ghosts.put(g, service);
 			Square squareGhost = null;
 			while(squareGhost  == null) {
@@ -384,14 +384,14 @@ public class Level {
 	{
 		Timer timer = new Timer();
 		TimerTask timerTask;
-		final int nbr = random.nextInt(6);
+		int nbr = random.nextInt(6);
 		addFruitTask.cancel();
 		addFruitTask = new Timer();
 		addFruitTask.schedule(tks.createAddFruitTask(), (nbr+10)*1000);
-		final Fruit fruit = fruitFactory.getRandomFruit();
+		Fruit fruit = fruitFactory.getRandomFruit();
 		Square squareFruit = null;
-		final Player p = players.keySet().iterator().next();
-		final Square posPlayer = p.getSquare();
+		Player p = players.keySet().iterator().next();
+		Square posPlayer = p.getSquare();
 		while(squareFruit == null) {
 			squareFruit = addUnitOnSquare(board.getWidthOfOneMap()-2, board.getHeightOfOneMap()-2);
 			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {
@@ -416,12 +416,12 @@ public class Level {
      * @return Le square sur lequel mettre l'unit
      */
 	public Square addUnitOnSquare(int random1, int random2) {
-		final Random random = new Random();
+		Random random = new Random();
 		int X;
 		int Y;
 		int i;
 		int j;
-		final Square posPlayer = players.keySet().iterator().next().getSquare();
+		Square posPlayer = players.keySet().iterator().next().getSquare();
 		X = posPlayer.getCoordX();
 		Y = posPlayer.getCoordY();
 
@@ -448,7 +448,7 @@ public class Level {
 	 */
 	public void speedUpTask(){
 		Ghost g;
-		for (final MovableCharacter npc : ghosts.keySet()) {
+		for (MovableCharacter npc : ghosts.keySet()) {
 			g = (Ghost) (npc);
 			g.setSpeed(g.getSpeed() + 0.05);
 		}
