@@ -46,15 +46,11 @@ public class AnimatedSprite implements Sprite {
 	private long lastUpdate;
 
 	/**
-	 * Creates a new animating sprite that will change frames every interval. By
-	 * default the sprite is not animating.
-	 * 
-	 * @param frames
-	 *            The frames of this animation.
-	 * @param delay
-	 *            The delay between frames.
-	 * @param loop
-	 *            Whether or not this sprite should be looping.
+	 * Creates a new animating sprite that will change frames every interval.
+	 * By default the sprite is not animating.
+	 * @param frames The frames of this animation.
+	 * @param delay The delay between frames.
+	 * @param loop Whether or not this sprite should be looping.
 	 */
 	public AnimatedSprite(Sprite[] frames, int delay, boolean loop) {
 		this(frames, delay, loop, false);
@@ -62,15 +58,10 @@ public class AnimatedSprite implements Sprite {
 
 	/**
 	 * Creates a new animating sprite that will change frames every interval.
-	 * 
-	 * @param frames
-	 *            The frames of this animation.
-	 * @param delay
-	 *            The delay between frames.
-	 * @param loop
-	 *            Whether or not this sprite should be looping.
-	 * @param isAnimating
-	 *            Whether or not this sprite is animating from the start.
+	 * @param frames The frames of this animation.
+	 * @param delay The delay between frames.
+	 * @param loop Whether or not this sprite should be looping.
+	 * @param isAnimating Whether or not this sprite is animating from the start.
 	 */
 	public AnimatedSprite(Sprite[] frames, int delay, boolean loop,
 			boolean isAnimating) {
@@ -97,10 +88,8 @@ public class AnimatedSprite implements Sprite {
 
 	/**
 	 * Starts or stops the animation of this sprite.
-	 * 
-	 * @param isAnimating
-	 *            <code>true</code> to animate this sprite or <code>false</code>
-	 *            to stop animating this sprite.
+	 * @param isAnimating <code>true</code> to animate this
+	 * sprite or <code>false</code> to stop animating this sprite.
 	 */
 	public void setAnimating(boolean isAnimating) {
 		this.animating = isAnimating;

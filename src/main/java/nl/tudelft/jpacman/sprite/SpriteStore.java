@@ -32,12 +32,9 @@ public class SpriteStore {
 	 * Loads a sprite from a resource on the class path.
 	 * Sprites are loaded once, and then stored in the store
 	 * so that they can be efficiently retrieved.
-	 * 
-	 * @param resource
-	 *            The resource path.
+	 * @param resource The resource path.
 	 * @return The sprite for the resource.
-	 * @throws IOException
-	 *             When the resource could not be loaded.
+	 * @throws IOException When the resource could not be loaded.
 	 */
 	public Sprite loadSprite(String resource) throws IOException {
 		Sprite result = spriteMap.get(resource);

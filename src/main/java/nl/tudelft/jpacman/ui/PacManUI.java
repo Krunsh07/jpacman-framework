@@ -51,17 +51,12 @@ public class PacManUI extends JFrame {
 
 	/**
 	 * Creates a new UI for a JPac-Man game.
-	 * 
-	 * @param game
-	 *            The game to play.
-	 * @param buttons
-	 *            The map of caption-to-action entries that will appear as
-	 *            buttons on the interface.
-	 * @param keyMappings
-	 *            The map of keyCode-to-action entries that will be added as key
-	 *            listeners to the interface.
-	 * @param sf
-	 *            The formatter used to display the current score. 
+	 * @param game The game to play.
+	 * @param buttons The map of caption-to-action entries that will appear as
+	 * buttons on the interface.
+	 * @param keyMappings The map of keyCode-to-action entries
+	 * that will be added as key listeners to the interface.
+	 * @param sf The formatter used to display the current score.
 	 */
 	public PacManUI(final Game game, final Map<String, Action> buttons,
 			final Map<Integer, Action> keyMappings, ScoreFormatter sf) {

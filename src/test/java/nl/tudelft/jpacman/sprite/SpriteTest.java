@@ -101,7 +101,8 @@ public class SpriteTest {
 	}
 	
 	/**
-	 * Verifies that a split that isn't within the actual sprite returns an empty sprite.
+	 * Verifies that a split that isn't within the actual
+	 * sprite returns an empty sprite.
 	 */
 	@Test
 	public void splitOutOfBounds() {

@@ -42,6 +42,11 @@ public class PlayerCollisions implements CollisionMap {
         }
     }
 
+    /**
+     * Colliosn entre une bullet et une unit
+     * @param mover La bullet
+     * @param collidedOn L'unit
+     */
     private void BulletColliding(Bullet mover, Unit collidedOn) {
         if (collidedOn instanceof Ghost) {
             ghostVersusBullet((Ghost) collidedOn, mover);
@@ -51,6 +56,11 @@ public class PlayerCollisions implements CollisionMap {
         }
     }
 
+    /**
+     * Collions entre le player et une unit
+     * @param player Le joueur
+     * @param collidedOn L'unit
+     */
     private void playerColliding(Player player, Unit collidedOn) {
         if (collidedOn instanceof Ghost && !(player.isInvincible())) {
             if (((Ghost) collidedOn).getFearedMode()){

@@ -125,11 +125,8 @@ public class CollisionInteractionMap implements CollisionMap {
 	/**
 	 * Figures out the most specific class that is listed in the map. I.e. if A
 	 * extends B and B is listed while requesting A, then B will be returned.
-	 * 
-	 * @param map
-	 *            The map with the key collection to find a matching class in.
-	 * @param key
-	 *            The class to search the most suitable key for.
+	 * @param map The map with the key collection to find a matching class in.
+	 * @param key The class to search the most suitable key for.
 	 * @return The most specific class from the key collection.
 	 */
 	private Class<? extends Unit> getMostSpecificClass(
@@ -175,23 +172,16 @@ public class CollisionInteractionMap implements CollisionMap {
 
 	/**
 	 * Handles the collision between two colliding parties.
-	 * 
 	 * @author Michael de Jong
-	 * 
-	 * @param <C1>
-	 *            The collider type.
-	 * @param <C2>
-	 *            The collidee type.
+	 * @param <C1> The collider type.
+	 * @param <C2> The collidee type.
 	 */
 	public interface CollisionHandler<C1 extends Unit, C2 extends Unit> {
 
 		/**
 		 * Handles the collision between two colliding parties.
-		 * 
-		 * @param collider
-		 *            The collider.
-		 * @param collidee
-		 *            The collidee.
+		 * @param collider The collider.
+		 * @param collidee The collidee.
 		 */
 		void handleCollision(C1 collider, C2 collidee);
 	}

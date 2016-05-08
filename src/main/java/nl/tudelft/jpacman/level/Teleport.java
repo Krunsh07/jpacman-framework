@@ -8,7 +8,8 @@ import java.util.List;
 import nl.tudelft.jpacman.board.Square;
 
 /**
- * A teleport is a special object that will teleport pacman instantly to another part of the board.
+ * A teleport is a special object that will teleport
+ * pacman instantly to another part of the board.
  */
 public class Teleport extends Unit {
 
@@ -29,7 +30,11 @@ public class Teleport extends Unit {
 	public Teleport(Sprite sprite) {
 		this.image = sprite;
 	}
-	
+
+	/**
+	 * Return the sprite
+	 * @return The sprite
+     */
 	@Override
 	public Sprite getSprite() {
 		return image;

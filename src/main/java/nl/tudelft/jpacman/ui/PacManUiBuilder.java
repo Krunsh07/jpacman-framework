@@ -108,11 +108,8 @@ public class PacManUiBuilder {
 
 	/**
 	 * Adds a key listener to the UI.
-	 * 
-	 * @param keyCode
-	 *            The key code of the key as used by {@link java.awt.event.KeyEvent}.
-	 * @param action
-	 *            The action to perform when the key is pressed.
+	 * @param keyCode The key code of the key as used by {@link java.awt.event.KeyEvent}.
+	 * @param action The action to perform when the key is pressed.
 	 * @return The builder.
 	 */
 	public PacManUiBuilder addKey(Integer keyCode, Action action) {
@@ -125,11 +122,8 @@ public class PacManUiBuilder {
 
 	/**
 	 * Adds a button to the UI.
-	 * 
-	 * @param caption
-	 *            The caption of the button.
-	 * @param action
-	 *            The action to execute when the button is clicked.
+	 * @param caption The caption of the button.
+	 * @param action The action to execute when the button is clicked.
 	 * @return The builder.
 	 */
 	public PacManUiBuilder addButton(String caption, Action action) {

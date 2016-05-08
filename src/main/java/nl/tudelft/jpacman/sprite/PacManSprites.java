@@ -130,11 +130,8 @@ public class PacManSprites extends SpriteStore {
 
 	/**
 	 * Returns a new map with animations for all directions.
-	 * 
-	 * @param resource
-	 *            The resource name of the sprite.
-	 * @param frames
-	 *            The number of frames in this sprite.
+	 * @param resource The resource name of the sprite.
+	 * @param frames The number of frames in this sprite.
 	 * @return The animated sprite facing the given direction.
 	 */
 	private Map<Direction, Sprite> directionSprite(String resource, int frames) {

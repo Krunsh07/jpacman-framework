@@ -84,7 +84,8 @@ public class FruitTest {
 	}
 	
 	/**
-	 * Test that that the pomgranate kills one ghost in the explosion radius of 4 squares away from the fruit and that one ghost
+	 * Test that that the pomgranate kills one ghost in the
+	 * radius of 4 squares away from the fruit and that one ghost
 	 * out of that radius remain safe. the must fruit disappear from the square
 	 * @throws IOException
 	 * @throws InterruptedException
@@ -142,7 +143,8 @@ public class FruitTest {
 	}
 	
 	/**
-	 * Test that the kidneybean fruit temporarily enable pacman's shooting state and disappear after this
+	 * Test that the kidneybean fruit temporarily enable
+	 * pacman's shooting state and disappear after this
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */

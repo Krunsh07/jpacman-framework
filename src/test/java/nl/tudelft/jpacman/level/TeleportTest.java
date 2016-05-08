@@ -160,8 +160,8 @@ public class TeleportTest {
 	}
 	
 	/**
-	 * Verifies that a teleport reference coordinate can't contain more than two element.
-	 * 
+	 * Verifies that a teleport reference coordinate can't
+	 * contain more than two element.
 	 * @throws IOException
 	 */
 	@Test
@@ -172,8 +172,8 @@ public class TeleportTest {
 	}
 	
 	/**
-	 * Verifies that there can't be more teleport reference coordinate than teleports on the board string.
-	 * 
+	 * Verifies that there can't be more teleport reference
+	 * coordinate than teleports on the board string.
 	 * @throws IOException
 	 */
 	@Test

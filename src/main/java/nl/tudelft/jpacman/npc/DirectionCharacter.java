@@ -6,7 +6,8 @@ import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 /**
- * DirectionCharacter is an interface that group behavior commen to a player and a Ghost.
+ * DirectionCharacter is an interface that
+ * group behavior commen to a player and a Ghost.
  */
 public interface DirectionCharacter {
 	

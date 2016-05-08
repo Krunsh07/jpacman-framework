@@ -31,6 +31,9 @@ public abstract class Ghost extends NPC {
 	 */
 	private boolean exploded;
 
+	/**
+	 * The sprite store
+	 */
 	private static final PacManSprites SPRITE_STORE = new PacManSprites();
 
 	public static int count = 0;

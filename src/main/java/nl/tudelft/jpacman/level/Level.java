@@ -109,10 +109,30 @@ public class Level {
 	 * Timer used to handle the game;
 	 */
 	private Timer timerHunterMode;
+
+	/**
+	 * Timer used to handle the game;
+	 */
 	private Timer timerRespawn;
+
+	/**
+	 * Timer used to handle the game;
+	 */
 	private Timer timerWarning;
+
+	/**
+	 * Timer used to handle the game;
+	 */
 	private Timer addGhostTask;
+
+	/**
+	 * Timer used to handle the game;
+	 */
 	private Timer addFruitTask;
+
+	/**
+	 * Timer used to handle the game;
+	 */
 	private Timer speedUpTask;
 
 	/**

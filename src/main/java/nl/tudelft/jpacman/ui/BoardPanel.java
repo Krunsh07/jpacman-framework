@@ -91,13 +91,9 @@ class BoardPanel extends JPanel {
 
 	/**
 	 * Renders the board on the given graphics context to the given dimensions.
-	 *
-	 * @param board
-	 *            The board to render.
-	 * @param g
-	 *            The graphics context to draw on.
-	 * @param window
-	 *            The dimensions to scale the rendered board to.
+	 * @param board The board to render.
+	 * @param g The graphics context to draw on.
+	 * @param window The dimensions to scale the rendered board to.
 	 */
 	private void render(Board board, Graphics g, Dimension window) {
 		int cellW = window.width / board.getWidth();
@@ -118,13 +114,9 @@ class BoardPanel extends JPanel {
 
 	/**
 	 * Renders the board on the given graphics context to the given dimensions.
-	 *
-	 * @param board
-	 *            The board to render.
-	 * @param g
-	 *            The graphics context to draw on.
-	 * @param window
-	 *            The dimensions to scale the rendered board to.
+	 * @param board The board to render.
+	 * @param g The graphics context to draw on.
+	 * @param window The dimensions to scale the rendered board to.
 	 */
 	private void renderInfinite(Board board, Graphics g, Dimension window) {
 		int cellW;
