@@ -20,7 +20,7 @@ public class Pomgranate extends Fruit {
 	/**
 	 *  The level where this fruit was created.
 	 */
-	private Level level;
+	private final Level level;
 	
 	/**
 	 * Create a Pomgranate object
@@ -34,12 +34,16 @@ public class Pomgranate extends Fruit {
 		level = l;
 	}
 
+	/**
+	 * Activate the effect
+	 * @param p the player that ate this fruit.
+     */
 	@Override
 	public void fruitEffect(Player p) {
-		Set<Ghost> ghosts = level.getGhosts().keySet();
+		final Set<Ghost> ghosts = level.getGhosts().keySet();
 		Timer timer;
 		TimerTask timerTask;
-		PassThroughWall ptw = new PassThroughWall();
+		final PassThroughWall ptw = new PassThroughWall();
 		for(Ghost ghost: ghosts){
 			if(ghost.getSquare() != null &&
 					Navigation.shortestPath(p.getSquare(),
@@ -53,7 +57,7 @@ public class Pomgranate extends Fruit {
 						Level.getLevel().respawnParticularGhost(ghost);
 					}
 				};
-				int deadGhostAnimationTime = 5 * 200;
+				final int deadGhostAnimationTime = 5 * 200;
 				timer = new Timer();
 				timer.schedule(timerTask, deadGhostAnimationTime);
 			}

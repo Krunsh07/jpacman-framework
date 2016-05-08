@@ -28,8 +28,6 @@ public class HoleTest {
 	
 	public static final int HOLE_TIME_TEST = 2;
 
-	private Launcher launcher;
-	private PacManSprites pms;
 	private MapParser parser;
 	private GhostFactory gf;
 	private Player p;
@@ -37,8 +35,10 @@ public class HoleTest {
 
 	@Before
 	public void setUp() {
+		Launcher launcher;
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
+		PacManSprites pms;
 		pms = new PacManSprites();
 		parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());

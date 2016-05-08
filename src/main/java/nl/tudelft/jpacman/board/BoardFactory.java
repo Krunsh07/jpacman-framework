@@ -86,20 +86,26 @@ public class BoardFactory {
 
 		/**
 		 * Creates a new wall square.
-		 * 
-		 * @param sprite
-		 *            The background for the square.
+		 * @param sprite The background for the square.
 		 */
 		private Wall(Sprite sprite) {
 			this.background = sprite;
 		}
 
+		/**
+		 * Test if a square is accessible for a unit
+		 * @param unit The unit
+		 */
 		@Override
 		public boolean isAccessibleTo(Unit unit) {
 			if(unit instanceof PassThroughWall){return true;}
 			else {return false;}
 		}
 
+		/**
+		 * Return the sprite of the wall
+		 * @return The background's sprite
+		 */
 		@Override
 		public Sprite getSprite() {
 			return background;
@@ -120,19 +126,26 @@ public class BoardFactory {
 
 		/**
 		 * Creates a new ground square.
-		 * 
 		 * @param sprite
-		 *            The background for the square.
+		 *        The background for the square.
 		 */
 		private Ground(Sprite sprite) {
 			this.background = sprite;
 		}
 
+		/**
+		 * Test if a square is accessible for a unit
+		 * @param unit The unit
+		 */
 		@Override
 		public boolean isAccessibleTo(Unit unit) {
 			return true;
 		}
 
+		/**
+		 * Return the sprite of the ground
+		 * @return The ground's sprite
+		 */
 		@Override
 		public Sprite getSprite() {
 			return background;

@@ -20,6 +20,9 @@ public class Pellet extends Unit {
 	 */
 	private final int value;
 
+	/**
+	 * Le nombre de super pellet
+	 */
 	public static int superPelletLeft;
 	
 	/**
@@ -40,7 +43,10 @@ public class Pellet extends Unit {
 		return value;
 	}
 
-	
+	/**
+	 * Return the sprite
+	 * @return The sprite
+     */
 	@Override
 	public Sprite getSprite() {
 		return image;

@@ -3,9 +3,6 @@ package nl.tudelft.jpacman.level;
 import java.util.Map;
 
 import nl.tudelft.jpacman.board.Direction;
-import nl.tudelft.jpacman.board.Unit;
-import nl.tudelft.jpacman.npc.DirectionCharacter;
-import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.Sprite;
@@ -145,14 +142,26 @@ public class Player extends MovableCharacter {
 		score += points;
 	}
 
+	/**
+	 * Permet de savoir si le joueur est invincible
+	 * @return True si le joueur est invincible, false sinon
+     */
 	public boolean isInvincible() {
 		return invincible;
 	}
 
+	/**
+	 * Permet rendre un joueur invincible ou non
+	 * @param value L'état du joueur
+     */
 	public void setInvincible(boolean value) {
 		this.invincible = value;
 	}
 
+	/**
+	 * Permet d'obtenir le temps entre 2 interval
+	 * @return L'interval entre 2 déplacement
+     */
 	public long getInterval() {
 		if(!getAcceleration()){
 			return MOVE_INTERVAL;
@@ -162,14 +171,26 @@ public class Player extends MovableCharacter {
 		}
 	}
 
+	/**
+	 * Pour savoir si le joueur est en train de tirer
+	 * @return True si le joueur tire, false sinon
+     */
 	public boolean isShooting() {
 		return shooting;
 	}
 
+	/**
+	 * Permet de définir si le joueur tire
+	 * @param shooting Si le joueur tire ou pas
+     */
 	public void setShooting(boolean shooting) {
 		this.shooting = shooting;
 	}
-	
+
+	/**
+	 * Permet de définir la direction du joueurs
+	 * @param direction La direction
+     */
 	public void setDirection(Direction direction) {
 		Square square = getSquare();
 		System.out.println(square);

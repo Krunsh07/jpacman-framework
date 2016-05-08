@@ -237,10 +237,14 @@ public abstract class Ghost extends NPC {
 	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
-	
+
+	/**
+	 * Accelération temporaire des ghosts
+	 * @param time Le temps de l'accélération
+     */
 	public void temporaryAcceleration(int time)
 	{
-		Map<Direction, Sprite> oldSprites = getSprites();
+		final Map<Direction, Sprite> oldSprites = getSprites();
 		setAcceleration(true);
 		setSprites(new PacManSprites().getAngryGhostSprite());
 		TimerTask timerTask = new TimerTask() {

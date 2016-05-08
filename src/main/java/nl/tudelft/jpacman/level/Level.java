@@ -6,7 +6,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
@@ -66,6 +65,9 @@ public class Level {
 	 */
 	private boolean inProgress;
 
+	/**
+	 * To know if the game is in infinite map
+	 */
 	public boolean infiniteMode;
 
 	/**
@@ -81,7 +83,7 @@ public class Level {
 	/**
 	 * The Fruit factory for this level.
 	 */
-	private FruitFactory fruitFactory;
+	private final FruitFactory fruitFactory;
 
 	/**
 	 * The table of possible collisions between units.
@@ -93,8 +95,14 @@ public class Level {
 	 */
 	private final List<LevelObserver> observers;
 
+	/**
+	 * The sprite store
+	 */
 	private static final PacManSprites SPRITE_STORE = new PacManSprites();
 
+	/**
+	 * To create all the timer
+	 */
 	private TimerTasks tks = new TimerTasks();
 
 	/**
@@ -107,21 +115,22 @@ public class Level {
 	private Timer addFruitTask;
 	private Timer speedUpTask;
 
+	/**
+	 * The level of the game
+	 */
 	private static Level level;
 
-	private Random random;
+	/**
+	 * To generate random number
+	 */
+	private final Random random;
 
 	/**
 	 * Creates a new level for the board.
-	 *
-	 * @param b
-	 *            The board for the level.
-	 * @param ghosts
-	 *            The ghosts on the board.
-	 * @param startPositions
-	 *            The squares on which players start on this board.
-	 * @param collisionMap
-	 *            The collection of collisions that should be handled.
+	 * @param b The board for the level.
+	 * @param ghosts The ghosts on the board.
+	 * @param startPositions The squares on which players start on this board.
+	 * @param collisionMap The collection of collisions that should be handled.
 	 */
 	public Level(Board b, List<NPC> ghosts, List<Square> startPositions,
 				 CollisionMap collisionMap) {
@@ -179,7 +188,7 @@ public class Level {
 			return;
 		}
 		players.put(p, null);
-		Square square = startSquares.get(startSquareIndex);
+		final Square square = startSquares.get(startSquareIndex);
 		p.occupy(square);
 		startSquareIndex++;
 		startSquareIndex %= startSquares.size();
@@ -197,11 +206,8 @@ public class Level {
 	/**
 	 * Moves the unit into the given direction if possible and handles all
 	 * collisions.
-	 *
-	 * @param unit
-	 *            The unit to move.
-	 * @param direction
-	 *            The direction to move the unit in.
+	 * @param unit The unit to move.
+	 * @param direction The direction to move the unit in.
 	 */
 	public void move(Unit unit, Direction direction) {
 		assert unit != null;
@@ -213,14 +219,14 @@ public class Level {
 
 		synchronized (moveLock) {
 			unit.setDirection(direction);
-			Square location = unit.getSquare();
-			Square destination = location.getSquareAt(direction);
+			final Square location = unit.getSquare();
+			final Square destination = location.getSquareAt(direction);
 
 			if (destination.isAccessibleTo(unit) && !(Bridge.blockedBybridge(unit, direction))) {
 				unit.setOnBridge(false);
-				List<Unit> occupants = destination.getOccupants();
+				final List<Unit> occupants = destination.getOccupants();
 				unit.occupy(destination);
-				for (Unit occupant : occupants) {
+				for (final Unit occupant : occupants) {
 					collisions.collide(unit, occupant);
 				}
 			}
@@ -241,7 +247,7 @@ public class Level {
 			inProgress = true;
 			updateObservers();
 		}
-		int nbr = random.nextInt(11);
+		final int nbr = random.nextInt(11);
 		timerRespawn = new Timer();
 		timerWarning = new Timer();
 		timerHunterMode = new Timer();
@@ -309,13 +315,13 @@ public class Level {
 	 * executed.
 	 */
 	public void stopCharacters() {
-		for (Entry<Ghost, ScheduledExecutorService> e : ghosts.entrySet()) {
+		for (final Entry<Ghost, ScheduledExecutorService> e : ghosts.entrySet()) {
 			e.getValue().shutdownNow();
 		}
-		for (Entry<Player, ScheduledExecutorService> e : players.entrySet()) {
+		for (final Entry<Player, ScheduledExecutorService> e : players.entrySet()) {
 			e.getValue().shutdownNow();
 		}
-		for (Entry<Bullet, ScheduledExecutorService> e : bullets.entrySet()) {
+		for (final Entry<Bullet, ScheduledExecutorService> e : bullets.entrySet()) {
 			e.getValue().shutdownNow();
 		}
 	}
@@ -326,15 +332,15 @@ public class Level {
 	public void addGhostTask()
 	{
 		if(this.ghosts.size() < 10) {
-			ScheduledExecutorService service = Executors
+			final ScheduledExecutorService service = Executors
 					.newSingleThreadScheduledExecutor();
-			GhostFactory ghostFact = new GhostFactory(SPRITE_STORE);
-			int nbr = random.nextInt(6);
-			int ghostIndex = random.nextInt(4);
+			final GhostFactory ghostFact = new GhostFactory(SPRITE_STORE);
+			final int nbr = random.nextInt(6);
+			final int ghostIndex = random.nextInt(4);
 			addGhostTask.cancel();
 			addGhostTask = new Timer();
 			addGhostTask.schedule(tks.createAddGhostTask(), ((nbr + 4) + this.ghosts.size()) * 1000);
-			Ghost g = Ghost.addGhost(ghostFact, ghostIndex);
+			final Ghost g = Ghost.addGhost(ghostFact, ghostIndex);
 			ghosts.put(g, service);
 			Square squareGhost = null;
 			while(squareGhost  == null) {
@@ -358,14 +364,14 @@ public class Level {
 	{
 		Timer timer = new Timer();
 		TimerTask timerTask;
-		int nbr = random.nextInt(6);
+		final int nbr = random.nextInt(6);
 		addFruitTask.cancel();
 		addFruitTask = new Timer();
 		addFruitTask.schedule(tks.createAddFruitTask(), (nbr+10)*1000);
-		Fruit fruit = fruitFactory.getRandomFruit();
+		final Fruit fruit = fruitFactory.getRandomFruit();
 		Square squareFruit = null;
-		Player p = players.keySet().iterator().next();
-		Square posPlayer = p.getSquare();
+		final Player p = players.keySet().iterator().next();
+		final Square posPlayer = p.getSquare();
 		while(squareFruit == null) {
 			squareFruit = addUnitOnSquare(board.getWidthOfOneMap()-2, board.getHeightOfOneMap()-2);
 			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {
@@ -383,11 +389,19 @@ public class Level {
 		}
 	}
 
+	/**
+	 * Permet de mettre une unit sur le plateau
+	 * @param random1 L'abscisse
+	 * @param random2 L'ordonnée
+     * @return Le square sur lequel mettre l'unit
+     */
 	public Square addUnitOnSquare(int random1, int random2) {
-		Random random = new Random();
-		int X, Y;
-		int i, j;
-		Square posPlayer = players.keySet().iterator().next().getSquare();
+		final Random random = new Random();
+		int X;
+		int Y;
+		int i;
+		int j;
+		final Square posPlayer = players.keySet().iterator().next().getSquare();
 		X = posPlayer.getCoordX();
 		Y = posPlayer.getCoordY();
 
@@ -414,7 +428,7 @@ public class Level {
 	 */
 	public void speedUpTask(){
 		Ghost g;
-		for (MovableCharacter npc : ghosts.keySet()) {
+		for (final MovableCharacter npc : ghosts.keySet()) {
 			g = (Ghost) (npc);
 			g.setSpeed(g.getSpeed() + 0.05);
 		}
@@ -500,9 +514,10 @@ public class Level {
 	}
 
 	/**
-	 * Returns <code>true</code> if at least one NPC is dead and need to be cleaned from the board.
-	 *
-	 * @return <code>true</code> if at least one NPC is dead and need to be cleaned from the board.
+	 * Returns <code>true</code> if at least one NPC is dead
+	 * and need to be cleaned from the board.
+	 * @return <code>true</code> if at least one NPC is dead
+	 * and need to be cleaned from the board.
 	 */
 	private List<Bullet> BulletToClean() {
 		List<Bullet> deadBullets = new ArrayList<>();
@@ -606,7 +621,11 @@ public class Level {
 		timerRespawn = new Timer();
 		timerRespawn.schedule(tks.createRespawnTask(ateGhost), 5000);
 	}
-	
+
+	/**
+	 * Permet de remettre un ghost sur le jeu
+	 * @param ghost
+     */
 	public void respawnParticularGhost(Ghost ghost) {
 		timerRespawn = new Timer();
 		timerRespawn.schedule(tks.createRespawnTask(ghost), 5000);
@@ -632,10 +651,18 @@ public class Level {
 		return pellets;
 	}
 
+	/**
+	 * Permet de récupérer la liste des ghosts
+	 * @return Les ghosts
+     */
 	public Map<Ghost, ScheduledExecutorService> getGhosts() {
 		return ghosts;
 	}
 
+	/**
+	 * Return the level
+	 * @return The level
+     */
 	public static Level getLevel() {
 		return level;
 	}

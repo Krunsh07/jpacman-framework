@@ -26,7 +26,7 @@ public class Hole extends Unit {
 	/**
 	 * The time in seconds for which a character is trapped into this hole.
 	 */
-	private int trapTime;
+	private final int trapTime;
 	
 	/**
 	 * Creates a new hole.
@@ -38,7 +38,11 @@ public class Hole extends Unit {
 		this.image = sprite;
 		this.trapTime = time;
 	}
-	
+
+	/**
+	 * Return the sprite
+	 * @return The sprite
+     */
 	@Override
 	public Sprite getSprite() {
 		return image;
@@ -57,7 +61,7 @@ public class Hole extends Unit {
 	 * @param mc the character which will be trapped in this hole
 	 */
 	public void effect(MovableCharacter mc) {
-		Map<Direction, Sprite> oldSprites = mc.getSprites();
+		final Map<Direction, Sprite> oldSprites = mc.getSprites();
 	    mc.setMovable(false);
 		if(mc instanceof Player){
 			mc.setSprites(new PacManSprites().getPacmanParalizedSprites());

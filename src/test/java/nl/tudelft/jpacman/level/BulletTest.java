@@ -1,10 +1,6 @@
 package nl.tudelft.jpacman.level;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -12,11 +8,7 @@ import nl.tudelft.jpacman.Launcher;
 
 import com.google.common.collect.Lists;
 
-import nl.tudelft.jpacman.board.Board;
-import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.board.Direction;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.board.*;
 import nl.tudelft.jpacman.npc.Bullet;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
@@ -28,7 +20,6 @@ import org.junit.Test;
 
 public class BulletTest {
 
-	private Launcher launcher;
 	private PacManSprites pms;
 	private GhostFactory gf;
 	private Player p;
@@ -36,6 +27,7 @@ public class BulletTest {
 
 	@Before
 	public void setUp() {
+		Launcher launcher;
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
 		pms = new PacManSprites();

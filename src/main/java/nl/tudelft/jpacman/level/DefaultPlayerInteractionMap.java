@@ -6,11 +6,9 @@ import nl.tudelft.jpacman.npc.ghost.Ghost;
 
 /**
  * An extensible default interaction map for collisions caused by the player.
- * 
  * The implementation makes use of the interactionmap, and as such can be easily
  * and declaratively extended when new types of units (ghosts, players, ...) are
  * added.
- * 
  * @author Arie van Deursen
  * @author Jeroen Roosen
  * 
@@ -26,7 +24,6 @@ public class DefaultPlayerInteractionMap implements CollisionMap {
 
 	/**
 	 * Creates the default collisions Player-Ghost and Player-Pellet.
-	 * 
 	 * @return The collision map containing collisions for Player-Ghost and
 	 *         Player-Pellet.
 	 */

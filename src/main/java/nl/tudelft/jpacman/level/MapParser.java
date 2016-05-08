@@ -312,9 +312,7 @@ public class MapParser {
 	/**
 	 * Parses the list of strings into a 2-dimensional character array and
 	 * passes it on to {@link #parseMap(char[][])}.
-	 * 
-	 * @param text
-	 *            The plain text, with every entry in the list being a equally
+	 * @param text The plain text, with every entry in the list being a equally
 	 *            sized row of squares on the board and the first element being
 	 *            the top row.
 	 * @return The level as represented by the text.
@@ -453,7 +451,8 @@ public class MapParser {
 	
 	private List<char[]> parseBridge(List<String> text, int y, int width){
 		List<char[]> bridgeRefs = new ArrayList<>();
-		char c1, c2;
+		char c1;
+		char c2;
 		char[] elem;
 		String s;
 		String[] ts;

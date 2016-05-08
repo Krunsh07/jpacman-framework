@@ -15,7 +15,7 @@ public class Potato extends Fruit{
 	/**
 	 * The level where this potato appeared.
 	 */
-	private Level level;
+	private final Level level;
 	
 	/**
 	 * Create a Pomgranate object
@@ -29,10 +29,14 @@ public class Potato extends Fruit{
 		level = l;
 	}
 
+	/**
+	 * Activate the effect
+	 * @param p the player that ate this fruit.
+     */
 	@Override
 	public void fruitEffect(Player p) {
-		Set<Ghost> ghosts = level.getGhosts().keySet();
-		for(Ghost ghost: ghosts){
+		final Set<Ghost> ghosts = level.getGhosts().keySet();
+		for(final Ghost ghost: ghosts){
 			if(!ghost.getFearedMode()){
 				ghost.temporaryAcceleration(getEffectDuration());
 			}

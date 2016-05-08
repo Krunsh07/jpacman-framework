@@ -37,7 +37,6 @@ public class FruitTest {
 	 */
 	private static final int BAD_EFFECT_DURATION = 2;
 
-	private Launcher launcher;
 	private PacManSprites pms;
 	private MapParser parser;
 	private GhostFactory gf;
@@ -48,6 +47,7 @@ public class FruitTest {
 
 	@Before
 	public void setUp() {
+		Launcher launcher;
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
 		pms = new PacManSprites();

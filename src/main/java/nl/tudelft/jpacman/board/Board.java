@@ -19,13 +19,16 @@ public class Board {
 	/**
 	 * The width of one map.
 	 */
-	private int widthOfOneMap;
+	private final int widthOfOneMap;
 
 	/**
 	 * The heght of one map.
 	 */
-	private int heightOfOneMap;
+	private final int heightOfOneMap;
 
+	/**
+	 * To generate random number
+	 */
 	private static Random random = new Random();
 
 	/**
@@ -126,8 +129,8 @@ public class Board {
 	 * @return Le nouveau level
 	 */
 	private Level setOptions() {
-		Launcher launcher = Launcher.getLauncher();
-		int nbr = random.nextInt(3);
+		final Launcher launcher = Launcher.getLauncher();
+		final int nbr = random.nextInt(3);
 		launcher.setBoardToUse("/boardExtendedAdd" + (nbr + 1) + ".txt");
 		return launcher.makeLevel();
 	}
@@ -200,8 +203,8 @@ public class Board {
 	}
 
 	/**
-	 * Permet de définir quels square et ou ils doivent être placer dans le board
-	 *
+	 * Permet de définir quels square et ou ils doivent être
+	 * placer dans le board
 	 * @param grid    La grille de square
 	 * @param startX  Abscisse de début
 	 * @param startY  Ordonnee de debut
@@ -220,7 +223,6 @@ public class Board {
 
 	/**
 	 * Permet de placer les squares du nouveau level dans le board à afficher.
-	 *
 	 * @param grid   La grille de square
 	 * @param startX Abscisse de debut
 	 * @param startY Ordonnee de debut
@@ -228,8 +230,8 @@ public class Board {
 	 * @param posY   Ordonnee du square dans grid a remplacer
 	 */
 	private void putSquare(Square[][] grid, int startX, int startY, int posX, int posY) {
-		Level l = this.setOptions();
-		Square[][] newGrid = l.getBoard().getBoard();
+		final Level l = this.setOptions();
+		final Square[][] newGrid = l.getBoard().getBoard();
 		for (int i = 0; i < newGrid.length; i++) {
 			System.arraycopy(newGrid[i], 0, grid[startX + (posX * this.widthOfOneMap) + i],
 					startY + (posY * this.heightOfOneMap), newGrid[i].length);
@@ -238,7 +240,6 @@ public class Board {
 
 	/**
 	 * Mets les liens entre les nouveaux square du board
-	 *
 	 * @param grid    La grille de square
 	 * @param startX  L'abscisse de debut
 	 * @param startY  L'ordonnee de début
@@ -246,12 +247,14 @@ public class Board {
 	 * @param lenghtY La longueur sur y
 	 */
 	private void setLink(Square[][] grid, int startX, int startY, int lenghtX, int lenghtY) {
-		Square sq1, sq2;
-		int x, y;
+		Square sq1;
+		Square sq2;
+		int x;
+		int y;
 		for (int i = startX; i < startX + lenghtX; i++) {
 			for (int j = startY; j < startY + lenghtY; j++) {
 				sq1 = grid[i][j];
-				for (Direction direction : Direction.values()) {
+				for (final Direction direction : Direction.values()) {
 					x = (grid.length + i + direction.getDeltaX()) % grid.length;
 					y = (grid[0].length + j + direction.getDeltaY()) % grid[0].length;
 					sq2 = grid[x][y];

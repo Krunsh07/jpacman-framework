@@ -104,9 +104,9 @@ public class PacManSprites extends SpriteStore {
 	 * @return The animation of a dying Pac-Man.
 	 */
 	public AnimatedSprite getPacManDeathAnimation() {
-		String resource = "/sprite/dead.png";
+		final String resource = "/sprite/dead.png";
 
-		Sprite baseImage = loadSprite(resource);
+		final Sprite baseImage = loadSprite(resource);
 		AnimatedSprite animation = createAnimatedSprite(baseImage, PACMAN_DEATH_FRAMES,
 				ANIMATION_DELAY, false);
 		animation.setAnimating(false);

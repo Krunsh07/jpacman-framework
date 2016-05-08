@@ -26,7 +26,8 @@ public interface LevelObserver {
     void levelLost();
 
     /**
-     * The level mode change for a while. Pacman become a Hunter and the Ghost are feared.
+     * The level mode change for a while.
+     * Pacman become a Hunter and the Ghost are feared.
      */
     void startHunterMode();
 

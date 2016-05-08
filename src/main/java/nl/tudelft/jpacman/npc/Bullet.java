@@ -13,7 +13,7 @@ public class Bullet extends NPC{
 	/**
 	 * The sprite map, one sprite for each direction.
 	 */
-	private Sprite sprite;
+	private final Sprite sprite;
 	
 	/**
 	 * The base movement interval.

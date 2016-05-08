@@ -1,20 +1,13 @@
 package nl.tudelft.jpacman.npc.ghost;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 import java.util.List;
 
 import nl.tudelft.jpacman.Launcher;
-import nl.tudelft.jpacman.board.Board;
-import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.board.Direction;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.board.*;
 import nl.tudelft.jpacman.level.LevelFactory;
 import nl.tudelft.jpacman.level.MapParser;
 import nl.tudelft.jpacman.level.Pellet;
@@ -39,13 +32,12 @@ public class NavigationTest {
 	 */
 	private MapParser parser;
 
-	private Launcher launcher;
-
 	/**
 	 * Set up the map parser.
 	 */
 	@Before
 	public void setUp() {
+		Launcher launcher;
 		launcher = new Launcher();
 		launcher.setBoardToUse("/board.txt");
 		PacManSprites sprites = new PacManSprites();

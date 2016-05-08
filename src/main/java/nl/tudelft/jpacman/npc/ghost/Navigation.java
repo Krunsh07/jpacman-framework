@@ -51,8 +51,7 @@ public final class Navigation {
 			Node n = targets.remove(0);
 			Square s = n.getSquare();
 			if (s == to) {
-				List<Direction> path = n.getPath();
-				return path;
+				return n.getPath();
 			}
 			visited.add(s);
 			addNewTargets(traveller, targets, visited, n, s);

@@ -120,8 +120,7 @@ public class Clyde extends Ghost {
 	@Override
 	public Direction nextMove() {
 		if (this.getFearedMode()) {
-			Direction d = randomMoveAtCrossroads();
-			return d;
+			return randomMoveAtCrossroads();
 		}
 
 		Square target = Navigation.findNearest(Player.class, getSquare())
@@ -135,12 +134,10 @@ public class Clyde extends Ghost {
 		if (path != null && !path.isEmpty()) {
 			Direction d = path.get(0);
 			if (path.size() <= SHYNESS) {
-				Direction oppositeDir = OPPOSITES.get(d);
-				return oppositeDir;
+				return OPPOSITES.get(d);
 			}
 			return d;
 		}
-		Direction d = randomMove();
-		return d;
+		return randomMove();
 	}
 }

@@ -15,13 +15,19 @@ public class KidneyBean extends Fruit {
 	/**
 	 * Create a KidneyBean object
 	 * @param sprite the sprite of this kidney bean
-	 * @param lifetime the time for which this kidney bean will remain on the board
-	 * @param effectDuration the time for which the power of this kidney bean is active.
+	 * @param lifetime the time for which this kidney bean
+	 *                    will remain on the board
+	 * @param effectDuration the time for which the power
+	 *                          of this kidney bean is active.
 	 */
 	protected KidneyBean(Sprite sprite, int lifetime, int effectDuration) {
 		super(sprite, lifetime, effectDuration);
 	}
 
+	/**
+	 * Activate the effect of the fruit
+	 * @param p the player that ate this fruit.
+     */
 	@Override
 	public void fruitEffect(Player p) {
 		p.setShooting(true);

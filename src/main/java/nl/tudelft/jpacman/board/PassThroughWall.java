@@ -9,6 +9,10 @@ import nl.tudelft.jpacman.sprite.Sprite;
  */
 public class PassThroughWall extends Unit {
 
+	/**
+	 * Return the sprite of the wall
+	 * @return null
+	 */
 	@Override
 	public Sprite getSprite() {
 		return null;

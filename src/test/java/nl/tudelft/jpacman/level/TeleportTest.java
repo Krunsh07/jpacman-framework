@@ -1,24 +1,16 @@
 package nl.tudelft.jpacman.level;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import nl.tudelft.jpacman.Launcher;
 import org.junit.Before;
 import org.junit.rules.ExpectedException;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
 import java.io.IOException;
 import java.util.List;
 
 import nl.tudelft.jpacman.PacmanConfigurationException;
-import nl.tudelft.jpacman.board.Board;
-import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.board.*;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
@@ -33,15 +25,18 @@ import com.google.common.collect.Lists;
 
 public class TeleportTest {
 
-	private Launcher launcher;
 	private PacManSprites pms;
 	private MapParser parser;
 	private GhostFactory gf;
 	private Player p;
 	private CollisionMap cm;
 
+	@Rule
+	public ExpectedException thrown = ExpectedException.none();
+
 	@Before
 	public void setUp() {
+		Launcher launcher;
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
 		pms = new PacManSprites();
@@ -50,9 +45,6 @@ public class TeleportTest {
 		p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		cm = new PlayerCollisions();
 	}
-
-	@Rule
-    public ExpectedException thrown = ExpectedException.none();
 	
 	/**
 	 * Verifies that a Teleport object is initialized correctly. 

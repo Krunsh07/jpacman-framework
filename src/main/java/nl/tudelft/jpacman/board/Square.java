@@ -56,11 +56,8 @@ public abstract class Square {
 	/**
 	 * Links this square to a neighbour in the given direction. Note that this
 	 * is a one-way connection.
-	 * 
-	 * @param neighbour
-	 *            The neighbour to link.
-	 * @param direction
-	 *            The direction the new neighbour is in, as seen from this cell.
+	 * @param neighbour The neighbour to link.
+	 * @param direction The direction the new neighbour is in, as seen from this cell.
 	 */
 	public void link(Square neighbour, Direction direction) {
 		neighbours.put(direction, neighbour);
@@ -137,6 +134,11 @@ public abstract class Square {
 		return coordY;
 	}
 
+	/**
+	 * Permet de mettre a jour les coordonées des square
+	 * @param x L'abscisse
+	 * @param y L'ordonnée
+     */
 	public void setCoord(int x, int y) {
 		this.coordX = x;
 		this.coordY = y;
@@ -144,10 +146,9 @@ public abstract class Square {
 
 	/**
 	 * Determines whether the unit is allowed to occupy this square.
-	 * 
-	 * @param unit
-	 *            The unit to grant or deny access.
-	 * @return <code>true</code> iff the unit is allowed to occupy this square.
+	 * @param unit The unit to grant or deny access.
+	 * @return <code>true</code> iff the unit is allowed
+	 * to occupy this square.
 	 */
 	public abstract boolean isAccessibleTo(Unit unit);
 

@@ -6,7 +6,8 @@ import nl.tudelft.jpacman.level.Level;
 import java.util.Random;
 
 /**
- * A FruitFactory is an object used to get Fruit objects ready to be used in the game.
+ * A FruitFactory is an object used to get Fruit
+ * objects ready to be used in the game.
  */
 public class FruitFactory {
 	
@@ -38,25 +39,22 @@ public class FruitFactory {
 	/**
 	 * The level where this factory will produce fruits.
 	 */
-	private Level level;
+	private final Level level;
 
 	/**
 	 * The sprite store used for the sprites of the fruits returned by this factory.
 	 */
 	private final PacManSprites sprites;
-	
-	private Random rand;
+
+	/**
+	 * To generate random number
+	 */
+	private final Random rand;
 	
 	/**
 	 * Create a FruitFactory object
-<<<<<<< HEAD
-	 * 
-	 * @param spriteStore spriteStore The sprite store used for the sprites of the fruits returned by this factory.
-=======
-	 *
 	 * @param spriteStore spriteStore The sprite store used for the sprites of the
 	 *                       fruits returned by this factory.
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 	 * @param l The game level.
 	 */
 	public FruitFactory(PacManSprites spriteStore, Level l) {
@@ -70,8 +68,8 @@ public class FruitFactory {
 	 * @return a Fruit object picked randomly
 	 */
 	public Fruit getRandomFruit() {
-		int fruit = rand.nextInt(FRUITS);
-		Fruits f = Fruits.values()[fruit];
+		final int fruit = rand.nextInt(FRUITS);
+		final Fruits f = Fruits.values()[fruit];
 
 		switch(f) {
 		    case FISH:

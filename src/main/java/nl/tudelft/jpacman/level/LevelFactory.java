@@ -33,7 +33,8 @@ public class LevelFactory {
 	private static final int PELLET_VALUE = 10;
 	
 	/**
-	 * The default time in seconds during which a player or ghost is trapped into a hole.
+	 * The default time in seconds during which
+	 * a player or ghost is trapped into a hole.
 	 */
 	private static final int HOLE_TIME = 1;
 
@@ -73,13 +74,11 @@ public class LevelFactory {
 
 	/**
 	 * Creates a new level from the provided data.
-	 * 
-	 * @param board
-	 *            The board with all ghosts and pellets occupying their squares.
-	 * @param ghosts
-	 *            A list of all ghosts on the board.
-	 * @param startPositions
-	 *            A list of squares from which players may start the game.
+	 * @param board The board with all ghosts and pellets
+	 *                 occupying their squares.
+	 * @param ghosts A list of all ghosts on the board.
+	 * @param startPositions A list of squares from which
+	 *                       players may start the game.
 	 * @return A new level for the board.
 	 */
 	public Level createLevel(Board board, List<NPC> ghosts,
@@ -93,7 +92,6 @@ public class LevelFactory {
 
 	/**
 	 * Creates a new ghost.
-	 * 
 	 * @return The new ghost.
 	 */
 	public NPC createGhost() {
@@ -158,6 +156,10 @@ public class LevelFactory {
 	 */
 	public Pellet createSuperPellet() { return new Pellet(SUPERPELLET_VALUE, sprites.getSuperPelletSprite()); }
 
+	/**
+	 * Return la valeur d'une super pellet
+	 * @return Le valeur d'une super pellet
+     */
 	public static int getSuperPelletValue() { return SUPERPELLET_VALUE;}
 
 	/**
@@ -174,9 +176,7 @@ public class LevelFactory {
 
 		/**
 		 * Creates a new random ghost.
-		 * 
-		 * @param ghostSprite
-		 *            The sprite for the ghost.
+		 * @param ghostSprite The sprite for the ghost.
 		 */
 		private RandomGhost(Map<Direction, Sprite> ghostSprite, AnimatedSprite explodeAnimation) {
 			super(ghostSprite, explodeAnimation);

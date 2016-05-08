@@ -104,24 +104,20 @@ public class Blinky extends Ghost {
 		// TODO Blinky should patrol his corner every once in a while
 		// TODO Implement his actual behaviour instead of simply chasing.
 		if (this.getFearedMode()) {
-			Direction d = randomMoveAtCrossroads();
-			return d;
+			return randomMoveAtCrossroads();
 		}
 
 		Square target = Navigation.findNearest(Player.class, getSquare())
 				.getSquare();
 		if (target == null) {
-			Direction d = randomMove();
-			return d;
+			return randomMove();
 		}
 		
 		List<Direction> path = Navigation.shortestPath(getSquare(), target,
 				this);
 		if (path != null && !path.isEmpty()) {
-			Direction d = path.get(0);
-			return d;
+			return path.get(0);
 		}
-		Direction d = randomMove();
-		return d;
+		return randomMove();
 	}
 }

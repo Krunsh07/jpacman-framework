@@ -22,6 +22,10 @@ public class Fish extends Fruit {
 		super(sprite, lifetime, effectDuration);
 	}
 
+	/**
+	 * Activate the effect
+	 * @param p the player that ate this fruit.
+     */
 	@Override
 	public void fruitEffect(Player p) {
 		p.setMovable(false);

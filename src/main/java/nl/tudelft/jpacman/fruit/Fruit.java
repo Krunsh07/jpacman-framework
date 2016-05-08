@@ -9,10 +9,19 @@ import nl.tudelft.jpacman.sprite.Sprite;
  */
 public abstract class Fruit extends Unit {
 
+	/**
+	 * The sprite of the fruit
+	 */
 	private final Sprite image;
-	
+
+	/**
+	 * The lifetime of the fruit
+	 */
 	private final int lifetime;
-	
+
+	/**
+	 * The duration of the effect
+	 */
 	private final int effectDuration;
 	
 	/**

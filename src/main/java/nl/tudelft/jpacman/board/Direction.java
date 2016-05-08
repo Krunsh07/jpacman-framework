@@ -41,12 +41,9 @@ public enum Direction {
 
 	/**
 	 * Creates a new Direction with the given parameters.
-	 * 
-	 * @param deltaX
-	 *            The delta x (width difference) to an element in the direction
+	 * @param deltaX The delta x (width difference) to an element in the direction
 	 *            in a matrix with 0,0 (x,y) as its top-left element.
-	 * @param deltaY
-	 *            The delta y (height difference) to an element in the direction
+	 * @param deltaY The delta y (height difference) to an element in the direction
 	 *            in a matrix with 0,0 (x,y) as its top-left element.
 	 */
 	private Direction(int deltaX, int deltaY) {

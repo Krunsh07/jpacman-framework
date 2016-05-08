@@ -1,10 +1,7 @@
 package nl.tudelft.jpacman.level;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,11 +16,7 @@ import org.junit.rules.ExpectedException;
 import com.google.common.collect.Lists;
 
 import nl.tudelft.jpacman.PacmanConfigurationException;
-import nl.tudelft.jpacman.board.Board;
-import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.board.Direction;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.board.*;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
@@ -31,7 +24,6 @@ import nl.tudelft.jpacman.sprite.Sprite;
 
 public class BridgeTest {
 
-	private Launcher launcher;
 	private PacManSprites pms;
 	private MapParser parser;
 	
@@ -42,6 +34,7 @@ public class BridgeTest {
 
 	@Before
 	public void setUp() {
+		Launcher launcher;
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
 		pms = new PacManSprites();
@@ -81,7 +74,8 @@ public class BridgeTest {
 	public void boardBridgeTest() throws IOException {
 		Board b = parser.parseMap(Lists.newArrayList(Lists.newArrayList(
 				"####", "#BB#", "####","----", "----", "H N ", "V P "))).getBoard();
-		Square s1 = b.squareAt(1, 1), s2 = b.squareAt(2, 1);
+		Square s1 = b.squareAt(1, 1);
+		Square s2 = b.squareAt(2, 1);
 		List<Unit> occupants1 =  s1.getOccupants();
 		List<Unit> occupants2 =  s2.getOccupants();
 		assertEquals(occupants1.size(), 1);
@@ -285,7 +279,6 @@ public class BridgeTest {
 		p.leaveSquare();
 		p.occupy(bridgeSquare);
 		p.setDirection(Direction.NORTH);
-		System.out.println("collision avec pont ici."+p.getDirection()+" "+bridge.getDirection());
 		cm.collide(p, bridge);
 		cm.collide(p, g);
 		assertFalse(((Player) p).isAlive());
