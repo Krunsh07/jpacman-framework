@@ -35,12 +35,4 @@ public class GameFactory {
 	public Game createSinglePlayerGame(Level level) {
 		return new SinglePlayerGame(playerFact.createPacMan(), level);
 	}
-
-	/**
-	 * Returns the player factory associated with this game factory.
-	 * @return the player factory associated with this game factory.
-	 */
-	protected PlayerFactory getPlayerFactory() {
-		return playerFact;
-	}
 }

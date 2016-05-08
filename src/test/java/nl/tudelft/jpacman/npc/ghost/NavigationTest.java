@@ -15,7 +15,6 @@ import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
-import nl.tudelft.jpacman.level.CollisionInteractionMap;
 import nl.tudelft.jpacman.level.LevelFactory;
 import nl.tudelft.jpacman.level.MapParser;
 import nl.tudelft.jpacman.level.Pellet;
@@ -41,8 +40,6 @@ public class NavigationTest {
 	private MapParser parser;
 
 	private Launcher launcher;
-
-	private CollisionInteractionMap cim;
 
 	/**
 	 * Set up the map parser.
@@ -187,9 +184,8 @@ public class NavigationTest {
 		Board b = parser
 				.parseMap(Lists.newArrayList("#####", "# .o#", "#####"))
 				.getBoard();
-		Square s1 = b.squareAt(1, 1);
-		Square s2 = b.squareAt(3, 1);
-		Unit unitPellet = Navigation.findUnit(Pellet.class, s2);
+		Square s1 = b.squareAt(3, 1);
+		Unit unitPellet = Navigation.findUnit(Pellet.class, s1);
 		//To verify the unit is a Pellet.
 		assertNotNull(unitPellet);
 		Pellet pellet = (Pellet) unitPellet;

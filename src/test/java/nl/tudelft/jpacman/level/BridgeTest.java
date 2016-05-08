@@ -238,10 +238,12 @@ public class BridgeTest {
 			p.setDirection(dirs[i]);
 			assertFalse(p.isOnBridge());
 			cm.collide(p, bridge);
-			if(i <= 1)
+			if(i <= 1) {
 				assertTrue(p.isOnBridge());
-			else
+			}
+			else{
 				assertFalse(p.isOnBridge());
+			}
 			p.leaveSquare();
 			p.setOnBridge(false);
 		}
@@ -271,10 +273,12 @@ public class BridgeTest {
 			p.setDirection(dirs[i]);
 			assertFalse(p.isOnBridge());
 			cm.collide(p, bridge);
-			if(i > 1)
+			if(i > 1){
                 assertFalse(p.isOnBridge());
-            else
+			}
+            else{
 				assertTrue(p.isOnBridge());
+			}
 			p.leaveSquare();
 			p.setOnBridge(false);
 		}

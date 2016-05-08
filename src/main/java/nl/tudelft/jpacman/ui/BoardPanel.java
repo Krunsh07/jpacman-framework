@@ -51,9 +51,6 @@ class BoardPanel extends JPanel {
 	 */
 	private int scalex, scaley;
 
-
-	int X, Y;
-
 	/**
 	 * Savoir si c'est le premier traçage ou non
 	 */
@@ -84,7 +81,7 @@ class BoardPanel extends JPanel {
 	public void paint(Graphics g) {
 		assert g != null;
 		Launcher launcher = Launcher.getLauncher();
-		if(launcher.getBoardToUse() == "/board.txt" || launcher.getBoardToUse() == "/boardFruit.txt") {
+		if(launcher.getBoardToUse().equals("/board.txt") || launcher.getBoardToUse().equals("/boardFruit.txt")) {
 			render(game.getLevel().getBoard(), g, getSize());
 		}
 		else {
@@ -148,8 +145,6 @@ class BoardPanel extends JPanel {
 
 		int X = posPlayer.getCoordX();
 		int Y = posPlayer.getCoordY();
-
-		//System.out.println("X-Y : (" + X + "," + Y + ").");
 		for (int y = Y-15; y < Y+6; y++)
 		{
 			for (int x = X-11; x < X+12; x++)
@@ -163,19 +158,15 @@ class BoardPanel extends JPanel {
 		Level lvl = Level.getLevel();
 		if(lvl.isInProgress()) {
 			if (posPlayer.getCoordX() > board.getWidth() - 13) {
-				//System.out.println("extend EAST !! Map size : (" + board.getHeight() + "," + board.getWidth() + ").");
 				board.extend(Direction.EAST);
 			}
 			if (posPlayer.getCoordX() < 13) {
-				//System.out.println("extend WEST !! Map size : (" + board.getHeight() + "," + board.getWidth() + ").");
 				board.extend(Direction.WEST);
 			}
 			if (posPlayer.getCoordY() > board.getHeight() - 12) {
-				//System.out.println("extend SOUTH !! Map size : (" + board.getHeight() + "," + board.getWidth() + ").");
 				board.extend(Direction.SOUTH);
 			}
 			if (posPlayer.getCoordY() < 18) {
-				//System.out.println("extend NORTH !! Map size : (" + board.getHeight() + "," + board.getWidth() + ").");
 				board.extend(Direction.NORTH);
 			}
 		}

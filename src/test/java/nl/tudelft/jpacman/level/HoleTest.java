@@ -1,25 +1,18 @@
 package nl.tudelft.jpacman.level;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.BoardFactory;
-import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
-import nl.tudelft.jpacman.level.LevelFactory;
-import nl.tudelft.jpacman.level.MapParser;
-import nl.tudelft.jpacman.level.Hole;
-import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;

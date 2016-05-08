@@ -2,10 +2,7 @@ package nl.tudelft.jpacman.fruit;
 
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.level.Level;
-import nl.tudelft.jpacman.npc.NPC;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -36,8 +33,8 @@ public class FruitFactory {
 	/**
 	 * List of supported fruits.
 	 */
-	private static enum Fruits {FISH, POTATO, TOMATO, POMGRANATE, BELLPEPPER, KIDNEYBEAN};
-	
+	private enum Fruits {FISH, POTATO, TOMATO, POMGRANATE, BELLPEPPER, KIDNEYBEAN};
+
 	/**
 	 * The level where this factory will produce fruits.
 	 */
@@ -52,8 +49,14 @@ public class FruitFactory {
 	
 	/**
 	 * Create a FruitFactory object
+<<<<<<< HEAD
 	 * 
 	 * @param spriteStore spriteStore The sprite store used for the sprites of the fruits returned by this factory.
+=======
+	 *
+	 * @param spriteStore spriteStore The sprite store used for the sprites of the
+	 *                       fruits returned by this factory.
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 	 * @param l The game level.
 	 */
 	public FruitFactory(PacManSprites spriteStore, Level l) {
@@ -69,7 +72,6 @@ public class FruitFactory {
 	public Fruit getRandomFruit() {
 		int fruit = rand.nextInt(FRUITS);
 		Fruits f = Fruits.values()[fruit];
-		//return getPomgranate();
 
 		switch(f) {
 		    case FISH:
@@ -85,7 +87,6 @@ public class FruitFactory {
 		    case TOMATO:
 		    	return getTomato();
 		    default:
-		    	System.err.println("Fruit non supporté");
 		    	return null;
 		}
 	}
@@ -127,7 +128,7 @@ public class FruitFactory {
 	 * @return a Potato object
 	 */
 	public Fruit getPotato() {
-		return new Potato(sprites.getPotatoSprite(), level, LIFE_TIME, BAD_EFFECT_DURATION);
+		return new Potato(sprites.getPotatoSprite(), LIFE_TIME, BAD_EFFECT_DURATION, level);
 	}
 
 	/**

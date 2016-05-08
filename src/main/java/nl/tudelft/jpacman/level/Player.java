@@ -56,7 +56,7 @@ public class Player extends MovableCharacter {
 	/**
 	 * <code>true</code> iff this player is under the Hunter Mode.
 	 */
-	private boolean hunterMode = false;
+	private boolean hunterMode;
 
 	/**
 	 * Creates a new player with a score of 0 points.

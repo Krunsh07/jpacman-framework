@@ -96,5 +96,4 @@ public class SpriteStore {
 
 		return new AnimatedSprite(animation, delay, loop);
 	}
-
 }

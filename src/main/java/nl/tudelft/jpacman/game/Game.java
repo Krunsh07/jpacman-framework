@@ -4,9 +4,8 @@ import java.util.List;
 
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.level.Level;
-import nl.tudelft.jpacman.level.Level.LevelObserver;
+import nl.tudelft.jpacman.level.LevelObserver;
 import nl.tudelft.jpacman.level.Player;
-import nl.tudelft.jpacman.npc.ghost.Ghost;
 
 /**
  * A basic implementation of a Pac-Man game.
@@ -98,7 +97,7 @@ public abstract class Game implements LevelObserver {
 	public void move(Player player, Direction direction) {
 		if (isInProgress()) {
 			getLevel().move(player, direction);
-			//player.setDirection(direction); Code florent
+			player.setDirection(direction);
 		}
 	}
 

@@ -17,9 +17,9 @@ public abstract class Fruit extends Unit {
 	
 	/**
 	 * Create a Fruit object
-	 * @param Sprite sprite the sprite of this fruit
-	 * @param int lifetime the time for which this fruit will remain on the board
-	 * @param int effectDuration the time for which the power of this fruit is active.
+	 * @param sprite the sprite of this fruit
+	 * @param lifetime the time for which this fruit will remain on the board
+	 * @param effectDuration the time for which the power of this fruit is active.
 	 */
 	protected Fruit(Sprite sprite, int lifetime, int effectDuration) {
 		this.image = sprite;
@@ -53,7 +53,7 @@ public abstract class Fruit extends Unit {
 	
 	/**
 	 * Enable the power of this fruit.
-	 * @param Player p the player that ate this fruit.
+	 * @param p the player that ate this fruit.
 	 */
 	public abstract void fruitEffect(Player p);
 }

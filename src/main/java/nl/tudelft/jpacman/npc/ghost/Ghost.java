@@ -9,7 +9,6 @@ import java.util.TimerTask;
 
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.level.MovableCharacter;
 import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.sprite.AnimatedSprite;
 import nl.tudelft.jpacman.sprite.PacManSprites;
@@ -39,24 +38,12 @@ public abstract class Ghost extends NPC {
 	/**
 	 * A boolean to know if ghosts are feared by Pacman.
 	 */
-	private boolean fearedMode = false;
+	private boolean fearedMode;
 
 	/**
 	 * The last position (Square) of the Ghost.
 	 */
-	private Square lastSquare = null;
-
-	/**
-	 * The variation in intervals, this makes the ghosts look more dynamic and
-	 * less predictable.
-	 */
-	private static final int INTERVAL_VARIATION = 50;
-
-	/**
-	 * The base movement interval for feared ghost.
-	 */
-	private static final int MOVE_INTERVAL = 500;
-
+	private Square lastSquare;
 
 	/**
 	 * Modificateur de vitesse du ghost
@@ -153,8 +140,26 @@ public abstract class Ghost extends NPC {
 		}
 	}
 
-	public long getFearedInterval() {
-		return MOVE_INTERVAL + new Random().nextInt(INTERVAL_VARIATION);
+	public static Ghost addGhost(GhostFactory ghostFact, int index){
+		Ghost g;
+		switch (index) {
+			case 0:
+				g = ghostFact.createBlinky();
+				break;
+			case 1:
+				g = ghostFact.createInky();
+				break;
+			case 2:
+				g = ghostFact.createPinky();
+				break;
+			case 3:
+				g = ghostFact.createClyde();
+				break;
+			default:
+				g = ghostFact.createBlinky();
+				break;
+		}
+		return g;
 	}
 
 	/**

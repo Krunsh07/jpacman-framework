@@ -13,5 +13,4 @@ public class PassThroughWall extends Unit {
 	public Sprite getSprite() {
 		return null;
 	}
-
 }

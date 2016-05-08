@@ -63,6 +63,11 @@ public class Inky extends Ghost {
 	private static final int ACCELERATED_MOVE_INTERVAL = 125;
 
 	/**
+	 * The base movement when the ghost is feared.
+	 */
+	private static final int SLOW_MOVE_INTERVAL = 500;
+
+	/**
 	 * Creates a new "Inky", a.k.a. Bashful.
 	 * 
 	 * @param spriteMap
@@ -74,12 +79,13 @@ public class Inky extends Ghost {
 
 	@Override
 	public long getInterval() {
+		if(getFearedMode()) {
+			return ((int) (SLOW_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
 		if(!getAcceleration()){
 			return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 		}
-		else{
-			return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
-		}
+		return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 	}
 
 	/**
@@ -111,11 +117,11 @@ public class Inky extends Ghost {
 	// CHECKSTYLE:OFF To keep this more readable.
 	@Override
 	public Direction nextMove() {
-		if (this.getFearedMode())
-		{
+		if (this.getFearedMode()) {
 			Direction d = randomMoveAtCrossroads();
 			return d;
 		}
+
 		Unit blinky = Navigation.findNearest(Blinky.class, getSquare());
 		if (blinky == null) {
 			Direction d = randomMove();

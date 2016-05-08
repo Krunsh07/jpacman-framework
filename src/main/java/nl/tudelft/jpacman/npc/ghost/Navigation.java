@@ -8,7 +8,6 @@ import java.util.Set;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
-import nl.tudelft.jpacman.level.Bridge;
 
 /**
  * Navigation provides utility to nagivate on {@link Square}s.

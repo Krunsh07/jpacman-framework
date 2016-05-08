@@ -14,9 +14,9 @@ public class Tomato extends Fruit{
 
 	/**
 	 * Create a Tomato object
-	 * @param Sprite sprite the sprite of this Tomato
-	 * @param int lifetime the time for which this Tomato will remain on the board
-	 * @param int effectDuration the time for which the power of this Tomato is active.
+	 * @param sprite the sprite of this Tomato
+	 * @param lifetime the time for which this Tomato will remain on the board
+	 * @param effectDuration the time for which the power of this Tomato is active.
 	 */
 	protected Tomato(Sprite sprite, int lifetime, int effectDuration) {
 		super(sprite, lifetime, effectDuration);
@@ -35,5 +35,4 @@ public class Tomato extends Fruit{
 		Timer timer = new Timer();
 		timer.schedule(timerTask, getEffectDuration() * 1000);
 	}
-
 }
