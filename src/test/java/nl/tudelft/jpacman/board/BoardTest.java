@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public class BoardTest {
 
-	private Board board;
+	private Board board, board2;
 
 	private Square x0y0 = mock(Square.class);
 	private Square x0y1 = mock(Square.class);
@@ -40,6 +40,14 @@ public class BoardTest {
 		grid[1][1] = x1y1;
 		grid[1][2] = x1y2;
 		board = new Board(grid);
+		Square[][] grid2 = new Square[maxWidth][maxHeight];
+		grid2[0][0] = x0y0;
+		grid2[0][1] = x0y1;
+		grid2[0][2] = x0y2;
+		grid2[1][0] = x1y0;
+		grid2[1][1] = x1y1;
+		grid2[1][2] = x1y2;
+		board2 = new Board(grid2);
 	}
 
 	/**
@@ -85,15 +93,9 @@ public class BoardTest {
 	@Test
 	public void verifyBoardChange()
 	{
-		Square[][] grid2 = new Square[maxWidth][maxHeight];
-		grid2[0][0] = x0y0;
-		grid2[0][1] = x0y1;
-		grid2[0][2] = x0y2;
-		grid2[1][0] = x1y0;
-		grid2[1][1] = x1y1;
-		grid2[1][2] = x1y2;
-		assertFalse(grid2.equals(board.getBoard()));
-		board.setBoard(grid2);
-		assertTrue(grid2.equals(board.getBoard()));
+		Square[][] grid = board2.getBoard();
+		assertFalse(grid.equals(board.getBoard()));
+		board.setBoard(grid);
+		assertTrue(grid.equals(board.getBoard()));
 	}
 }

@@ -29,11 +29,19 @@ import org.junit.Test;
 public class BulletTest {
 
 	private Launcher launcher;
+	private PacManSprites pms;
+	private GhostFactory gf;
+	private Player p;
+	private MapParser parser;
 
 	@Before
 	public void setUp() {
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
+		pms = new PacManSprites();
+		p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		gf = new GhostFactory(pms);
+		parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 	}
 
 	/**
@@ -41,8 +49,6 @@ public class BulletTest {
 	 */
 	@Test
 	public void initTest(){
-		PacManSprites pms = new PacManSprites();
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Sprite bulletSprite = pms.getBulletSprite();
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
 	    assertTrue(bullet.isAlive());
@@ -55,8 +61,6 @@ public class BulletTest {
 	 */
 	@Test
 	public void CantChangeDirection(){
-		PacManSprites pms = new PacManSprites();
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
 	    assertEquals(bullet.getDirection(), p.getDirection());
 	    bullet.setDirection(Direction.EAST);
@@ -68,12 +72,8 @@ public class BulletTest {
 	 */
 	@Test
 	public void doesNotMovewhenDeadTest(){
-		PacManSprites pms = new PacManSprites();
-		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("#####", "#   #","#   #" ,"#####")).getBoard();
 		Square notNextToWall = b.squareAt(2, 2);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		p.occupy(notNextToWall);
 		p.setDirection(Direction.EAST);
 		p.occupy(notNextToWall);
@@ -89,13 +89,9 @@ public class BulletTest {
 	 */
 	@Test
 	public void doesNotMoveAndDiewhenBlockedByWallsTest(){
-		PacManSprites pms = new PacManSprites();
-		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("#####", "#   #", "#   #", "#   #", "#####")).getBoard();
 		Square notNextToWall = b.squareAt(2, 2);
         Square nextToWall = b.squareAt(2, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
         p.occupy(notNextToWall);
 		p.setDirection(Direction.NORTH);
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
@@ -109,12 +105,8 @@ public class BulletTest {
 	 */
 	@Test
 	public void doesNotMoveAndDiewhenBlockedByBridgesTest(){
-		PacManSprites pms = new PacManSprites();
-		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("####", "#  #", "#B #", "####", "----", "----", "V N ")).getBoard();
 		Square square = b.squareAt(1, 2);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		p.occupy(square);
 		p.setDirection(Direction.NORTH);
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
@@ -128,7 +120,6 @@ public class BulletTest {
 	 */
 	@Test
 	public void setAliveTest(){
-		PacManSprites pms = new PacManSprites();
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
 	    assertTrue(bullet.isAlive());
@@ -141,12 +132,8 @@ public class BulletTest {
 	 */
 	@Test
 	public void BulletKillsGhostTest(){
-		PacManSprites pms = new PacManSprites();
-		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("###", "# #", "###")).getBoard();
 		Square square = b.squareAt(1, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Ghost g = gf.createBlinky();
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
 		CollisionMap cm = new PlayerCollisions();

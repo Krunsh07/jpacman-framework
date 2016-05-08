@@ -29,11 +29,21 @@ public class HoleTest {
 	public static final int HOLE_TIME_TEST = 2;
 
 	private Launcher launcher;
+	private PacManSprites pms;
+	private MapParser parser;
+	private GhostFactory gf;
+	private Player p;
+	private CollisionMap cm;
 
 	@Before
 	public void setUp() {
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
+		pms = new PacManSprites();
+		parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
+		p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		gf = new GhostFactory(pms);
+		cm = new PlayerCollisions();
 	}
 
 	/**
@@ -58,8 +68,6 @@ public class HoleTest {
 	 */
 	@Test
 	public void boardHoleTest() throws IOException {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites, new GhostFactory(sprites)), new BoardFactory(sprites));
 		Board b = parser.parseMap(Lists.newArrayList("H")).getBoard();
 		Square s1 = b.squareAt(0, 0);
 		List<Unit> occupants =  s1.getOccupants();
@@ -77,14 +85,10 @@ public class HoleTest {
 	 */
 	@Test
 	public void temporaryImmobilityTest() throws IOException, InterruptedException {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("HH")).getBoard();
 		Square s1 = b.squareAt(0, 0);
 		Square s2 = b.squareAt(1, 0);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Ghost g = new GhostFactory(pms).createBlinky();
-		CollisionMap cm = new PlayerCollisions();
+		Ghost g = gf.createBlinky();
 		Unit hole = s1.getOccupants().get(0);
 		p.occupy(s1);
 		cm.collide(p, hole);

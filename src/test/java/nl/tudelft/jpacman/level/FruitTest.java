@@ -38,11 +38,24 @@ public class FruitTest {
 	private static final int BAD_EFFECT_DURATION = 2;
 
 	private Launcher launcher;
+	private PacManSprites pms;
+	private MapParser parser;
+	private GhostFactory gf;
+	private FruitFactory ff;
+	private Player p;
+	private CollisionMap cm;
+
 
 	@Before
 	public void setUp() {
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
+		pms = new PacManSprites();
+		parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
+		p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		ff = new FruitFactory(pms, null);
+		gf = new GhostFactory(pms);
+		cm = new PlayerCollisions();
 	}
 
 	/**
@@ -53,13 +66,9 @@ public class FruitTest {
 	 */
 	@Test
 	public void bellPepperTest() throws IOException, InterruptedException {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList(" ")).getBoard();
 		Square fruitSquare = b.squareAt(0, 0);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Fruit f = new FruitFactory(pms, null).getBellPepper();
-		CollisionMap cm = new PlayerCollisions();
+		Fruit f = ff.getBellPepper();
 		f.occupy(fruitSquare);
 		p.occupy(fruitSquare);
 		Unit fruit = fruitSquare.getOccupants().get(0);
@@ -82,16 +91,12 @@ public class FruitTest {
 	 */
 	@Test
 	public void PomergranateTest() throws IOException, InterruptedException {
-		PacManSprites pms = new PacManSprites();
-		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("###########",
 				"#         #", "#         #", "#         #", "#         #",
 				"#         #", "#         #", "###########")).getBoard();
 		Square fruitSquare = b.squareAt(5, 6);
 		Square explodedSquare = b.squareAt(5, 3);
 		Square safeSquare = b.squareAt(1, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Ghost explodedGhost = gf.createBlinky();
 		Ghost safeGhost = gf.createClyde();
 		List<NPC> gl = new ArrayList<NPC>();
@@ -101,7 +106,6 @@ public class FruitTest {
         sp.add(square);
         Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp);
 		Fruit f = new FruitFactory(pms, l).getPomgranate();
-		CollisionMap cm = new PlayerCollisions();
 		f.occupy(fruitSquare);
 		explodedGhost.occupy(explodedSquare);
 		safeGhost.occupy(safeSquare);
@@ -120,13 +124,9 @@ public class FruitTest {
 	 */
 	@Test
 	public void FishTest() throws IOException, InterruptedException {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList(" ")).getBoard();
 		Square fruitSquare = b.squareAt(0, 0);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Fruit f = new FruitFactory(pms, null).getFish();
-		CollisionMap cm = new PlayerCollisions();
+		Fruit f = ff.getFish();
 		f.occupy(fruitSquare);
 		p.occupy(fruitSquare);
 		Unit fruit = fruitSquare.getOccupants().get(0);
@@ -148,13 +148,9 @@ public class FruitTest {
 	 */
 	@Test
 	public void KidneyBeanTest() throws IOException, InterruptedException {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList(" ")).getBoard();
 		Square fruitSquare = b.squareAt(0, 0);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Fruit f = new FruitFactory(pms, null).getKidneyBean();
-		CollisionMap cm = new PlayerCollisions();
+		Fruit f =ff.getKidneyBean();
 		f.occupy(fruitSquare);
 		p.occupy(fruitSquare);
 		Unit fruit = fruitSquare.getOccupants().get(0);
@@ -176,9 +172,6 @@ public class FruitTest {
 	 */
 	@Test
 	public void potatoTest() throws IOException, InterruptedException {
-		PacManSprites pms = new PacManSprites();
-		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("###", "# #", "###")).getBoard();
 		List<NPC> gl = new ArrayList<NPC>();
 		Ghost g = gf.createBlinky();
@@ -187,9 +180,7 @@ public class FruitTest {
         List<Square>  sp = new ArrayList<>();
         sp.add(square);
 		Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Fruit f = new FruitFactory(pms, l).getPotato();
-		CollisionMap cm = new PlayerCollisions();
 		f.occupy(square);
 		p.occupy(square);
 		g.occupy(square);
@@ -212,17 +203,12 @@ public class FruitTest {
 	 */
 	@Test
 	public void tomatoTest() throws IOException, InterruptedException {
-		PacManSprites pms = new PacManSprites();
-		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("###", "# #", "###")).getBoard();
 		Square square = b.squareAt(1, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Ghost g = gf.createBlinky();
 		List<NPC> gl = new ArrayList<NPC>();
 		gl.add(g);
-		Fruit f = new FruitFactory(pms, null).getTomato();
-		CollisionMap cm = new PlayerCollisions();
+		Fruit f = ff.getTomato();
 		f.occupy(square);
 		p.occupy(square);
 		g.occupy(square);

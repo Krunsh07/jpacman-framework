@@ -56,6 +56,8 @@ public class GameTest {
      */
     @Before
     public void setUp() {
+        Launcher launcher = new Launcher();
+        launcher.setBoardToUse("/board.txt");
         PacManSprites sprites = new PacManSprites();
         parser = new MapParser(new LevelFactory(sprites, new GhostFactory(
                 sprites)), new BoardFactory(sprites));
@@ -67,8 +69,6 @@ public class GameTest {
      */
     @Test
     public void testHunterMode() {
-        Launcher launcher = new Launcher();
-        launcher.setBoardToUse("/board.txt");
         Board b = parser
                 .parseMap(Lists.newArrayList("######", "# ..o#", "######"))
                 .getBoard();

@@ -34,11 +34,21 @@ import com.google.common.collect.Lists;
 public class TeleportTest {
 
 	private Launcher launcher;
+	private PacManSprites pms;
+	private MapParser parser;
+	private GhostFactory gf;
+	private Player p;
+	private CollisionMap cm;
 
 	@Before
 	public void setUp() {
 		launcher = new Launcher();
 		launcher.setBoardToUse("/boardFruit.txt");
+		pms = new PacManSprites();
+		parser = new MapParser(new LevelFactory(pms,
+				new GhostFactory(pms)), new BoardFactory(pms));
+		p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
+		cm = new PlayerCollisions();
 	}
 
 	@Rule
@@ -67,9 +77,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void boardteleportTest() throws IOException {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
 		Board b = parser.parseMap(Lists.newArrayList(Lists.newArrayList("####",
 				"#T #", "####","----", "2 1 "))).getBoard();
 		Square s1 = b.squareAt(1, 1);
@@ -88,9 +95,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void fomatFailTest1() {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
         thrown.expect(PacmanConfigurationException.class);
 		parser.parseMap(Lists.newArrayList(Lists.newArrayList("####", "#T #",
 				"####","----", "-1 1"))).getBoard();
@@ -104,9 +108,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void fomatFailTest2() {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
         thrown.expect(PacmanConfigurationException.class);
 		parser.parseMap(Lists.newArrayList(Lists.newArrayList("####", "#T #",
 				"####","----", "1 A "))).getBoard();
@@ -120,9 +121,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void fomatFailTest3() {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
         thrown.expect(PacmanConfigurationException.class);
 		parser.parseMap(Lists.newArrayList(Lists.newArrayList("####", "#T #",
 				"####","----", "  2 "))).getBoard();
@@ -135,9 +133,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void fomatFailTest4() {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
         thrown.expect(PacmanConfigurationException.class);
 		parser.parseMap(Lists.newArrayList(Lists.newArrayList("####", "#TP#",
 				"####","----", "3 3 "))).getBoard();
@@ -167,9 +162,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void fomatFailTest6() {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
         thrown.expect(PacmanConfigurationException.class);
 		parser.parseMap(Lists.newArrayList(Lists.newArrayList("####", "#TP#",
 				"####"))).getBoard();
@@ -182,9 +174,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void fomatFailTest7() {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
         thrown.expect(PacmanConfigurationException.class);
 		parser.parseMap(Lists.newArrayList(Lists.newArrayList("####", "#T #",
 				"####","----", " 2 3 2 "))).getBoard();
@@ -197,9 +186,6 @@ public class TeleportTest {
 	 */
 	@Test
 	public void fomatFailTest8() {
-		PacManSprites sprites = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(sprites,
-				new GhostFactory(sprites)), new BoardFactory(sprites));
         thrown.expect(PacmanConfigurationException.class);
 		parser.parseMap(Lists.newArrayList(Lists.newArrayList("####", "# P#",
 				"####","----", "2 3 "))).getBoard();
@@ -213,13 +199,9 @@ public class TeleportTest {
 	 */
 	@Test
 	public void playerWarpTest() {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("######","# T  #", "######", "------", "4 1   ")).getBoard();
 		Square teleportSquare = b.squareAt(2, 1);
 		Square destinationSquare = b.squareAt(4, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		CollisionMap cm = new PlayerCollisions();
 		Unit teleport = teleportSquare.getOccupants().get(0);
 		p.occupy(teleportSquare);
 		cm.collide(p, teleport);
@@ -237,13 +219,9 @@ public class TeleportTest {
 	 */
 	@Test
 	public void playerImpossibleWarpTest() {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		// Square (4, 1) is a wall, so the player shouldn't be able to be there.
 		Board b = parser.parseMap(Lists.newArrayList("######","# T ##", "######", "------", "4 1   ")).getBoard();
 		Square teleportSquare = b.squareAt(2, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		CollisionMap cm = new PlayerCollisions();
 		Unit teleport = teleportSquare.getOccupants().get(0);
 		p.occupy(teleportSquare);
 		cm.collide(p, teleport);
@@ -259,15 +237,11 @@ public class TeleportTest {
 	 */
 	@Test
 	public void playerWarpAndDieTest() {
-		PacManSprites pms = new PacManSprites();
 		GhostFactory gf = new GhostFactory(pms);
-		MapParser parser = new MapParser(new LevelFactory(pms, gf), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("######","# T  #", "######", "------", "4 1   ")).getBoard();
 		Square teleportSquare = b.squareAt(2, 1);
 		Square GhostSquare = b.squareAt(4, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Ghost g = gf.createBlinky();
-		CollisionMap cm = new PlayerCollisions();
 		Unit teleport = teleportSquare.getOccupants().get(0);
 		p.occupy(teleportSquare);
 		g.occupy(GhostSquare);
@@ -282,12 +256,8 @@ public class TeleportTest {
 	 */
 	@Test
 	public void playerWarpAndTrapTest() {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms, new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("######","# T H#", "######", "------", "4 1   ")).getBoard();
 		Square teleportSquare = b.squareAt(2, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		CollisionMap cm = new PlayerCollisions();
 		Unit teleport = teleportSquare.getOccupants().get(0);
 		p.occupy(teleportSquare);
 		cm.collide(p, teleport);
@@ -302,16 +272,11 @@ public class TeleportTest {
 	 */
 	@Test
 	public void playerNoconsecutiveWarpTest() {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms,
-				new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("######","# T T#",
 				"######", "------", "4 1   ", "1 1   ")).getBoard();
 		Square teleportSquare = b.squareAt(2, 1);
 		Square SecondTeleportSquare = b.squareAt(4, 1);
 		Square SecondDestinationSquare = b.squareAt(1, 1);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		CollisionMap cm = new PlayerCollisions();
 		Unit teleport = teleportSquare.getOccupants().get(0);
 		p.occupy(teleportSquare);
 		cm.collide(p, teleport);
@@ -329,14 +294,9 @@ public class TeleportTest {
 	 */
 	@Test
 	public void playerWarpBridgeTest() {
-		PacManSprites pms = new PacManSprites();
-		MapParser parser = new MapParser(new LevelFactory(pms,
-				new GhostFactory(pms)), new BoardFactory(pms));
 		Board b = parser.parseMap(Lists.newArrayList("#######", "#     #" ,"# T B #","#     #",
 				"#######", "-------", "4 2    ", "-------", "V N    ")).getBoard();
 		Square teleportSquare = b.squareAt(2, 2);
-		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		CollisionMap cm = new PlayerCollisions();
 		Unit teleport = teleportSquare.getOccupants().get(0);
 		p.occupy(teleportSquare);
 		assertFalse(p.isOnBridge());
