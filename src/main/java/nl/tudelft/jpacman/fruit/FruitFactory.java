@@ -72,10 +72,6 @@ public class FruitFactory {
 	public Fruit getRandomFruit() {
 		int fruit = rand.nextInt(FRUITS);
 		Fruits f = Fruits.values()[fruit];
-<<<<<<< HEAD
-		//return getPomgranate();
-=======
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 		switch(f) {
 		    case FISH:

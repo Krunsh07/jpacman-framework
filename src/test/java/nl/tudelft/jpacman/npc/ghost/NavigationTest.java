@@ -40,11 +40,6 @@ public class NavigationTest {
 	private MapParser parser;
 
 	private Launcher launcher;
-<<<<<<< HEAD
-
-	private CollisionInteractionMap cim;
-=======
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 	/**
 	 * Set up the map parser.

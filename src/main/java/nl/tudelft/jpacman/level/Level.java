@@ -84,15 +84,6 @@ public class Level {
 	private FruitFactory fruitFactory;
 
 	/**
-<<<<<<< HEAD
-	 * The players on this level.
-	 */
-	private final Map<Player, ScheduledExecutorService> players;
-
-
-	/**
-=======
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 	 * The table of possible collisions between units.
 	 */
 	private final CollisionMap collisions;
@@ -116,13 +107,7 @@ public class Level {
 	private Timer addFruitTask;
 	private Timer speedUpTask;
 
-<<<<<<< HEAD
-	private boolean norm;
-
-	private static int c = 1;
-=======
 	private static Level level;
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 	private Random random;
 
@@ -159,18 +144,7 @@ public class Level {
 		this.players = new HashMap<>();
 		this.collisions = collisionMap;
 		this.observers = new ArrayList<>();
-<<<<<<< HEAD
-		Launcher la = Launcher.getLauncher();
-		if(la.getBoardToUse() == "/Board.txt" || la.getBoardToUse() == "BoardFruit.txt"){
-			this.norm = true;
-		}
-		else
-		{
-			this.norm = false;
-		}
-=======
 		random = new Random();
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 		if(level == null) {
 			level = this;
 		}
@@ -393,41 +367,10 @@ public class Level {
 		Player p = players.keySet().iterator().next();
 		Square posPlayer = p.getSquare();
 		while(squareFruit == null) {
-<<<<<<< HEAD
-			Player p = players.keySet().iterator().next();
-			Square posPlayer = p.getSquare();
-			int X, Y;
-			if(this.norm){
-				X = posPlayer.getCoordX();
-				Y = posPlayer.getCoordY();
-			}
-			else{
-				X = 0;
-				Y = 0;
-			}
-			int i, j;
-			if(X-10 < 0){
-				i =  random.nextInt(board.getWidthOfOneMap()-2);
-			}
-			else{
-				i = (X-10) + random.nextInt(board.getWidthOfOneMap()-2);
-			}
-			if(Y-14 < 0){
-				j = random.nextInt(board.getHeightOfOneMap()-2);
-			}
-			else{
-				j = (Y-14) + random.nextInt(board.getHeightOfOneMap()-2);
-			}
-			squareFruit = board.squareAt(i, j);
-			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {
-				fruit.occupy(squareFruit);
-				TimerTask timerTask = new TimerTask() {
-=======
 			squareFruit = addUnitOnSquare(board.getWidthOfOneMap()-2, board.getHeightOfOneMap()-2);
 			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {
 				fruit.occupy(squareFruit);
 				timerTask = new TimerTask() {
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 					public void run() {
 						fruit.leaveSquare();
 					}
@@ -663,14 +606,8 @@ public class Level {
 		timerRespawn = new Timer();
 		timerRespawn.schedule(tks.createRespawnTask(ateGhost), 5000);
 	}
-<<<<<<< HEAD
-
-	public void respawnParticularGhost(Ghost ghost)
-	{
-=======
 	
 	public void respawnParticularGhost(Ghost ghost) {
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 		timerRespawn = new Timer();
 		timerRespawn.schedule(tks.createRespawnTask(ghost), 5000);
 	}
@@ -694,17 +631,6 @@ public class Level {
 		}
 		return pellets;
 	}
-<<<<<<< HEAD
-
-	/**
-	 * returns the fruit factory for this level.
-	 * @return the fruit factory for this level.
-	 */
-	public FruitFactory getFruitFactory(){
-		return fruitFactory;
-	}
-=======
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 	public Map<Ghost, ScheduledExecutorService> getGhosts() {
 		return ghosts;
@@ -713,175 +639,6 @@ public class Level {
 	public static Level getLevel() {
 		return level;
 	}
-
-<<<<<<< HEAD
-	/**
-	 * A task that moves an NPC and reschedules itself after it finished.
-	 *
-	 * @author Jeroen Roosen
-	 */
-	private final class CharacterMoveTask implements Runnable {
-
-		/**
-		 * The service executing the task.
-		 */
-		private final ScheduledExecutorService service;
-
-		/**
-		 * The NPC to move.
-		 */
-		private final MovableCharacter character;
-
-		/**
-		 * Creates a new task.
-		 *
-		 * @param s
-		 *            The service that executes the task.
-		 * @param c
-		 *            The NPC to move.
-		 */
-		private CharacterMoveTask(ScheduledExecutorService s, MovableCharacter c) {
-			this.service = s;
-			this.character = c;
-		}
-
-		@Override
-		public void run() {
-			Direction nextMove = character.nextMove();
-			long interval;
-			if (nextMove != null) {
-				move(character, nextMove);
-			}
-
-			//Ce code est dégeux et devrait être déplacé dans la méthode getInterval de chaque fantômes.
-			if(character instanceof Ghost && ((Ghost) character).getFearedMode()) {
-				interval = ((Ghost) character).getFearedInterval();
-			}
-
-			else {
-				interval = character.getInterval();
-			}
-			service.schedule(this, interval, TimeUnit.MILLISECONDS);
-		}
-	}
-
-	/**
-	 * A task that stop the Hunter Mode after an amount of time.
-	 *
-	 * @author Yarol Timur
-	 */
-	private final class TimerHunterTask extends TimerTask {
-		@Override
-		public void run() {
-			stopHunterMode();
-		}
-	}
-
-	/**
-	 * A task that respawn an NPC after being eat by Pacman.
-	 *
-	 * @author Yarol Timur
-	 */
-	private final class TimerRespawnTask extends TimerTask {
-
-		private Ghost ghost;
-
-		private TimerRespawnTask(Ghost ghost)
-		{
-			this.ghost = ghost;
-		}
-
-		@Override
-		public void run() {
-			Board b = getBoard();
-			ghost.setExplode(false);
-			ghost.occupy(b.getMiddleOfTheMap());
-			ghost.stopFearedMode();
-			stopCharacters();
-			startCharacters();
-			this.cancel();
-		}
-	}
-
-	/**
-	 * A task that handle the end of Hunter Mode.
-	 *
-	 * @author Yarol Timur
-	 */
-	private final class TimerWarningTask extends TimerTask {
-
-		@Override
-		public void run() { warningMode(); }
-	}
-
-
-	/**
-	 * A task that handle the end of Hunter Mode.
-	 *
-	 * @author Yarol Timur
-	 */
-	private final class TimerAddGhostTask extends TimerTask {
-
-		@Override
-		public void run() { addGhostTask(); }
-	}
-
-	private final class TimerAddFruitTask extends TimerTask {
-
-		@Override
-		public void run() { addFruitTask(); }
-	}
-
-	private final class TimerSpeedUpTask extends TimerTask {
-
-		@Override
-		public void run() { speedUpTask(); }
-	}
-
-
-	/**
-	 * An observer that will be notified when the level is won or lost.
-	 *
-	 * @author Jeroen Roosen
-	 */
-	public interface LevelObserver {
-
-		/**
-		 * The level has been won. Typically the level should be stopped when
-		 * this event is received.
-		 */
-		void levelWon();
-
-		/**
-		 * The level has been lost. Typically the level should be stopped when
-		 * this event is received.
-		 */
-		void levelLost();
-
-		/**
-		 * The level mode change for a while. Pacman become a Hunter and the Ghost are feared.
-		 */
-		void startHunterMode();
-
-		/**
-		 * A ghost need to be respawned.
-		 */
-		void respawnGhost();
-
-		/**
-		 * A Player can shoot bullets
-		 */
-		void ShootingEvent();
-
-		/**
-		 * A NPC is dead and need to be cleared from the board
-		 * @param deadBullets the list of the NPCs that are dead
-		 * @param bullet the npcs that are still in the game.
-		 */
-		void bulletCleanEvent(List<Bullet> deadBullets, Map<Bullet, ScheduledExecutorService> bullet);
-	}
-=======
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 	/**
 	 * enable the movment of a bullet

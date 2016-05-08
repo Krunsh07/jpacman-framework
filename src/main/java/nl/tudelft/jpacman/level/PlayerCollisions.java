@@ -22,91 +22,6 @@ import nl.tudelft.jpacman.npc.ghost.Ghost;
  */
 public class PlayerCollisions implements CollisionMap {
 
-<<<<<<< HEAD
-	/**
-	 * The number of Ghost eat by Pacman during a Hunter Mode.
-	 */
-	public static ArrayList<Ghost> ateGhost = new ArrayList<>();
-
-	@Override
-	public void collide(Unit mover, Unit collidedOn) {
-		System.out.println(mover.isOnBridge()+ " vs. "+collidedOn.isOnBridge());
-		if(mover.isOnBridge() == collidedOn.isOnBridge()){
-			if (mover instanceof Player) {
-				playerColliding((Player) mover, collidedOn);
-			}
-			else if (mover instanceof Ghost) {
-				ghostColliding((Ghost) mover, collidedOn);
-			}
-			else if (mover instanceof Bullet) {
-				BulletColliding((Bullet) mover, collidedOn);
-			}
-		}
-	}
-
-	private void BulletColliding(Bullet mover, Unit collidedOn) {
-		if (collidedOn instanceof Ghost) {
-			ghostVersusBullet((Ghost) collidedOn, mover);
-		}
-		if (collidedOn instanceof Bridge) {
-			characterVersusBridge(mover, (Bridge) collidedOn);
-		}
-	}
-
-	private void playerColliding(Player player, Unit collidedOn) {
-		if (collidedOn instanceof Ghost && !(player.isInvincible())) {
-			if (((Ghost) collidedOn).getFearedMode()){
-				playerVersusEatableGhost(player, (Ghost) collidedOn);
-			}
-			else {
-				playerVersusGhost(player, (Ghost) collidedOn);
-			}
-		}
-		if (collidedOn instanceof Pellet) {
-			playerVersusPellet(player, (Pellet) collidedOn);
-		}
-		if (collidedOn instanceof Hole) {
-			characterVersusHole(player, (Hole) collidedOn);
-		}
-		if (collidedOn instanceof Teleport) {
-			playerVersusTeleport(player, (Teleport) collidedOn);
-		}
-		if (collidedOn instanceof Bridge) {
-			characterVersusBridge(player, (Bridge) collidedOn);
-		}
-		if (collidedOn instanceof Fruit) {
-			playerVersusFruit(player, (Fruit) collidedOn);
-		}
-	}
-
-	private void ghostColliding(Ghost ghost, Unit collidedOn) {
-		if (ghost.getFearedMode() && collidedOn instanceof Player) {
-			playerVersusEatableGhost((Player) collidedOn, ghost);
-		}
-		else if (collidedOn instanceof Player) {
-			playerVersusGhost((Player) collidedOn, ghost);
-		}
-		if (collidedOn instanceof Hole) {
-			characterVersusHole(ghost, (Hole) collidedOn);
-		}
-		if (collidedOn instanceof Bridge) {
-			characterVersusBridge(ghost, (Bridge) collidedOn);
-		}
-		if (collidedOn instanceof Bullet && ((Bullet)collidedOn).isAlive()) {
-			ghostVersusBullet(ghost, (Bullet) collidedOn);
-		}
-	}
-
-	private void ghostVersusBullet(Ghost ghost, Bullet collidedOn) {
-		collidedOn.setAlive(false);
-		if(!(ghost.hasExploded())) {
-			ghost.setExplode(true);
-			TimerTask timerTask = new TimerTask() {
-			    public void run() {
-			    	ateGhost.add(ghost);
-			    	ghost.leaveSquare();
-					Ghost.ghostLeft--;
-=======
     /**
      * The number of Ghost eat by Pacman during a Hunter Mode.
      */
@@ -189,7 +104,6 @@ public class PlayerCollisions implements CollisionMap {
                     ateGhost.add(ghost);
                     ghost.leaveSquare();
                     Ghost.ghostLeft--;
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
                 }
             };
             int deadGhostAnimationTime = 5 * 200;

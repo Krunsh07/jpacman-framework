@@ -9,11 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import nl.tudelft.jpacman.Launcher;
-<<<<<<< HEAD
-import org.junit.Before;
-import org.junit.Test;
-=======
->>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 import com.google.common.collect.Lists;
 
