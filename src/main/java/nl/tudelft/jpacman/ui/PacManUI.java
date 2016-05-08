@@ -9,7 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
-import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.game.Game;
 import nl.tudelft.jpacman.ui.ScorePanel.ScoreFormatter;
 
@@ -105,7 +104,6 @@ public class PacManUI extends JFrame {
 				.newSingleThreadScheduledExecutor();
 
 		service.scheduleAtFixedRate(new Runnable() {
-
 			@Override
 			public void run() {
 				nextFrame();

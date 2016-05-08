@@ -64,6 +64,11 @@ public class Clyde extends Ghost {
 	private static final int ACCELERATED_MOVE_INTERVAL = 125;
 
 	/**
+	 * The base movement when the ghost is feared.
+	 */
+	private static final int SLOW_MOVE_INTERVAL = 500;
+
+	/**
 	 * A map of opposite directions.
 	 */
 	private static final Map<Direction, Direction> OPPOSITES = new EnumMap<Direction, Direction>(
@@ -78,8 +83,7 @@ public class Clyde extends Ghost {
 	/**
 	 * Creates a new "Clyde", a.k.a. "Pokey".
 	 * 
-	 * @param spriteMap
-	 *            The sprites for this ghost.
+	 * @param sprite The sprites for this ghost.
 	 */
 	public Clyde(Map<Direction, Sprite> sprite, AnimatedSprite explodeAnimation) {
 		super(sprite, explodeAnimation);
@@ -87,12 +91,13 @@ public class Clyde extends Ghost {
 
 	@Override
 	public long getInterval() {
+		if(getFearedMode()) {
+			return ((int) (SLOW_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
 		if(!getAcceleration()){
 			return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 		}
-		else{
-			return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
-		}
+		return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 	}
 
 	/**
@@ -114,11 +119,11 @@ public class Clyde extends Ghost {
 	 */
 	@Override
 	public Direction nextMove() {
-		if (this.getFearedMode())
-		{
+		if (this.getFearedMode()) {
 			Direction d = randomMoveAtCrossroads();
 			return d;
 		}
+
 		Square target = Navigation.findNearest(Player.class, getSquare())
 				.getSquare();
 		if (target == null) {

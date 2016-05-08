@@ -26,7 +26,8 @@ public class Bullet extends NPC{
 	private static final int BULLET_DELAY = 1;
 	
 	/**
-	 * Whether this bullet has hit something or not, when a bullet has hit a wall, a ghost or was blocked by a bridge the bullet is dead.
+	 * Whether this bullet has hit something or not, when a bullet has hit a wall,
+	 * a ghost or was blocked by a bridge the bullet is dead.
 	 */
 	private boolean alive;
 	
@@ -57,7 +58,8 @@ public class Bullet extends NPC{
 
 	@Override
 	public Direction nextMove() {
-		if(alive && getSquare().getSquareAt(shootingDirection).isAccessibleTo(this) && !(Bridge.blockedBybridge(this, shootingDirection))) {
+		if(alive && getSquare().getSquareAt(shootingDirection).isAccessibleTo(this) &&
+				!(Bridge.blockedBybridge(this, shootingDirection))) {
 			return shootingDirection;
 		}
 		else {

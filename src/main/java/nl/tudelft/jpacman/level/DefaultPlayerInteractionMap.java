@@ -49,8 +49,7 @@ public class DefaultPlayerInteractionMap implements CollisionMap {
 					public void handleCollision(Player player, Pellet pellet) {
 						pellet.leaveSquare();
 						player.addPoints(pellet.getValue());
-						if(pellet.getValue() == 50) {
-							System.out.println("DefaultPlayer...");
+						if(pellet.getValue() == LevelFactory.getSuperPelletValue()) {
 							player.setHunterMode(true);
 						}
 					}

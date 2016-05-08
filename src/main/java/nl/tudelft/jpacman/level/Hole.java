@@ -54,15 +54,17 @@ public class Hole extends Unit {
 	/**
 	 * Trap a character into this hole during the time specified in the method
 	 * getTrapTime.
-	 * @param dc the character which will be trapped in this hole
+	 * @param mc the character which will be trapped in this hole
 	 */
 	public void effect(MovableCharacter mc) {
 		Map<Direction, Sprite> oldSprites = mc.getSprites();
 	    mc.setMovable(false);
-		if(mc instanceof Player)
-			((Player) mc).setSprites(new PacManSprites().getPacmanParalizedSprites());
-		else if(mc instanceof Ghost)
-			((Ghost) mc).setSprites(new PacManSprites().getParalizedGhostSprite());
+		if(mc instanceof Player){
+			mc.setSprites(new PacManSprites().getPacmanParalizedSprites());
+		}
+		else if(mc instanceof Ghost){
+			mc.setSprites(new PacManSprites().getParalizedGhostSprite());
+		}
 		TimerTask timerTask = new TimerTask() {
 			public void run() {
 			    mc.setMovable(true);
@@ -72,5 +74,4 @@ public class Hole extends Unit {
 		Timer timer = new Timer();
 		timer.schedule(timerTask, trapTime * 1000);
 	}
-	
 }

@@ -57,6 +57,11 @@ public class Blinky extends Ghost {
 	 */
 	private static final int ACCELERATED_MOVE_INTERVAL = 125;
 
+	/**
+	 * The base movement when the ghost is feared.
+	 */
+	private static final int SLOW_MOVE_INTERVAL = 500;
+
 
 	/**
 	 * Creates a new "Blinky", a.k.a. "Shadow".
@@ -72,13 +77,13 @@ public class Blinky extends Ghost {
 	public long getInterval() {
 		// TODO Blinky should speed up when there are a few pellets left, but he
 		// has no way to find out how many there are.
+		if(getFearedMode()) {
+			return ((int) (SLOW_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
 		if(!getAcceleration()){
 			return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 		}
-		else{
-			System.out.println("Test");
-			return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
-		}
+		return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 	}
 
 	/**
@@ -98,14 +103,13 @@ public class Blinky extends Ghost {
 	public Direction nextMove() {
 		// TODO Blinky should patrol his corner every once in a while
 		// TODO Implement his actual behaviour instead of simply chasing.
-		if (this.getFearedMode())
-		{
+		if (this.getFearedMode()) {
 			Direction d = randomMoveAtCrossroads();
 			return d;
 		}
+
 		Square target = Navigation.findNearest(Player.class, getSquare())
 				.getSquare();
-
 		if (target == null) {
 			Direction d = randomMove();
 			return d;

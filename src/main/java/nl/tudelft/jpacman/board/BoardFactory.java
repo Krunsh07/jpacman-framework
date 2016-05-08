@@ -1,6 +1,5 @@
 package nl.tudelft.jpacman.board;
 
-import nl.tudelft.jpacman.fruit.Fruit;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -38,9 +37,7 @@ public class BoardFactory {
 	 */
 	public Board createBoard(Square[][] grid) {
 		assert grid != null;
-
 		Board board = new Board(grid);
-
 		int width = board.getWidth();
 		int height = board.getHeight();
 		for (int x = 0; x < width; x++) {
@@ -54,7 +51,6 @@ public class BoardFactory {
 				}
 			}
 		}
-
 		return board;
 	}
 
@@ -100,12 +96,8 @@ public class BoardFactory {
 
 		@Override
 		public boolean isAccessibleTo(Unit unit) {
-			if(unit instanceof PassThroughWall){
-				return true;
-			}
-			else {
-				return false;
-			}
+			if(unit instanceof PassThroughWall){return true;}
+			else {return false;}
 		}
 
 		@Override

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import nl.tudelft.jpacman.Launcher;
 import nl.tudelft.jpacman.board.Board;
@@ -14,7 +13,6 @@ import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.npc.NPC;
 
 import nl.tudelft.jpacman.npc.ghost.Clyde;
-import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostColor;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import org.junit.Before;
@@ -39,9 +37,13 @@ public class LevelTest {
 	/**
 	 * An NPC on this level.
 	 */
+<<<<<<< HEAD
 	private NPC ghost = null;
 
 	private Launcher la;
+=======
+	private NPC ghost;
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 	/**
 	 * Starting position 1.
@@ -69,6 +71,7 @@ public class LevelTest {
 	 */
 	@Before
 	public void setUp() {
+<<<<<<< HEAD
 		Launcher la = new Launcher();
 		//la.setBoardToUse("/board.txt");
 		ghost = new Clyde(SPRITE_STORE.getGhostSprite(GhostColor.ORANGE), SPRITE_STORE.getGhostExplodeAnimation());;
@@ -76,6 +79,11 @@ public class LevelTest {
 		level = new Level(board, Lists.newArrayList(ghost), Lists.newArrayList(
 				square1, square2), collisions);
 		//when(ghost.getInterval()).thenReturn(defaultInterval);
+=======
+		ghost = new Clyde(SPRITE_STORE.getGhostSprite(GhostColor.ORANGE), SPRITE_STORE.getGhostExplodeAnimation());
+		level = new Level(board, Lists.newArrayList(ghost), Lists.newArrayList(
+				square1, square2), collisions);
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 	}
 
 	/**

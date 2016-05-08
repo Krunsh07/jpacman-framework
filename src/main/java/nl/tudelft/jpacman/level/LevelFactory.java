@@ -83,7 +83,7 @@ public class LevelFactory {
 	 * @return A new level for the board.
 	 */
 	public Level createLevel(Board board, List<NPC> ghosts,
-			List<Square> startPositions, List<Square> fruitPositions) {
+			List<Square> startPositions) {
 
 		// We'll adopt the simple collision map for now.
 		CollisionMap collisionMap = new PlayerCollisions();
@@ -96,7 +96,7 @@ public class LevelFactory {
 	 * 
 	 * @return The new ghost.
 	 */
-	NPC createGhost() {
+	public NPC createGhost() {
 		ghostIndex++;
 		ghostIndex %= GHOSTS;
 		switch (ghostIndex) {
@@ -157,6 +157,8 @@ public class LevelFactory {
 	 * @return The new super pellet.
 	 */
 	public Pellet createSuperPellet() { return new Pellet(SUPERPELLET_VALUE, sprites.getSuperPelletSprite()); }
+
+	public static int getSuperPelletValue() { return SUPERPELLET_VALUE;}
 
 	/**
 	 * Implementation of an NPC that wanders around randomly.

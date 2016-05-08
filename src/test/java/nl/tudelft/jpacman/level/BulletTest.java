@@ -6,13 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import nl.tudelft.jpacman.Launcher;
+<<<<<<< HEAD
 import org.junit.Before;
 import org.junit.Test;
+=======
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 import com.google.common.collect.Lists;
 
@@ -21,19 +22,15 @@ import nl.tudelft.jpacman.board.BoardFactory;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
-import nl.tudelft.jpacman.fruit.Fruit;
-import nl.tudelft.jpacman.fruit.FruitFactory;
-import nl.tudelft.jpacman.level.CollisionMap;
-import nl.tudelft.jpacman.level.LevelFactory;
-import nl.tudelft.jpacman.level.MapParser;
-import nl.tudelft.jpacman.level.Player;
-import nl.tudelft.jpacman.level.PlayerCollisions;
 import nl.tudelft.jpacman.npc.Bullet;
-import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
+import org.junit.Before;
+import org.junit.Test;
+
+
 public class BulletTest {
 
 	private Launcher launcher;
@@ -65,7 +62,6 @@ public class BulletTest {
 	public void CantChangeDirection(){
 		PacManSprites pms = new PacManSprites();
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Sprite bulletSprite = pms.getBulletSprite();
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
 	    assertEquals(bullet.getDirection(), p.getDirection());
 	    bullet.setDirection(Direction.EAST);
@@ -139,7 +135,6 @@ public class BulletTest {
 	public void setAliveTest(){
 		PacManSprites pms = new PacManSprites();
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
-		Sprite bulletSprite = pms.getBulletSprite();
 	    Bullet bullet = new Bullet(pms.getBulletSprite(), p);
 	    assertTrue(bullet.isAlive());
 	    bullet.setAlive(false);

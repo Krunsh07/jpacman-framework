@@ -20,11 +20,6 @@ import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.fruit.Fruit;
 import nl.tudelft.jpacman.fruit.FruitFactory;
-import nl.tudelft.jpacman.level.CollisionMap;
-import nl.tudelft.jpacman.level.LevelFactory;
-import nl.tudelft.jpacman.level.MapParser;
-import nl.tudelft.jpacman.level.Player;
-import nl.tudelft.jpacman.level.PlayerCollisions;
 import nl.tudelft.jpacman.npc.NPC;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
@@ -104,7 +99,11 @@ public class FruitTest {
         Square square = b.squareAt(1, 1);
         List<Square>  sp = new ArrayList<>();
         sp.add(square);
+<<<<<<< HEAD
         Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp, null);
+=======
+        Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp);
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 		Fruit f = new FruitFactory(pms, l).getPomgranate();
 		CollisionMap cm = new PlayerCollisions();
 		f.occupy(fruitSquare);
@@ -191,7 +190,11 @@ public class FruitTest {
         Square square = b.squareAt(1, 1);
         List<Square>  sp = new ArrayList<>();
         sp.add(square);
+<<<<<<< HEAD
 		Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp, null);
+=======
+		Level l = new LevelFactory(pms, gf).createLevel(b, gl, sp);
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 		Player p = new Player(pms.getPacmanSprites(),pms.getPacManDeathAnimation());
 		Fruit f = new FruitFactory(pms, l).getPotato();
 		CollisionMap cm = new PlayerCollisions();

@@ -13,13 +13,9 @@ import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.fruit.Fruit;
 import nl.tudelft.jpacman.fruit.FruitFactory;
-import nl.tudelft.jpacman.level.MovableCharacter;
-import nl.tudelft.jpacman.level.Bridge;
 import nl.tudelft.jpacman.npc.Bullet;
 import nl.tudelft.jpacman.npc.NPC;
-import nl.tudelft.jpacman.npc.ghost.Blinky;
 import nl.tudelft.jpacman.npc.ghost.Ghost;
-import nl.tudelft.jpacman.npc.ghost.GhostColor;
 import nl.tudelft.jpacman.npc.ghost.GhostFactory;
 import nl.tudelft.jpacman.npc.ghost.Navigation;
 import nl.tudelft.jpacman.sprite.PacManSprites;
@@ -48,7 +44,6 @@ public class Level {
 	 */
 	private final Object startStopLock = new Object();
 
-
 	/**
 	 * The NPCs of this level and, if they are running, their schedules.
 	 */
@@ -58,6 +53,12 @@ public class Level {
 	 * The NPCs of this level and, if they are running, their schedules.
 	 */
 	private final Map<Bullet, ScheduledExecutorService> bullets;
+
+	/**
+	 * The players on this level.
+	 */
+	private final Map<Player, ScheduledExecutorService> players;
+
 
 	/**
 	 * <code>true</code> iff this level is currently in progress, i.e. players
@@ -83,12 +84,15 @@ public class Level {
 	private FruitFactory fruitFactory;
 
 	/**
+<<<<<<< HEAD
 	 * The players on this level.
 	 */
 	private final Map<Player, ScheduledExecutorService> players;
 
 
 	/**
+=======
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 	 * The table of possible collisions between units.
 	 */
 	private final CollisionMap collisions;
@@ -100,23 +104,27 @@ public class Level {
 
 	private static final PacManSprites SPRITE_STORE = new PacManSprites();
 
-	private Timer timerHunterMode = new Timer();
+	private TimerTasks tks = new TimerTasks();
 
-	private Timer timerRespawn = new Timer();
+	/**
+	 * Timer used to handle the game;
+	 */
+	private Timer timerHunterMode;
+	private Timer timerRespawn;
+	private Timer timerWarning;
+	private Timer addGhostTask;
+	private Timer addFruitTask;
+	private Timer speedUpTask;
 
-	private Timer timerWarning = new Timer();
-
-	private Timer addGhostTask = new Timer();
-
-	private Timer addFruitTask = new Timer();
-
-	private Timer speedUpTask = new Timer();
-
+<<<<<<< HEAD
 	private boolean norm;
 
 	private static int c = 1;
+=======
+	private static Level level;
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
-	private static Level level = null;
+	private Random random;
 
 	/**
 	 * Creates a new level for the board.
@@ -151,6 +159,7 @@ public class Level {
 		this.players = new HashMap<>();
 		this.collisions = collisionMap;
 		this.observers = new ArrayList<>();
+<<<<<<< HEAD
 		Launcher la = Launcher.getLauncher();
 		if(la.getBoardToUse() == "/Board.txt" || la.getBoardToUse() == "BoardFruit.txt"){
 			this.norm = true;
@@ -159,6 +168,9 @@ public class Level {
 		{
 			this.norm = false;
 		}
+=======
+		random = new Random();
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 		if(level == null) {
 			level = this;
 		}
@@ -175,15 +187,6 @@ public class Level {
 			return;
 		}
 		observers.add(observer);
-	}
-
-	/**
-	 * Removes an observer if it was listed.
-	 *
-	 * @param observer The observer to be removed.
-	 */
-	public void removeObserver(LevelObserver observer) {
-		observers.remove(observer);
 	}
 
 	/**
@@ -264,13 +267,18 @@ public class Level {
 			inProgress = true;
 			updateObservers();
 		}
-		Random random = new Random();
 		int nbr = random.nextInt(11);
+		timerRespawn = new Timer();
+		timerWarning = new Timer();
+		timerHunterMode = new Timer();
+		addFruitTask = new Timer();
+		addGhostTask = new Timer();
+		speedUpTask = new Timer();
 		if(infiniteMode) {
-			addGhostTask.schedule(new TimerAddGhostTask(), (nbr+10)*1000);
-			speedUpTask.schedule(new TimerSpeedUpTask(), 10000, 10000);
+			addGhostTask.schedule(tks.createAddGhostTask(), (nbr+10)*1000);
+			speedUpTask.schedule(tks.createSpeedUpTask(), 10000, 10000);
 		}
-		addFruitTask.schedule(new TimerAddFruitTask(), (nbr+10)*1000); // fuittask
+		addFruitTask.schedule(tks.createAddFruitTask(), (nbr+10)*1000);
 	}
 
 	/**
@@ -284,7 +292,7 @@ public class Level {
 			}
 			stopCharacters();
 			addGhostTask.cancel();
-			addFruitTask.cancel(); // fruittask
+			addFruitTask.cancel();
 			speedUpTask.cancel();
 			inProgress = false;
 		}
@@ -293,29 +301,30 @@ public class Level {
 	/**
 	 * Starts all Character movement scheduling.
 	 */
-	private void startCharacters() {
+	public void startCharacters() {
 		MovableCharacter mc;
+		ScheduledExecutorService service;
 		for (final Ghost ghost : ghosts.keySet()) {
 			mc = ghost;
-			ScheduledExecutorService service = Executors
+			service = Executors
 					.newSingleThreadScheduledExecutor();
-			service.schedule(new CharacterMoveTask(service, mc),
+			service.schedule(tks.createCharacterMoveTask(service, mc),
 					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
 			ghosts.put(ghost, service);
 		}
 		for (final Player player : players.keySet()) {
 			mc = player;
-			ScheduledExecutorService service = Executors
+			service = Executors
 					.newSingleThreadScheduledExecutor();
-			service.schedule(new CharacterMoveTask(service, mc),
+			service.schedule(tks.createCharacterMoveTask(service, mc),
 					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
 			players.put(player, service);
 		}
 		for (final Bullet bullet : bullets.keySet()) {
 			mc = bullet;
-			ScheduledExecutorService service = Executors
+			service = Executors
 					.newSingleThreadScheduledExecutor();
-			service.schedule(new CharacterMoveTask(service, mc),
+			service.schedule(tks.createCharacterMoveTask(service, mc),
 					mc.getInterval() / 2, TimeUnit.MILLISECONDS);
 			bullets.put(bullet, service);
 		}
@@ -325,7 +334,7 @@ public class Level {
 	 * Stops all NPC movement scheduling and interrupts any movements being
 	 * executed.
 	 */
-	private void stopCharacters() {
+	public void stopCharacters() {
 		for (Entry<Ghost, ScheduledExecutorService> e : ghosts.entrySet()) {
 			e.getValue().shutdownNow();
 		}
@@ -343,54 +352,19 @@ public class Level {
 	public void addGhostTask()
 	{
 		if(this.ghosts.size() < 10) {
-			System.out.println("ghost en vie début : " + this.ghosts.size());
 			ScheduledExecutorService service = Executors
 					.newSingleThreadScheduledExecutor();
 			GhostFactory ghostFact = new GhostFactory(SPRITE_STORE);
-			Random random = new Random();
-			int nombre = random.nextInt(6);
+			int nbr = random.nextInt(6);
 			int ghostIndex = random.nextInt(4);
 			addGhostTask.cancel();
 			addGhostTask = new Timer();
-			addGhostTask.schedule(new TimerAddGhostTask(), ((nombre + 4) + this.ghosts.size()) * 1000);
-			Ghost g;
-			switch (ghostIndex) {
-				case 0:
-					g = ghostFact.createBlinky();
-					break;
-				case 1:
-					g = ghostFact.createInky();
-					break;
-				case 2:
-					g = ghostFact.createPinky();
-					break;
-				case 3:
-					g = ghostFact.createClyde();
-					break;
-				default:
-					g = ghostFact.createBlinky();
-					break;
-			}
+			addGhostTask.schedule(tks.createAddGhostTask(), ((nbr + 4) + this.ghosts.size()) * 1000);
+			Ghost g = Ghost.addGhost(ghostFact, ghostIndex);
 			ghosts.put(g, service);
 			Square squareGhost = null;
-			while (squareGhost == null) {
-				Square posPlayer = players.keySet().iterator().next().getSquare();
-				int X = posPlayer.getCoordX();
-				int Y = posPlayer.getCoordY();
-				int i, j;
-				if(X-10 < 0){
-					i =  random.nextInt(board.getWidthOfOneMap()-1);
-				}
-				else{
-					i = (X-10) + random.nextInt(board.getWidthOfOneMap()-1);
-				}
-				if(Y-14 < 0){
-					j = random.nextInt(4);
-				}
-				else{
-					j = (Y-14) + random.nextInt(4);
-				}
-				squareGhost = board.squareAt(i, j);
+			while(squareGhost  == null) {
+				squareGhost = addUnitOnSquare(board.getWidthOfOneMap(), 4);
 				if (squareGhost.isAccessibleTo(g)) {
 					g.occupy(squareGhost);
 				}
@@ -400,16 +374,6 @@ public class Level {
 			}
 			stopCharacters();
 			startCharacters();
-			System.out.println("ghost en vie fin : " + this.ghosts.size());
-		}
-	}
-
-
-	private void speedUpTask(){
-		Ghost g;
-		for (MovableCharacter npc : ghosts.keySet()) {
-			g = (Ghost) (npc);
-			g.setSpeed(g.getSpeed() + 0.05);
 		}
 	}
 
@@ -418,14 +382,18 @@ public class Level {
 	 */
 	public void addFruitTask()
 	{
-		Random random = new Random();
+		Timer timer = new Timer();
+		TimerTask timerTask;
 		int nbr = random.nextInt(6);
 		addFruitTask.cancel();
 		addFruitTask = new Timer();
-		addFruitTask.schedule(new TimerAddFruitTask(), (nbr+10)*1000);
+		addFruitTask.schedule(tks.createAddFruitTask(), (nbr+10)*1000);
 		Fruit fruit = fruitFactory.getRandomFruit();
 		Square squareFruit = null;
+		Player p = players.keySet().iterator().next();
+		Square posPlayer = p.getSquare();
 		while(squareFruit == null) {
+<<<<<<< HEAD
 			Player p = players.keySet().iterator().next();
 			Square posPlayer = p.getSquare();
 			int X, Y;
@@ -454,16 +422,58 @@ public class Level {
 			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {
 				fruit.occupy(squareFruit);
 				TimerTask timerTask = new TimerTask() {
+=======
+			squareFruit = addUnitOnSquare(board.getWidthOfOneMap()-2, board.getHeightOfOneMap()-2);
+			if (Navigation.shortestPath(posPlayer, squareFruit, p) != null) {
+				fruit.occupy(squareFruit);
+				timerTask = new TimerTask() {
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 					public void run() {
 						fruit.leaveSquare();
 					}
 				};
-				Timer timer = new Timer();
 				timer.schedule(timerTask, fruit.getLifetime() * 1000);
 			}
 			else {
 				squareFruit = null;
 			}
+		}
+	}
+
+	public Square addUnitOnSquare(int random1, int random2) {
+		Random random = new Random();
+		int X, Y;
+		int i, j;
+		Square posPlayer = players.keySet().iterator().next().getSquare();
+		X = posPlayer.getCoordX();
+		Y = posPlayer.getCoordY();
+
+		i = Math.max(1+random.nextInt(random1), (X-(board.getWidthOfOneMap()-1)/2)+random.nextInt(random1));
+		j = Math.max(1+random.nextInt(random2), (Y-(board.getHeightOfOneMap()-1)/2)+random.nextInt(random2));
+
+		/*if (X - (board.getWidthOfOneMap()-1)/2 < 0) {
+			i = random.nextInt(random1);
+		} else {
+			i = ((board.getWidthOfOneMap()-1)/2) + random.nextInt(random1);
+		}
+		if (Y - (board.getHeightOfOneMap()-1)/2 < 0) {
+			j = random.nextInt(random2);
+		} else {
+			j = ((board.getHeightOfOneMap()-1)/2) + random.nextInt(random2);
+		}*/
+		return board.squareAt(i, j);
+	}
+
+
+
+	/**
+	 * Permet d'augmenter la vitesse des fantomes
+	 */
+	public void speedUpTask(){
+		Ghost g;
+		for (MovableCharacter npc : ghosts.keySet()) {
+			g = (Ghost) (npc);
+			g.setSpeed(g.getSpeed() + 0.05);
 		}
 	}
 
@@ -561,6 +571,10 @@ public class Level {
 		return deadBullets;
 	}
 
+	/**
+	 * Permet de savoir si un joueur est en mode Hunter
+	 * @return true si un joueur est en mode Hunter
+     */
 	public boolean isAnyPlayerInHunterMode() {
 		for (Player p : players.keySet()) {
 			if (p.getHunterMode()) {
@@ -569,7 +583,6 @@ public class Level {
 		}
 		return false;
 	}
-
 
 	/**
 	 * Start the Hunter Mode for Pacman.
@@ -587,11 +600,11 @@ public class Level {
 						timerHunterMode = new Timer();
 						timerWarning = new Timer();
 						if (Pellet.superPelletLeft >= 2) {
-							timerHunterMode.schedule(new TimerHunterTask(), 7000);
-							timerWarning.schedule(new TimerWarningTask(), 5000, 250);
+							timerHunterMode.schedule(tks.createStopHunterModeTask(), 7000);
+							timerWarning.schedule(tks.createWarningTask(), 5000, 250);
 						} else {
-							timerHunterMode.schedule(new TimerHunterTask(), 5000);
-							timerWarning.schedule(new TimerWarningTask(), 3000, 250);
+							timerHunterMode.schedule(tks.createStopHunterModeTask(), 5000);
+							timerWarning.schedule(tks.createWarningTask(), 3000, 250);
 						}
 						((Ghost) u).startFearedMode();
 					}
@@ -626,8 +639,7 @@ public class Level {
 	 * Handle the end of the Hunter Mode for Pacman and
 	 * warning him about that.
 	 */
-	public void warningMode()
-	{
+	public void warningMode() {
 		Board b = getBoard();
 		Ghost.count++;
 		for (int x = 0; x < b.getWidth(); x++) {
@@ -644,19 +656,23 @@ public class Level {
 	/**
 	 * Start the Timer to respawn a ghost after being ate by Pacman.
 	 */
-	public void respawnGhost()
-	{
+	public void respawnGhost() {
 		Ghost.ghostLeft++;
 		Ghost ateGhost = PlayerCollisions.ateGhost.get(PlayerCollisions.ateGhost.size()-1);
 		PlayerCollisions.ateGhost.remove(PlayerCollisions.ateGhost.size()-1);
 		timerRespawn = new Timer();
-		timerRespawn.schedule(new TimerRespawnTask(ateGhost), 5000);
+		timerRespawn.schedule(tks.createRespawnTask(ateGhost), 5000);
 	}
+<<<<<<< HEAD
 
 	public void respawnParticularGhost(Ghost ghost)
 	{
+=======
+	
+	public void respawnParticularGhost(Ghost ghost) {
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 		timerRespawn = new Timer();
-		timerRespawn.schedule(new TimerRespawnTask(ghost), 5000);
+		timerRespawn.schedule(tks.createRespawnTask(ghost), 5000);
 	}
 
 	/**
@@ -678,6 +694,7 @@ public class Level {
 		}
 		return pellets;
 	}
+<<<<<<< HEAD
 
 	/**
 	 * returns the fruit factory for this level.
@@ -686,6 +703,8 @@ public class Level {
 	public FruitFactory getFruitFactory(){
 		return fruitFactory;
 	}
+=======
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 	public Map<Ghost, ScheduledExecutorService> getGhosts() {
 		return ghosts;
@@ -695,6 +714,7 @@ public class Level {
 		return level;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * A task that moves an NPC and reschedules itself after it finished.
 	 *
@@ -860,16 +880,18 @@ public class Level {
 		 */
 		void bulletCleanEvent(List<Bullet> deadBullets, Map<Bullet, ScheduledExecutorService> bullet);
 	}
+=======
+>>>>>>> 0bc64a59ca22559bb0064c5c82e966cb2a0bc720
 
 	/**
 	 * enable the movment of a bullet
 	 * @param b the bullet that have to be moved.
 	 */
 	public void animateBullet(Bullet b) {
-		MovableCharacter mc = (MovableCharacter) b;
+		MovableCharacter mc = b;
 		ScheduledExecutorService service = Executors
 				.newSingleThreadScheduledExecutor();
-		service.schedule(new CharacterMoveTask(service, mc),
+		service.schedule(tks.createCharacterMoveTask(service, mc),
 				mc.getInterval() / 2, TimeUnit.MILLISECONDS);
 		bullets.put(b, service);
 	}

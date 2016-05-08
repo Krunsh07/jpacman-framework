@@ -69,6 +69,11 @@ public class Pinky extends Ghost {
 	private static final int ACCELERATED_MOVE_INTERVAL = 100;
 
 	/**
+	 * The base movement when the ghost is feared.
+	 */
+	private static final int SLOW_MOVE_INTERVAL = 500;
+
+	/**
 	 * Creates a new "Pinky", a.k.a. "Speedy".
 	 * 
 	 * @param spriteMap
@@ -80,12 +85,13 @@ public class Pinky extends Ghost {
 
 	@Override
 	public long getInterval() {
+		if(getFearedMode()) {
+			return ((int) (SLOW_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
+		}
 		if(!getAcceleration()){
 			return ((int) (MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 		}
-		else{
-			return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
-		}
+		return ((int) (ACCELERATED_MOVE_INTERVAL/this.speed)) + new Random().nextInt(INTERVAL_VARIATION);
 	}
 
 	/**
@@ -104,11 +110,11 @@ public class Pinky extends Ghost {
 	 */
 	@Override
 	public Direction nextMove() {
-		if (this.getFearedMode())
-		{
+		if (this.getFearedMode()) {
 			Direction d = randomMoveAtCrossroads();
 			return d;
 		}
+
 		Unit player = Navigation.findNearest(Player.class, getSquare());
 		if (player == null) {
 			Direction d = randomMove();

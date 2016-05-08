@@ -156,5 +156,4 @@ public class AnimatedSprite implements Sprite {
 	public int getHeight() {
 		return currentSprite().getHeight();
 	}
-
 }

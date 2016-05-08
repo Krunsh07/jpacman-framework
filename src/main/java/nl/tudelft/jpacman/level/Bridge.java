@@ -20,7 +20,7 @@ public class Bridge extends Unit{
 
 	/**
 	 * create a bridge Object
-	 * @param Map<Direction, Sprite> spriteMap the sprites of this bridge depending of the direction.
+	 * @param spriteMap the sprites of this bridge depending of the direction.
 	 */
 	public Bridge(Map<Direction, Sprite> spriteMap){
 		sprites = spriteMap;
@@ -53,7 +53,7 @@ public class Bridge extends Unit{
 	 * enable the effect of this bridge on the unit, when a unit is on a bridge
 	 * its position with respect to a bridge (see method setOnBridge in the Unit class)
 	 * have to be changed to put the unit on this bridge.
-	 * @param Unit unit that have to be set as on a bridge
+	 * @param unit that have to be set as on a bridge
 	 */
 	public void effect(Unit unit) {
 		Direction uDir = unit.getDirection();
@@ -67,14 +67,17 @@ public class Bridge extends Unit{
 	}
 	
 	/**
-	 * It's assumed that the bridge has border, so if you are on a bridge, you can't go out of these border
-	 * (when you go in a direction other than the direction of this bridge). When you are under a under a bridge
-	 * it does not make sense to be able to be able to go in the elevated places that are bridged by this bridge because
-	 * you're under the bridge, to sum up, on a bridge you can only move on the direction of this bridge and when you're
-	 * under that bridge, you can only move in the direction perpendicular to the direction of that bridge and this method
-	 * returns whether the unit can't go in a direction because a bridge prevent it from going to that direction.
-	 * @param Unit unit that have to be set as on a bridge
-	 * @param Direction direction the direction where this Unit want to go.
+	 * It's assumed that the bridge has border, so if you are on a bridge,
+	 * you can't go out of these border (when you go in a direction other
+	 * than the direction of this bridge). When you are under a under a bridge
+	 * it does not make sense to be able to be able to go in the elevated
+	 * places that are bridged by this bridge because you're under the bridge,
+	 * to sum up, on a bridge you can only move on the direction of this bridge
+	 * and when you're under that bridge, you can only move in the direction
+	 * perpendicular to the direction of that bridge and this method returns whether
+	 * the unit can't go in a direction because a bridge prevent it from going to that direction.
+	 * @param unit that have to be set as on a bridge
+	 * @param direction the direction where this Unit want to go.
 	 * @returns true is the unit can't go in that direction because there a bridge that block it. 
 	 */
 	public static boolean blockedBybridge(Unit unit, Direction direction){

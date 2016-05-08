@@ -29,5 +29,4 @@ public class EmptySprite implements Sprite {
 	public int getHeight() {
 		return 0;
 	}
-
 }

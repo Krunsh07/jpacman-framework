@@ -45,7 +45,7 @@ public class Teleport extends Unit {
 	
 	/**
 	 * change the reference pointed by this teleport.
-	 * @param Square ref the new square pointed by this teleport.
+	 * @param ref the new square pointed by this teleport.
 	 */
 	public void setReference(Square ref){
 		reference = ref;
@@ -55,8 +55,8 @@ public class Teleport extends Unit {
 	 * teleport the player to the square pointed by this telport if this square
 	 * is accessible to the player, this will also enter in collisions with the
 	 * occupants of this square except telports to avoid a infinite loop.
-	 * @param Player p the player that have to be moved
-	 * @param PlayerCollisions pc the object that manage collision in this game
+	 * @param p the player that have to be moved
+	 * @param pc the object that manage collision in this game
 	 */
 	public void effect(Player p, PlayerCollisions pc) {
 		if(reference.isAccessibleTo(p))

@@ -115,14 +115,12 @@ public class MapParser {
 		List<Square> startPositions = new ArrayList<>();
 		List<Teleport> teleportList = new ArrayList<>();
 		List<Bridge> bridgeList = new ArrayList<>();
-		List<Square> fruitPositions = new ArrayList<>();
 
-		makeGrid(map, width, height, grid, ghosts, startPositions, teleportList, bridgeList, fruitPositions);
+		makeGrid(map, width, height, grid, ghosts, startPositions, teleportList, bridgeList);
 		Board board = boardCreator.createBoard(grid);
 		setTeleports(teleportList, teleportrefs, board);
-		setBridges(bridgeList, bridgeRefs, fruitPositions);
-		Level l = levelCreator.createLevel(board, ghosts, startPositions, fruitPositions);
-		return l;
+		setBridges(bridgeList, bridgeRefs);
+		return  levelCreator.createLevel(board, ghosts, startPositions);
 	}
 
 	/**
@@ -187,12 +185,10 @@ public class MapParser {
 
 		List<NPC> ghosts = new ArrayList<>();
 		List<Square> startPositions = new ArrayList<>();
-		List<Square> fruitPositions = new ArrayList<>();
 
-		makeGrid(map, width, height, grid, ghosts, startPositions, null, null, fruitPositions);
+		makeGrid(map, width, height, grid, ghosts, startPositions, null, null);
 		Board board = boardCreator.createBoard(grid);
-		Level l = levelCreator.createLevel(board, ghosts, startPositions, fruitPositions);
-		return l;
+		return levelCreator.createLevel(board, ghosts, startPositions);
 	}
 	
 	private void setTeleports(List<Teleport> teleportList, List<int[]> teleportRefs, Board b){
@@ -214,7 +210,7 @@ public class MapParser {
 		}
 	}
 	
-	private void setBridges(List<Bridge> bridgeList, List<char[]> bridgeRefs, List<Square> fruitPositions){
+	private void setBridges(List<Bridge> bridgeList, List<char[]> bridgeRefs){
 		if(bridgeList.size() == bridgeRefs.size()){
 			char[] t;
 			for(int i = 0; i < bridgeList.size(); i++){
@@ -231,10 +227,6 @@ public class MapParser {
 					p.setOnBridge(false);
 					p.occupy(pelletSquare);
 				}
-				else if(t[1] == 'F'){
-					fruitPositions.add(bridgeList.get(i).getSquare());
-					break;
-				}
 			}
 		}
 		else{
@@ -243,17 +235,19 @@ public class MapParser {
 	}
 
 	private void makeGrid(char[][] map, int width, int height, Square[][] grid, List<NPC> ghosts,
-	        List<Square> startPositions, List<Teleport> teleportList, List<Bridge> bridgeList, List<Square> fruitPositions) {
+	        List<Square> startPositions, List<Teleport> teleportList, List<Bridge> bridgeList) {
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
 				char c = map[x][y];
-				addSquare(grid, ghosts, startPositions, x, y, c, teleportList, bridgeList, fruitPositions);
+				addSquare(grid, ghosts, startPositions, x, y, c, teleportList, bridgeList);
 			}
 		}
 	}
 
 	private void addSquare(Square[][] grid, List<NPC> ghosts,
-								   List<Square> startPositions, int x, int y, char c, List<Teleport> teleportList, List<Bridge> bridgeList, List<Square> fruitPositions){
+								   List<Square> startPositions, int x, int y, char c,
+						   List<Teleport> teleportList,
+						   List<Bridge> bridgeList){
 		switch (c)
 		{
 			case ' ':
@@ -294,11 +288,6 @@ public class MapParser {
 				bridgeList.add(bridge);
 				bridge.occupy(bridgeSquare);
 				grid[x][y] = bridgeSquare;
-				break;
-			case 'F':
-				Square fruitSquare = boardCreator.createGround();
-				grid[x][y] = fruitSquare;
-				fruitPositions.add(fruitSquare);
 				break;
 			case 'o':
 				Square superPelletSquare = boardCreator.createGround();
@@ -346,7 +335,7 @@ public class MapParser {
 		}
 
 		Launcher launcher = Launcher.getLauncher();
-		if(launcher.getBoardToUse() == "/boardFruit.txt") {
+		if(launcher.getBoardToUse().equals("/boardFruit.txt")) {
 			firstSectionEnd++;
 			int secondSectionEnd = findSectionWidth(text, height, firstSectionEnd);
 			List<int[]> teleportRefs = parseTeleport(text, firstSectionEnd, secondSectionEnd);
@@ -442,17 +431,20 @@ public class MapParser {
 					}
 					else{
 						throw new PacmanConfigurationException(
-							"The teleport refereces section must contain two positive integer separated by a white space");
+							"The teleport refereces section must contain two positive " +
+									"integer separated by a white space");
 					}
 				}
 				catch(NumberFormatException e){
 					throw new PacmanConfigurationException(
-						"The teleport refereces section must contain two positive integer separated by a white space");
+						"The teleport refereces section must contain two positive " +
+								"integer separated by a white space");
 				}
 			}
 			else{
 				throw new PacmanConfigurationException(
-						"The teleport refereces section must contain two positive integer separated by a white space");
+						"The teleport refereces section must contain two positive " +
+								"integer separated by a white space");
 			}
 			teleportRefs.add(elem);
 		}
@@ -480,7 +472,8 @@ public class MapParser {
 				}
 			}
 			else {
-				throw new PacmanConfigurationException("Bridge data must contain two character separated by only one space");
+				throw new PacmanConfigurationException("Bridge data must contain two character " +
+						"separated by only one space");
 			}
 		}
 		return bridgeRefs;

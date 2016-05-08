@@ -1,9 +1,6 @@
 package nl.tudelft.jpacman.board;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.google.common.collect.ImmutableList;
 
@@ -88,7 +85,7 @@ public abstract class Square {
 	 *            The unit to occupy this square.
 	 * @return <code>true</code> iff the unit successfully occupied this square.
 	 */
-	boolean put(Unit occupant) {
+	public boolean put(Unit occupant) {
 		assert occupant != null;
 		if (!occupants.contains(occupant)) {
 			occupants.add(occupant);
@@ -103,7 +100,7 @@ public abstract class Square {
 	 * @param occupant
 	 *            The unit to be removed from this square.
 	 */
-	void remove(Unit occupant) {
+	public void remove(Unit occupant) {
 		assert occupant != null;
 		occupants.remove(occupant);
 	}
@@ -140,8 +137,7 @@ public abstract class Square {
 		return coordY;
 	}
 
-	public void setCoord(int x, int y)
-	{
+	public void setCoord(int x, int y) {
 		this.coordX = x;
 		this.coordY = y;
 	}
@@ -161,5 +157,4 @@ public abstract class Square {
 	 * @return The sprite of this square.
 	 */
 	public abstract Sprite getSprite();
-
 }
